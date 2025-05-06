@@ -1,0 +1,14 @@
+<div class="theme-toggle-container">
+  <p-button (onClick)="toggleTheme()" severity="secondary" [icon]="(isDarkTheme$ | async) ? 'pi pi-sun' : 'pi pi-moon'"
+    [text]="true" size="large">
+  </p-button>
+</div>
+
+<style>
+.theme-toggle-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+</style>
