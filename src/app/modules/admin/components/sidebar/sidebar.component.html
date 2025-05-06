@@ -1,0 +1,137 @@
+<div class="fixed left-0 top-40 h-screen mx-2 z-50" (mouseenter)="hovered.set(true)" (mouseleave)="hovered.set(false)">
+  <div class="border border-gray-500 rounded-sm p-1 bg-gray-100/20 backdrop-blur-xl"
+    [class]="hovered() ? 'w-48' : 'w-12'">
+
+    <a class="inline-flex items-center gap-1 px-2 py-2 cursor-pointer hover:text-primary hover:font-bold"
+      [routerLink]="['/admin']" routerLinkActive="text-primary font-semibold" [routerLinkActiveOptions]="{exact: true}">
+      <i class="pi pi-slack !text-xl"></i>
+      @if (hovered()) {
+      <span class="font-semibold ms-2">Aloha</span>
+      }
+    </a>
+
+    <hr class="border-gray-500">
+
+    <div class="my-4">
+      <a class="px-2 flex items-center hover:text-primary font-semibold hover:font-bold" [routerLink]="['/admin/usuarios']"
+        routerLinkActive="text-primary font-semibold">
+        <i class="pi pi-users py-1"></i>
+        @if (hovered()) {
+        <span class="ms-2">Usuarios</span>
+        }
+      </a>
+    </div>
+
+    <div class="my-4">
+      <a class="px-2 flex items-center hover:text-primary hover:font-bold" [routerLink]="['/admin/productos']"
+        routerLinkActive="text-primary font-semibold">
+        <i class="pi pi-shopping-bag py-1"></i>
+        @if (hovered()) {
+        <span class="ms-2">Productos</span>
+        }
+      </a>
+    </div>
+
+    <div class="my-4">
+      <a class="px-2 flex items-center hover:text-primary hover:font-bold" [routerLink]="['/admin/almacen']"
+        routerLinkActive="text-primary font-semibold">
+        <i class="pi pi-objects-column py-1"></i>
+        @if (hovered()) {
+        <span class="ms-2">Almacén</span>
+        }
+      </a>
+    </div>
+
+    <div class="my-4">
+      <a class="px-2 flex items-center hover:text-primary hover:font-bold" [routerLink]="['/admin/platos']"
+        routerLinkActive="text-primary font-semibold">
+        <i class="pi pi-chart-pie py-1"></i>
+        @if (hovered()) {
+        <span class="ms-2">Platos y bebidas</span>
+        }
+      </a>
+    </div>
+
+    <div class="my-4">
+      <a class="px-2 flex items-center hover:text-primary hover:font-bold" [routerLink]="['/admin/notas-venta']"
+        routerLinkActive="text-primary font-semibold">
+        <i class="pi pi-receipt py-1"></i>
+        @if (hovered()) {
+        <span class="ms-2">Notas de venta</span>
+        }
+      </a>
+    </div>
+
+    <div class="my-4">
+      <a class="px-2 flex items-center hover:text-primary hover:font-bold" [routerLink]="['/admin/promociones']"
+        routerLinkActive="text-primary font-semibold">
+        <i class="pi pi-tag py-1"></i>
+        @if (hovered()) {
+        <span class="ms-2">Promociones</span>
+        }
+      </a>
+    </div>
+
+    <div class="my-4">
+      <a class="px-2 flex items-center hover:text-primary hover:font-bold" [routerLink]="['/admin/ventas']"
+        routerLinkActive="text-primary font-semibold">
+        <i class="pi pi-check-square py-1"></i>
+        @if (hovered()) {
+        <span class="ms-2">Ventas</span>
+        }
+      </a>
+    </div>
+
+    <div class="my-4">
+      <a class="px-2 flex items-center hover:text-primary hover:font-bold" [routerLink]="['/admin/reportes']"
+        routerLinkActive="text-primary font-semibold">
+        <i class="pi pi-folder py-1"></i>
+        @if (hovered()) {
+        <span class="ms-2">Reportes</span>
+        }
+      </a>
+    </div>
+
+    <div class="my-4">
+      <a class="px-2 flex items-center hover:text-primary hover:font-bold" [routerLink]="['/admin/graficas']"
+        routerLinkActive="text-primary font-semibold">
+        <i class="pi pi-chart-bar py-1"></i>
+        @if (hovered()) {
+        <span class="ms-2">Gráficas</span>
+        }
+      </a>
+    </div>
+
+    <div class="my-4">
+      <a class="px-2 flex items-center hover:text-primary hover:font-bold" [routerLink]="['/admin/cierre-caja']"
+        routerLinkActive="text-primary font-semibold">
+        <i class="pi pi-lock py-1"></i>
+        @if (hovered()) {
+        <span class="ms-2">Cierre de caja</span>
+        }
+      </a>
+    </div>
+
+    <div class="my-4">
+      <a class="px-2 flex items-center text-red-400 cursor-pointer">
+        <i class="pi pi-sign-out py-1"></i>
+        @if (hovered()) {
+        <span class="ms-2">Cerrar sesión</span>
+        }
+      </a>
+    </div>
+
+    <hr class="border-gray-500">
+
+    <div class="my-3">
+      <a class="px-2 flex items-center hover:text-primary hover:font-bold" [routerLink]="['/admin/datos-tienda']"
+        routerLinkActive="text-primary font-semibold">
+        <i class="pi pi-building !text-xl py-1"></i>
+        @if (hovered()) {
+        <span class="ms-2">Datos de tienda</span>
+        }
+      </a>
+    </div>
+
+  </div>
+</div>

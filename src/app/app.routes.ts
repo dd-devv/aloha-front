@@ -40,6 +40,50 @@ export const routes: Routes = [
       {
         path: '',
         loadComponent: () => import('./modules/admin/pages/pendientes/pendientes.component')
+      },
+      {
+        path: 'usuarios',
+        loadComponent: () => import('./modules/admin/pages/users/users.component')
+      },
+      {
+        path: 'productos',
+        loadComponent: () => import('./modules/admin/pages/productos/productos.component')
+      },
+      {
+        path: 'almacen',
+        loadComponent: () => import('./modules/admin/pages/almacen/almacen.component')
+      },
+      {
+        path: 'platos',
+        loadComponent: () => import('./modules/admin/pages/platos/platos.component')
+      },
+      {
+        path: 'notas-venta',
+        loadComponent: () => import('./modules/admin/pages/notas-venta/notas-venta.component')
+      },
+      {
+        path: 'promociones',
+        loadComponent: () => import('./modules/admin/pages/promociones/promociones.component')
+      },
+      {
+        path: 'ventas',
+        loadComponent: () => import('./modules/admin/pages/ventas/ventas.component')
+      },
+      {
+        path: 'reportes',
+        loadComponent: () => import('./modules/admin/pages/reportes/reportes.component')
+      },
+      {
+        path: 'graficas',
+        loadComponent: () => import('./modules/admin/pages/graficas/graficas.component')
+      },
+      {
+        path: 'cierre-caja',
+        loadComponent: () => import('./modules/admin/pages/cierre-caja/cierre-caja.component')
+      },
+      {
+        path: 'datos-tienda',
+        loadComponent: () => import('./modules/admin/pages/datos-tienda/datos-tienda.component')
       }
     ]
   },

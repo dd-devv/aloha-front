@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
-  selector: 'app-productos',
+  selector: 'app-almacen',
   imports: [],
-  templateUrl: './productos.component.html',
+  templateUrl: './almacen.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export default class ProductosComponent { }
+export default class AlmacenComponent { }
