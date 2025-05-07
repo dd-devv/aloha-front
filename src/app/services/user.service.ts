@@ -3,7 +3,7 @@ import { inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { TokenStorageService } from './token-storage.service';
 import { environment } from '../../environments/environment';
-import { GetUsersResponse, RegisterResponse, RegisterUserRequest, User } from '../interfaces';
+import { GetUsersResponse, RegisterResponse, RegisterUserRequest, UpdatePasswordReq, UpdateUserRequest, User } from '../interfaces';
 import { catchError, Observable, of, tap, throwError } from 'rxjs';
 
 @Injectable({
@@ -76,6 +76,112 @@ export class UserService {
       );
   }
 
+  actualizarUsuario(req: UpdateUserRequest, id_user: string): Observable<RegisterResponse> {
+
+    if (isPlatformServer(this.platformId)) {
+      return of({ success: false, message: 'Operación no disponible en SSR', data: {} as User } as RegisterResponse);
+    }
+
+    this.loading.set(true);
+    this.error.set(null);
+
+    const updateData: UpdateUserRequest = {
+      nombres: req.nombres,
+      apellidos: req.apellidos,
+      role: req.role
+    };
+
+    return this.http.put<RegisterResponse>(`${this.apiUrl}users/${id_user}`, updateData, {
+      headers: {
+        Authorization: `Bearer ${this.authToken}`
+      }
+    })
+      .pipe(
+        tap(response => {
+          if (response.data) {
+            // Agregar el nuevo usuario al arreglo existente
+            this.users.update(users => users.map(user => user._id === id_user ? { ...user, ...updateData } : user));
+          }
+          this.loading.set(false);
+        }),
+        catchError(error => {
+          this.loading.set(false);
+          this.error.set(error.error || 'Error al actualizar usuario');
+          return throwError(() => ({
+            error: error.error
+          }));
+        })
+      );
+  }
+
+  actualizarPassword(req: UpdatePasswordReq): Observable<RegisterResponse> {
+
+    if (isPlatformServer(this.platformId)) {
+      return of({ success: false, message: 'Operación no disponible en SSR', data: {} as User } as RegisterResponse);
+    }
+
+    this.loading.set(true);
+    this.error.set(null);
+
+    const updateDataPass: UpdatePasswordReq = {
+      newPassword: req.newPassword,
+      userId: req.userId
+    };
+
+    return this.http.post<RegisterResponse>(`${this.apiUrl}auth/change-password`, updateDataPass, {
+      headers: {
+        Authorization: `Bearer ${this.authToken}`
+      }
+    })
+      .pipe(
+        tap(response => {
+          if (response.data) {
+            // Agregar el nuevo usuario al arreglo existente
+            this.users.update(users => users);
+          }
+          this.loading.set(false);
+        }),
+        catchError(error => {
+          this.loading.set(false);
+          this.error.set(error.error || 'Error al actualizar contraseña');
+          return throwError(() => ({
+            error: error.error
+          }));
+        })
+      );
+  }
+
+  eliminarUsuario(id_user: string): Observable<RegisterResponse> {
+
+    if (isPlatformServer(this.platformId)) {
+      return of({ success: false, message: 'Operación no disponible en SSR', data: {} as User } as RegisterResponse);
+    }
+
+    this.loading.set(true);
+    this.error.set(null);
+    return this.http.delete<RegisterResponse>(`${this.apiUrl}users/${id_user}`, {
+      headers: {
+        Authorization: `Bearer ${this.authToken}`
+      }
+    })
+      .pipe(
+        tap(response => {
+          if (response.data) {
+            // Quitar el usuario del arreglo existente
+            this.users.update(users => users.filter(user => user._id !== id_user));
+          }
+          this.loading.set(false);
+        }),
+        catchError(error => {
+          this.loading.set(false);
+          this.error.set(error.error || 'Error al eliminar usuario');
+          return throwError(() => ({
+            error: error.error
+          }));
+        })
+      );
+  }
+
   obtenerUsuarios(): Observable<GetUsersResponse> {
 
     if (isPlatformServer(this.platformId)) {
@@ -110,17 +216,5 @@ export class UserService {
   // Método para agregar un usuario manualmente al array de usuarios
   agregarUsuario(usuario: User): void {
     this.users.update(users => [...users, usuario]);
-  }
-
-  // Método para actualizar un usuario específico
-  actualizarUsuario(usuarioActualizado: User): void {
-    this.users.update(users =>
-      users.map(user => user._id === usuarioActualizado._id ? usuarioActualizado : user)
-    );
-  }
-
-  // Método para eliminar un usuario
-  eliminarUsuario(userId: string | number): void {
-    this.users.update(users => users.filter(user => user._id !== userId));
   }
 }

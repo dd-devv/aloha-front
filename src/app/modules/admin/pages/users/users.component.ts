@@ -11,9 +11,13 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { PasswordModule } from 'primeng/password';
 import { Select } from 'primeng/select';
+import { Message } from 'primeng/message';
 import { User } from '../../../../interfaces';
 import { UserService } from '../../../../services/user.service';
 import { finalize } from 'rxjs';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { Toast, ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-users',
@@ -32,18 +36,29 @@ import { finalize } from 'rxjs';
     PasswordModule,
     Select,
     TitleCasePipe,
-    DatePipe
+    DatePipe,
+    Message,
+    ConfirmPopupModule,
+    ToastModule
   ],
+  providers: [ConfirmationService, MessageService],
   templateUrl: './users.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class UsersComponent implements OnInit {
   private fb = inject(FormBuilder);
   private userService = inject(UserService);
+  private confirmationService = inject(ConfirmationService);
+  private messageService = inject(MessageService);
 
   visible: boolean = false;
+  visibleUpdate: boolean = false;
+  visibleUpdatePass: boolean = false;
   registroForm: FormGroup;
+  updateForm: FormGroup;
+  passForm: FormGroup;
   isLoading = false;
+  id_user_update = '';
 
   // Utilizando los signals del servicio directamente
   readonly users = this.userService.users;
@@ -106,6 +121,28 @@ export default class UsersComponent implements OnInit {
       ]],
       role: [null, Validators.required]
     });
+
+    this.updateForm = this.fb.group({
+      nombres: ['', [
+        Validators.required,
+        Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$')
+      ]],
+      apellidos: ['', [
+        Validators.required,
+        Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$')
+      ]],
+      role: ['', Validators.required]
+    });
+
+    this.passForm = this.fb.group({
+      newPassword: ['', [
+        Validators.required,
+        Validators.minLength(6)
+      ]],
+      userId: ['', [
+        Validators.required
+      ]]
+    });
   }
 
   ngOnInit(): void {
@@ -126,8 +163,30 @@ export default class UsersComponent implements OnInit {
     this.visible = true;
   }
 
-  getErrorMessage(controlName: string): string {
-    const control = this.registroForm.get(controlName);
+  showDialogUpdate(user: User) {
+    this.updateForm.patchValue({
+      nombres: user.nombres,
+      apellidos: user.apellidos,
+      role: { name: user.role, code: user.role }
+    });
+
+    this.id_user_update = user._id;
+
+    this.visibleUpdate = true;
+  }
+
+
+  showDialogUpdatePass(user: User) {
+    this.passForm.patchValue({
+      newPassword: '',
+      userId: user._id,
+    });
+
+    this.visibleUpdatePass = true;
+  }
+
+  getErrorMessage(controlName: string, form: FormGroup): string {
+    const control = form.get(controlName);
 
     if (!control || !control.errors || !control.touched) {
       return '';
@@ -171,8 +230,8 @@ export default class UsersComponent implements OnInit {
     return 'Campo inválido';
   }
 
-  isInvalid(controlName: string): boolean {
-    const control = this.registroForm.get(controlName);
+  isInvalid(controlName: string, form: FormGroup): boolean {
+    const control = form.get(controlName);
     return !!control && control.invalid && control.touched;
   }
 
@@ -200,10 +259,11 @@ export default class UsersComponent implements OnInit {
               this.visible = false;
               this.registroForm.reset();
             }
+            this.messageService.add({ severity: 'success', summary: 'Actualizado', detail: response.message, life: 3000 });
           },
           error: (err) => {
             console.error('Error al registrar usuario:', err);
-            // Aquí puedes manejar el error, por ejemplo mostrando un mensaje al usuario
+            this.messageService.add({ severity: 'error', summary: 'Error', detail: err.message, life: 3000 });
           }
         });
     } else {
@@ -212,5 +272,119 @@ export default class UsersComponent implements OnInit {
         this.registroForm.get(key)?.markAsTouched();
       });
     }
+  }
+
+  onUpdateSubmit(): void {
+    if (this.updateForm.valid) {
+      this.isLoading = true;
+
+      // Actualizar el usuario
+      this.userService.actualizarUsuario({
+        nombres: this.updateForm.value.nombres,
+        apellidos: this.updateForm.value.apellidos,
+        role: this.updateForm.value.role.code
+      }, this.id_user_update)
+        .pipe(
+          finalize(() => {
+            this.isLoading = false;
+          })
+        )
+        .subscribe({
+          next: (response) => {
+            if (response.success) {
+              // Cerrar el diálogo y resetear el formulario
+              this.visibleUpdate = false;
+              this.updateForm.reset();
+            }
+
+            this.messageService.add({ severity: 'success', summary: 'Actualizado', detail: response.message, life: 3000 });
+          },
+          error: (err) => {
+            console.error('Error al actualizar usuario:', err);
+            this.messageService.add({ severity: 'error', summary: 'Error', detail: err.message, life: 3000 });
+          }
+        });
+    } else {
+      // Marcar todos los campos como touched para mostrar los errores
+      Object.keys(this.updateForm.controls).forEach(key => {
+        this.updateForm.get(key)?.markAsTouched();
+      });
+    }
+  }
+
+
+  onUpdatePassSubmit(): void {
+    if (this.passForm.valid) {
+      this.isLoading = true;
+
+      // Actualizar el usuario
+      this.userService.actualizarPassword({
+        newPassword: this.passForm.value.newPassword,
+        userId: this.passForm.value.userId
+      })
+        .pipe(
+          finalize(() => {
+            this.isLoading = false;
+          })
+        )
+        .subscribe({
+          next: (response) => {
+            if (response.success) {
+              // Cerrar el diálogo y resetear el formulario
+              this.visibleUpdatePass = false;
+              this.passForm.reset();
+            }
+
+            this.messageService.add({ severity: 'success', summary: 'Actualizado', detail: response.message, life: 3000 });
+          },
+          error: (err) => {
+            console.error('Error al actualizar contraseña:', err);
+            this.messageService.add({ severity: 'error', summary: 'Error', detail: err.message, life: 3000 });
+          }
+        });
+    } else {
+      // Marcar todos los campos como touched para mostrar los errores
+      Object.keys(this.passForm.controls).forEach(key => {
+        this.passForm.get(key)?.markAsTouched();
+      });
+    }
+  }
+
+  confirmDelete(event: Event, username: string, id_user: string) {
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: `¿Eliminar ${username}?`,
+      icon: 'pi pi-exclamation-triangle',
+      rejectButtonProps: {
+        label: 'Cancelar',
+        severity: 'secondary',
+        outlined: true
+      },
+      acceptButtonProps: {
+        label: 'Eliminar',
+        severity: 'danger',
+        icon: 'pi pi-trash'
+      },
+      accept: () => {
+        // Actualizar el usuario
+        this.userService.eliminarUsuario(id_user)
+          .pipe(
+            finalize(() => {
+              this.isLoading = false;
+            })
+          )
+          .subscribe({
+            next: (response) => {
+              this.messageService.add({ severity: 'success', summary: 'Eliminado', detail: response.message, life: 3000 });
+            },
+            error: (err) => {
+              console.error('Error al actualizar usuario:', err);
+              // Aquí puedes manejar el error, por ejemplo mostrando un mensaje al usuario
+            }
+          });
+      },
+      reject: () => {
+      }
+    });
   }
 }

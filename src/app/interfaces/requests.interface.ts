@@ -18,3 +18,14 @@ export interface RegisterResponse {
   message: string;
   data:    User;
 }
+
+export interface UpdateUserRequest {
+  nombres:   string;
+  apellidos: string;
+  role:      string;
+}
+
+export interface UpdatePasswordReq {
+  userId:      string;
+  newPassword: string;
+}

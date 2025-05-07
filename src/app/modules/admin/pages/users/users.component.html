@@ -21,10 +21,16 @@
             </div>
           </ng-template>
           <ng-template #icons>
-            <p-button icon="pi pi-pencil" severity="success" outlined="true"
-            size="small" class="me-2" rounded />
-            <p-button icon="pi pi-trash" severity="danger" outlined="true"
-            size="small" rounded [disabled]="user.role == 'ADMIN'"/>
+
+            <p-button icon="pi pi-pencil" severity="success" outlined="true" variant="text" size="small" class="me-2"
+              rounded (click)="showDialogUpdate(user)" />
+
+            <p-button icon="pi pi-key" severity="secondary" outlined="true" variant="text" size="small" class="me-2"
+              rounded (click)="showDialogUpdatePass(user)" />
+
+            <p-confirmpopup />
+            <p-button icon="pi pi-trash" severity="danger" outlined="true" variant="text" size="small" rounded
+              [disabled]="user.role == 'ADMIN'" (click)="confirmDelete($event, user.username, user._id)" />
           </ng-template>
           <p class="m-0">
             {{user.nombres | titlecase}} {{user.apellidos | titlecase}} <p-tag severity="success" [value]="user.role" />
@@ -56,8 +62,8 @@
         </label>
       </p-floatlabel>
 
-      @if (isInvalid('nombres')) {
-      <small class="text-red-400 mt-1">{{ getErrorMessage('nombres') }}</small>
+      @if (isInvalid('nombres', registroForm)) {
+      <small class="text-red-400 mt-1">{{ getErrorMessage('nombres', registroForm) }}</small>
       }
     </div>
 
@@ -70,8 +76,8 @@
         </label>
       </p-floatlabel>
 
-      @if (isInvalid('apellidos')) {
-      <small class="text-red-400 mt-1">{{ getErrorMessage('apellidos') }}</small>
+      @if (isInvalid('apellidos', registroForm)) {
+      <small class="text-red-400 mt-1">{{ getErrorMessage('apellidos', registroForm) }}</small>
       }
     </div>
 
@@ -82,8 +88,8 @@
         <label for="role"><i class="pi pi-hammer me-1"></i> Tpo de usuario</label>
       </p-floatlabel>
 
-      @if (isInvalid('role')) {
-      <small class="text-red-400 mt-1">{{ getErrorMessage('role') }}</small>
+      @if (isInvalid('role', registroForm)) {
+      <small class="text-red-400 mt-1">{{ getErrorMessage('role', registroForm) }}</small>
       }
     </div>
 
@@ -96,8 +102,8 @@
         </label>
       </p-floatlabel>
 
-      @if (isInvalid('username')) {
-      <small class="text-red-400 mt-1">{{ getErrorMessage('username') }}</small>
+      @if (isInvalid('username', registroForm)) {
+      <small class="text-red-400 mt-1">{{ getErrorMessage('username', registroForm) }}</small>
       }
     </div>
 
@@ -111,8 +117,8 @@
         </label>
       </p-floatlabel>
 
-      @if (isInvalid('password')) {
-      <small class="text-red-400 mt-1">{{ getErrorMessage('password') }}</small>
+      @if (isInvalid('password', registroForm)) {
+      <small class="text-red-400 mt-1">{{ getErrorMessage('password', registroForm) }}</small>
       }
     </div>
 
@@ -122,3 +128,91 @@
     </div>
   </form>
 </p-dialog>
+
+<!-- Modal de actualizacion de usuarios -->
+<p-dialog header="Actualizar datos" [modal]="true" [(visible)]="visibleUpdate" [style]="{ width: '22rem' }"
+  maskStyleClass="backdrop-blur-sm">
+
+  <form [formGroup]="updateForm" (ngSubmit)="onUpdateSubmit()" class="flex flex-col gap-4">
+
+    <div class="flex flex-col mt-2">
+      <p-floatlabel class="w-full" variant="on">
+        <p-select id="role" formControlName="role" inputId="role" [options]="roles" optionLabel="name"
+          styleClass="w-full" />
+        <label for="role"><i class="pi pi-hammer me-1"></i> Tpo de usuario</label>
+      </p-floatlabel>
+
+      @if (isInvalid('role', updateForm)) {
+      <small class="text-red-400 mt-1">{{ getErrorMessage('role', updateForm) }}</small>
+      }
+    </div>
+
+    <div class="flex flex-col">
+      <p-floatlabel variant="on">
+        <input id="nombres" pInputText formControlName="nombres" autocomplete="off" fluid="true" />
+        <label for="nombres" class="rounded">
+          <i class="pi pi-user me-1"></i>
+          Nombres
+        </label>
+      </p-floatlabel>
+
+      @if (isInvalid('nombres', updateForm)) {
+      <small class="text-red-400 mt-1">{{ getErrorMessage('nombres', updateForm) }}</small>
+      }
+    </div>
+
+    <div class="flex flex-col">
+      <p-floatlabel variant="on">
+        <input id="apellidos" pInputText formControlName="apellidos" autocomplete="off" fluid="true" />
+        <label for="apellidos" class="rounded">
+          <i class="pi pi-user me-1"></i>
+          Apellidos
+        </label>
+      </p-floatlabel>
+
+      @if (isInvalid('apellidos', updateForm)) {
+      <small class="text-red-400 mt-1">{{ getErrorMessage('apellidos', updateForm) }}</small>
+      }
+    </div>
+
+    <div class="card">
+      <p-message closable severity="warn">El usuario no es actualizable</p-message>
+    </div>
+
+    <div class="flex justify-center">
+      <p-button type="submit" [disabled]="updateForm.invalid || isLoading" label="Actualizar usuario" icon="pi pi-check"
+        [loading]="isLoading" />
+    </div>
+  </form>
+</p-dialog>
+
+<!-- Modal para actualizar contraseña -->
+<p-dialog header="Cambiar contraseña" [modal]="true" [(visible)]="visibleUpdatePass" [style]="{ width: '22rem' }"
+  maskStyleClass="backdrop-blur-sm">
+
+  <form [formGroup]="passForm" (ngSubmit)="onUpdatePassSubmit()" class="flex flex-col gap-4">
+
+    <div class="flex flex-col my-4">
+      <p-floatlabel variant="on">
+        <p-password id="newPassword" formControlName="newPassword" inputId="newPassword" fluid="true"
+          [toggleMask]="true" [feedback]="false" autocomplete="off" />
+        <label for="newPassword" class="rounded">
+          <i class="pi pi-key me-1"></i>
+          Contraseña nueva
+        </label>
+      </p-floatlabel>
+
+      @if (isInvalid('newPassword', passForm)) {
+      <small class="text-red-400 mt-1">{{ getErrorMessage('newPassword', passForm) }}</small>
+      }
+    </div>
+
+    <div class="flex justify-center">
+      <p-button type="submit" [disabled]="passForm.invalid || isLoading" label="Actualizar contraseña" icon="pi pi-key"
+        [loading]="isLoading" />
+    </div>
+  </form>
+</p-dialog>
+
+
+<p-toast />
