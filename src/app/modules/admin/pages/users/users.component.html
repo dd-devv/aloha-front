@@ -1,36 +1,124 @@
 <div class="card">
   <p-fieldset>
     <ng-template #header>
-      <div class="flex items-center gap-2 px-2 text-primary">
+      <div class="flex items-center gap-4 px-2 text-primary">
         <i class="pi pi-users text-2xl"></i>
         <span class="font-bold">Usuarios</span>
+
+        <p-button label="Agregar" [raised]="true" icon="pi pi-plus" severity="secondary" size="small"
+          (click)="showDialog()" />
       </div>
     </ng-template>
-    <div class="card">
-      <p-table [value]="users" [tableStyle]="{ 'min-width': '50rem' }">
-        <ng-template #header>
-          <tr>
-            <th>Nombres</th>
-            <th>Apellidos</th>
-            <th>Usuario</th>
-            <th>Rol</th>
-            <th class="w-28"></th>
-          </tr>
-        </ng-template>
-        <ng-template #body let-user>
-          <tr>
-            <td>{{ user.nombres }}</td>
-            <td>{{ user.apellidos }}</td>
-            <td>{{ user.username }}</td>
-            <td>{{ user.role }}</td>
-            <td>
-              <p-button icon="pi pi-pen-to-square" [rounded]="true" severity="success" size="small" [outlined]="true"
-                class="me-2" />
-              <p-button icon="pi pi-times" [rounded]="true" [outlined]="true" size="small" severity="danger" />
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+      @for (user of users(); track user._id) {
+      <div class="card">
+        <p-panel>
+          <ng-template #header class="p-1">
+            <div class="flex items-center gap-2">
+              <i class="pi pi-user text-xl"></i>
+              <span class="font-bold"> {{user.username}} </span>
+            </div>
+          </ng-template>
+          <ng-template #icons>
+            <p-button icon="pi pi-pencil" severity="success" outlined="true"
+            size="small" class="me-2" rounded />
+            <p-button icon="pi pi-trash" severity="danger" outlined="true"
+            size="small" rounded [disabled]="user.role == 'ADMIN'"/>
+          </ng-template>
+          <p class="m-0">
+            {{user.nombres | titlecase}} {{user.apellidos | titlecase}} <p-tag severity="success" [value]="user.role" />
+          </p>
+
+          <div class="flex flex-wrap items-center justify-end gap-4 mt-1">
+            <span class="text-sm text-surface-500 dark:text-surface-400">
+              Creado el {{user.createdAt | date: 'short'}}
+            </span>
+          </div>
+        </p-panel>
+      </div>
+      }
     </div>
   </p-fieldset>
 </div>
+
+<!-- Modal de registro de usuarios -->
+<p-dialog header="Registrar usuario" [modal]="true" [(visible)]="visible" [style]="{ width: '22rem' }"
+  maskStyleClass="backdrop-blur-sm">
+  <span class="p-text-secondary block mb-8 text-sm">Registra un usuario rellenando el formulario.</span>
+  <form [formGroup]="registroForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+    <div class="flex flex-col">
+      <p-floatlabel variant="on">
+        <input id="nombres" pInputText formControlName="nombres" autocomplete="off" fluid="true" />
+        <label for="nombres" class="rounded">
+          <i class="pi pi-user me-1"></i>
+          Nombres
+        </label>
+      </p-floatlabel>
+
+      @if (isInvalid('nombres')) {
+      <small class="text-red-400 mt-1">{{ getErrorMessage('nombres') }}</small>
+      }
+    </div>
+
+    <div class="flex flex-col">
+      <p-floatlabel variant="on">
+        <input id="apellidos" pInputText formControlName="apellidos" autocomplete="off" fluid="true" />
+        <label for="apellidos" class="rounded">
+          <i class="pi pi-user me-1"></i>
+          Apellidos
+        </label>
+      </p-floatlabel>
+
+      @if (isInvalid('apellidos')) {
+      <small class="text-red-400 mt-1">{{ getErrorMessage('apellidos') }}</small>
+      }
+    </div>
+
+    <div class="flex flex-col">
+      <p-floatlabel class="w-full" variant="on">
+        <p-select id="role" formControlName="role" inputId="role" [options]="roles" optionLabel="name"
+          styleClass="w-full" />
+        <label for="role"><i class="pi pi-hammer me-1"></i> Tpo de usuario</label>
+      </p-floatlabel>
+
+      @if (isInvalid('role')) {
+      <small class="text-red-400 mt-1">{{ getErrorMessage('role') }}</small>
+      }
+    </div>
+
+    <div class="flex flex-col">
+      <p-floatlabel variant="on">
+        <input id="username" pInputText formControlName="username" autocomplete="off" fluid="true" />
+        <label for="username" class="rounded">
+          <i class="pi pi-at me-1"></i>
+          Usuario
+        </label>
+      </p-floatlabel>
+
+      @if (isInvalid('username')) {
+      <small class="text-red-400 mt-1">{{ getErrorMessage('username') }}</small>
+      }
+    </div>
+
+    <div class="flex flex-col my-4">
+      <p-floatlabel variant="on">
+        <p-password id="password" formControlName="password" inputId="password" fluid="true" [toggleMask]="true"
+          [feedback]="false" autocomplete="off" />
+        <label for="password" class="rounded">
+          <i class="pi pi-key me-1"></i>
+          Contraseña
+        </label>
+      </p-floatlabel>
+
+      @if (isInvalid('password')) {
+      <small class="text-red-400 mt-1">{{ getErrorMessage('password') }}</small>
+      }
+    </div>
+
+    <div class="flex justify-center">
+      <p-button type="submit" [disabled]="registroForm.invalid || isLoading" label="Registrar usuario"
+        icon="pi pi-user-plus" [loading]="isLoading" />
+    </div>
+  </form>
+</p-dialog>

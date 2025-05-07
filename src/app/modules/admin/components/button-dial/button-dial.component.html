@@ -1,0 +1,18 @@
+<!-- Componente HTML -->
+<div class="fixed-bottom-left">
+  <p-speeddial [model]="items" direction="up"
+    styleClass="position-fixed"
+    [style]="{ left: '20px', bottom: '20px', zIndex: 9999 }"
+    [buttonProps]="{ icon: 'pi pi-plus', severity: 'primary', rounded: true }"
+    [tooltipOptions]="{ tooltipPosition: 'left' }" />
+</div>
+
+<!-- Estilos CSS -->
+<style>
+.fixed-bottom-left {
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  z-index: 9999;
+}
+</style>

@@ -40,7 +40,8 @@ export default class LoginComponent {
       remember: [false]
     });
   }
-    onSubmit(): void {
+
+  onSubmit(): void {
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
       return;

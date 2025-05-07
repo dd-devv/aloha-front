@@ -3,7 +3,6 @@ export interface User {
   nombres:   string;
   apellidos: string;
   username:  string;
-  password:  string;
   role:      string;
   deleted:   boolean;
   createdAt: Date;

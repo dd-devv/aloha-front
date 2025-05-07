@@ -10,3 +10,9 @@ export interface DataLogin {
   user:  User;
   token: string;
 }
+
+export interface GetUsersResponse {
+  success: boolean;
+  message: string;
+  data:    User[];
+}
