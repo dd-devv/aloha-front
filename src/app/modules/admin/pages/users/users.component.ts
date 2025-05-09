@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
-import { TableModule } from 'primeng/table';
 import { CommonModule, DatePipe, TitleCasePipe } from '@angular/common';
 import { FieldsetModule } from 'primeng/fieldset';
 import { Button } from 'primeng/button';
@@ -17,12 +16,11 @@ import { UserService } from '../../../../services/user.service';
 import { finalize } from 'rxjs';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
-import { Toast, ToastModule } from 'primeng/toast';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-users',
   imports: [
-    TableModule,
     CommonModule,
     FieldsetModule,
     Button,
@@ -71,35 +69,6 @@ export default class UsersComponent implements OnInit {
     { name: 'CHEF', code: 'CHEF' },
     { name: 'BARMAN', code: 'BARMAN' }
   ]
-
-  // Método para determinar la severidad del tag según el rol
-  getRoleSeverity(role: string): string {
-    switch (role) {
-      case 'ADMIN':
-        return 'danger';
-      case 'MOZO':
-        return 'info';
-      case 'CHEF':
-        return 'warning';
-      case 'BARMAN':
-        return 'success';
-      default:
-        return 'info';
-    }
-  }
-
-  // Métodos adicionales para las acciones de la tabla
-  editarUsuario(user: User): void {
-    // Implementar lógica para editar usuario
-    console.log('Editar usuario:', user);
-    // Aquí podrías cargar los datos en el formulario y abrir el diálogo
-  }
-
-  confirmarEliminacion(user: User): void {
-    // Implementar lógica para confirmar eliminación
-    console.log('Confirmar eliminación de usuario:', user);
-    // Aquí podrías mostrar un diálogo de confirmación
-  }
 
   constructor() {
     this.registroForm = this.fb.group({
@@ -259,7 +228,7 @@ export default class UsersComponent implements OnInit {
               this.visible = false;
               this.registroForm.reset();
             }
-            this.messageService.add({ severity: 'success', summary: 'Actualizado', detail: response.message, life: 3000 });
+            this.messageService.add({ severity: 'success', summary: 'Registrado', detail: response.message, life: 3000 });
           },
           error: (err) => {
             console.error('Error al registrar usuario:', err);
@@ -366,7 +335,7 @@ export default class UsersComponent implements OnInit {
         icon: 'pi pi-trash'
       },
       accept: () => {
-        // Actualizar el usuario
+        // Eliminar el usuario
         this.userService.eliminarUsuario(id_user)
           .pipe(
             finalize(() => {
