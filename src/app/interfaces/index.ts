@@ -1,3 +1,4 @@
+export * from './plato.interface';
 export * from './product.interface';
 export * from './requests.interface';
 export * from './responses.interface';

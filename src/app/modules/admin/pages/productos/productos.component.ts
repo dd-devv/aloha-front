@@ -25,11 +25,6 @@ import { PaginatePipe } from '../../../../pipes/paginate.pipe';
 import { IconField } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
 
-interface UploadEvent {
-  originalEvent: Event;
-  files: File[];
-}
-
 @Component({
   selector: 'app-productos',
   imports: [
@@ -141,7 +136,7 @@ export default class ProductosComponent implements OnInit {
   }
 
   get totalPages(): number {
-    return Math.ceil(this.products().length / this.pageSize);
+    return Math.ceil(this.productsFiltrados().length / this.pageSize);
   }
 
   onPageChange(page: number): void {
@@ -383,6 +378,8 @@ export default class ProductosComponent implements OnInit {
               this.registroForm.reset();
               this.resetUploader();
             }
+
+            this.productsFiltrados.update(producto => [...producto, response.data]);
             this.messageService.add({ severity: 'success', summary: 'Registrado', detail: response.message, life: 3000 });
           },
           error: (err) => {
@@ -434,6 +431,8 @@ export default class ProductosComponent implements OnInit {
                 this.updateForm.reset();
                 this.resetUpdateUploader();
               }
+
+              this.productsFiltrados.set(this.productService.products());
               this.messageService.add({ severity: 'success', summary: 'Actualizado', detail: response.message, life: 3000 });
             },
             error: (err) => {
@@ -493,6 +492,7 @@ export default class ProductosComponent implements OnInit {
           .subscribe({
             next: (response) => {
               this.messageService.add({ severity: 'success', summary: 'Eliminado', detail: response.message, life: 3000 });
+              this.productsFiltrados = this.productService.products;
             },
             error: (err) => {
               console.error('Error al eliminar producto:', err);

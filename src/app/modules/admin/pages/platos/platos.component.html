@@ -1,1 +1,256 @@
-<p>platos works!</p>,
+<div class="card">
+  <p-fieldset>
+    <ng-template #header>
+      <div class="flex items-center gap-4 px-2 text-primary">
+        <i class="pi pi-chart-pie text-2xl"></i>
+        <span class="font-bold">Platos y bebidas</span>
+
+        <p-button label="Agregar" [raised]="true" icon="pi pi-plus" severity="secondary" size="small"
+          (click)="showDialog()" />
+
+        <p-iconfield class="hidden md:inline">
+          <p-inputicon styleClass="pi pi-search" />
+          <input type="text" pInputText placeholder="Buscar platos" [(ngModel)]="value" (input)="onInputChange()"
+            autocomplete="off" [disabled]="loading()" pSize="small" />
+        </p-iconfield>
+      </div>
+    </ng-template>
+
+    <div class="inline md:hidden">
+      <div class="flex justify-center my-2">
+        <p-iconfield>
+          <p-inputicon styleClass="pi pi-search" />
+          <input type="text" pInputText placeholder="Buscar platos" [(ngModel)]="value" (input)="onInputChange()"
+            autocomplete="off" [disabled]="loading()" pSize="small" />
+        </p-iconfield>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 py-2">
+      @for (plato of platosFiltrados() | paginate:currentPage:pageSize; track plato._id) {
+      <div class="card">
+        <p-panel>
+          <ng-template #header class="p-1">
+            <div class="flex items-center gap-2">
+              <img [src]="plato.galeria[0] | cloudinaryImage:200:'avif'" alt="" class="w-12 rounded">
+              <span class="font-bold">{{plato.codigo | uppercase}}</span>
+            </div>
+          </ng-template>
+          <ng-template #icons>
+
+            <p-button icon="pi pi-pencil" severity="success" outlined="true" variant="text" size="small" class="me-2"
+              rounded (click)="showDialogUpdate(plato)" />
+
+            <p-confirmpopup />
+            <p-button icon="pi pi-trash" severity="danger" outlined="true" variant="text" size="small" rounded
+              (click)="confirmDelete($event, plato.nombre, plato._id)" />
+          </ng-template>
+          <p class="m-0">
+            {{plato.nombre | titlecase}}
+          </p>
+
+          <div class="flex flex-wrap items-center justify-between gap-4 mt-1">
+            <span class="text-sm text-surface-500 dark:text-surface-400">
+              <p-tag severity="secondary" class="text-sm" value=" {{plato.precio | currency: 'S/ ' }}" />
+
+              <span>
+                Creado {{plato.createdAt | date: 'shortDate'}}
+              </span>
+            </span>
+          </div>
+        </p-panel>
+      </div>
+      }
+    </div>
+    <app-pagination [currentPage]="currentPage" [totalPages]="totalPages" (pageChange)="onPageChange($event)" />
+  </p-fieldset>
+
+</div>
+
+<!-- Modal de registro de platos -->
+<p-dialog header="Registrar plato" [modal]="true" [(visible)]="visible" [style]="{ width: '25rem' }"
+  maskStyleClass="backdrop-blur-sm" (onHide)="resetUploader()">
+  <form [formGroup]="registroForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+    <div class="flex flex-col mt-2">
+      <p-floatlabel variant="on">
+        <input id="nombre" pInputText formControlName="nombre" autocomplete="off" fluid="true" />
+        <label for="nombre" class="rounded">
+          <i class="pi pi-comment me-1"></i>
+          Nombre del plato
+        </label>
+      </p-floatlabel>
+
+      @if (isInvalid('nombre', registroForm)) {
+      <small class="text-red-400 mt-1">{{ getErrorMessage('nombre', registroForm) }}</small>
+      }
+    </div>
+
+    <div class="flex flex-col">
+      <p-floatlabel variant="on">
+        <input id="precio" pInputText formControlName="precio" autocomplete="off" fluid="true" />
+        <label for="precio" class="rounded">
+          <i class="pi pi-dollar me-1"></i>
+          Precio
+        </label>
+      </p-floatlabel>
+
+      @if (isInvalid('precio', registroForm)) {
+      <small class="text-red-400 mt-1">{{ getErrorMessage('precio', registroForm) }}</small>
+      }
+    </div>
+
+    <div class="flex flex-col">
+      <p-floatlabel variant="on">
+        <input id="codigo" pInputText formControlName="codigo" autocomplete="off" fluid="true" />
+        <label for="codigo" class="rounded">
+          <i class="pi pi-qrcode me-1"></i>
+          Código
+        </label>
+      </p-floatlabel>
+
+      @if (isInvalid('codigo', registroForm)) {
+      <small class="text-red-400 mt-1">{{ getErrorMessage('codigo', registroForm) }}</small>
+      }
+    </div>
+
+    <div class="flex flex-col">
+      <p-floatlabel class="w-full" variant="on">
+        <p-select id="tipo" formControlName="tipo" inputId="tipo" [options]="tiposPlato" optionLabel="name"
+          styleClass="w-full" />
+        <label for="tipo"><i class="pi pi-hammer me-1"></i> Tipo de plato</label>
+      </p-floatlabel>
+
+      @if (isInvalid('tipo', registroForm)) {
+      <small class="text-red-400 mt-1">{{ getErrorMessage('tipo', registroForm) }}</small>
+      }
+    </div>
+
+    <div class="card">
+      <p-fileupload #fileUploader name="demo[]" (onSelect)="onSelect($event)" [multiple]="true" accept="image/*"
+        maxFileSize="1000000" mode="advanced">
+        <ng-template #empty>
+          <div>Añadir imágenes del plato.</div>
+        </ng-template>
+        <ng-template #content>
+          @if (uploadedFiles.length) {
+          <ul>
+            <li *ngFor="let file of uploadedFiles">
+              {{ file.name }} - {{ file.size }} bytes
+              <img *ngIf="file.url" [src]="file.url" alt="Imagen subida" width="100">
+            </li>
+          </ul>
+          }
+        </ng-template>
+      </p-fileupload>
+    </div>
+
+    <div class="flex justify-center">
+      <p-button type="submit" [disabled]="registroForm.invalid || isLoading" label="Registrar plato" icon="pi pi-plus"
+        [loading]="isLoading" />
+    </div>
+  </form>
+</p-dialog>
+
+<!-- Modal de actualizacion de producto -->
+<p-dialog header="Actualizar datos" [modal]="true" [(visible)]="visibleUpdate" [style]="{ width: '25rem' }"
+  maskStyleClass="backdrop-blur-sm" (onHide)="resetUpdateUploader()">
+
+  <form [formGroup]="updateForm" (ngSubmit)="onUpdateSubmit()" class="flex flex-col gap-4">
+
+    <div class="flex flex-col mt-2">
+      <p-floatlabel variant="on">
+        <input id="nombre" pInputText formControlName="nombre" autocomplete="off" fluid="true" />
+        <label for="nombre" class="rounded">
+          <i class="pi pi-comment me-1"></i>
+          Nombre del plato
+        </label>
+      </p-floatlabel>
+
+      @if (isInvalid('nombre', registroForm)) {
+      <small class="text-red-400 mt-1">{{ getErrorMessage('nombre', registroForm) }}</small>
+      }
+    </div>
+
+    <div class="flex flex-col">
+      <p-floatlabel variant="on">
+        <input id="precio" pInputText formControlName="precio" autocomplete="off" fluid="true" />
+        <label for="precio" class="rounded">
+          <i class="pi pi-dollar me-1"></i>
+          Precio
+        </label>
+      </p-floatlabel>
+
+      @if (isInvalid('precio', registroForm)) {
+      <small class="text-red-400 mt-1">{{ getErrorMessage('precio', registroForm) }}</small>
+      }
+    </div>
+
+    <div class="flex flex-col">
+      <p-floatlabel variant="on">
+        <input id="codigo" pInputText formControlName="codigo" autocomplete="off" fluid="true" />
+        <label for="codigo" class="rounded">
+          <i class="pi pi-qrcode me-1"></i>
+          Código
+        </label>
+      </p-floatlabel>
+
+      @if (isInvalid('codigo', registroForm)) {
+      <small class="text-red-400 mt-1">{{ getErrorMessage('codigo', registroForm) }}</small>
+      }
+    </div>
+
+    <div class="flex flex-col">
+      <p-floatlabel class="w-full" variant="on">
+        <p-select id="tipo" formControlName="tipo" inputId="tipo" [options]="tiposPlato" optionLabel="name"
+          styleClass="w-full" />
+        <label for="tipo"><i class="pi pi-hammer me-1"></i> Tipo de plato</label>
+      </p-floatlabel>
+
+      @if (isInvalid('tipo', registroForm)) {
+      <small class="text-red-400 mt-1">{{ getErrorMessage('tipo', registroForm) }}</small>
+      }
+    </div>
+
+    <div class="flex flex-col">
+      <p-floatlabel class="w-full" variant="on">
+        <p-select id="estado" formControlName="estado" inputId="estado" [options]="estadosPlato" optionLabel="name"
+          styleClass="w-full" />
+        <label for="estado"><i class="pi pi-hammer me-1"></i> Estado del plato</label>
+      </p-floatlabel>
+
+      @if (isInvalid('estado', registroForm)) {
+      <small class="text-red-400 mt-1">{{ getErrorMessage('estado', registroForm) }}</small>
+      }
+    </div>
+
+    <div class="card">
+      <p-fileupload #fileUploaderUpdate name="demo1[]" (onSelect)="onSelectUpdate($event)" [multiple]="true"
+        accept="image/*" maxFileSize="1000000" mode="advanced">
+        <ng-template #empty>
+          <div>Modificar imágenes del producto.</div>
+        </ng-template>
+        <ng-template #content>
+          @if (uploadedFilesUpdate.length) {
+          <div class="flex flex-wrap gap-2 mt-2">
+            @for (file of uploadedFilesUpdate; track file) {
+            <div class="relative">
+              <img [src]="file.url || file" alt="Imagen del producto" width="100" class="rounded border">
+
+              <p-badge value="X" badgeSize="large" class="absolute top-0 right-0 bg-red-500 text-white cursor-pointer"
+                (click)="removeImageUpdate($index)" />
+            </div>
+            }
+          </div>
+          }
+        </ng-template>
+      </p-fileupload>
+    </div>
+
+    <div class="flex justify-center">
+      <p-button type="submit" [disabled]="updateForm.invalid || isLoading" label="Actualizar" icon="pi pi-check"
+        [loading]="isLoading" />
+    </div>
+  </form>
+</p-dialog>
+
+<p-toast />
