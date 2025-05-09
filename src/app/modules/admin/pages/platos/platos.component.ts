@@ -70,7 +70,6 @@ export default class PlatosComponent implements OnInit {
 
   visible: boolean = false;
   visibleUpdate: boolean = false;
-  visibleUpdatePass: boolean = false;
   registroForm: FormGroup;
   updateForm: FormGroup;
   isLoading = false;

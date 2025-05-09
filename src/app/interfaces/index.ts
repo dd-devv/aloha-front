@@ -1,5 +1,6 @@
 export * from './plato.interface';
 export * from './product.interface';
+export * from './promocion.interface';
 export * from './requests.interface';
 export * from './responses.interface';
 export * from './token.interface';

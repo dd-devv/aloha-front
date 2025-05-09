@@ -1,1 +1,231 @@
-<p>promociones works!</p>,
+<div class="card">
+  <p-fieldset>
+    <ng-template #header>
+      <div class="flex items-center gap-4 px-2 text-primary">
+        <i class="pi pi-tags text-2xl"></i>
+        <span class="font-bold">Promociones</span>
+
+        <p-button label="Agregar" [raised]="true" icon="pi pi-plus" severity="secondary" size="small"
+          (click)="showDialog()" />
+
+        <p-iconfield class="hidden md:inline">
+          <p-inputicon styleClass="pi pi-search" />
+          <input type="text" pInputText placeholder="Buscar promociones" [(ngModel)]="value" (input)="onInputChange()"
+            autocomplete="off" [disabled]="loading()" pSize="small" />
+        </p-iconfield>
+      </div>
+    </ng-template>
+
+    <div class="inline md:hidden">
+      <div class="flex justify-center my-2">
+        <p-iconfield>
+          <p-inputicon styleClass="pi pi-search" />
+          <input type="text" pInputText placeholder="Buscar promociones" [(ngModel)]="value" (input)="onInputChange()"
+            autocomplete="off" [disabled]="loading()" pSize="small" />
+        </p-iconfield>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 py-2">
+      @for (promocion of promocionesFiltrados() | paginate:currentPage:pageSize; track promocion._id) {
+      <div class="card">
+        <p-panel>
+          <ng-template #header class="p-1">
+            <div class="flex items-center gap-2">
+              <i class="pi pi-tag text-xl"></i>
+              <span class="font-bold">{{promocion.codigo | uppercase}}</span>
+            </div>
+          </ng-template>
+          <ng-template #icons>
+
+            <p-button icon="pi pi-pencil" severity="success" outlined="true" variant="text" size="small" class="me-2"
+              rounded (click)="showDialogUpdate(promocion)" />
+
+            <p-confirmpopup />
+            <p-button icon="pi pi-trash" severity="danger" outlined="true" variant="text" size="small" rounded
+              (click)="confirmDelete($event, promocion.nombre, promocion._id)" />
+          </ng-template>
+
+          <p class="m-0">
+            Monto mínimo: {{promocion.montoMinimo | currency: 'S/ '}}
+          </p>
+
+          <p class="m-0 text-xs my-2" [class]="getPromoVigente(promocion._id) ? 'text-green-500' : 'text-red-500'">
+            {{promocion.fechaInicio | date: 'short'}} - {{promocion.fechaFin | date: 'short'}}
+          </p>
+
+          <div class="flex flex-wrap items-center justify-between gap-4 mt-1">
+            <span class="text-sm text-surface-500 dark:text-surface-400">
+              <p-tag severity="warn" class="text-sm" [value]=" promocion.descuento + '% Desc.'" />
+
+              <span>
+                Creado {{promocion.createdAt | date: 'shortDate'}}
+              </span>
+            </span>
+          </div>
+        </p-panel>
+      </div>
+      }
+    </div>
+    <app-pagination [currentPage]="currentPage" [totalPages]="totalPages" (pageChange)="onPageChange($event)" />
+  </p-fieldset>
+
+</div>
+
+<!-- Modal de registro de promociones -->
+<p-dialog header="Registrar promoción" [modal]="true" [(visible)]="visible" [style]="{ width: '22rem' }"
+  maskStyleClass="backdrop-blur-sm">
+  <form [formGroup]="registroForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+
+    <div class="flex flex-col mt-2">
+      <p-floatlabel variant="on">
+        <p-datepicker id="fechaInicio" formControlName="fechaInicio" iconDisplay="input" fluid="true" />
+        <label for="fechaInicio"> <i class="pi pi-calendar me-1"></i> Fecha de inicio</label>
+      </p-floatlabel>
+
+      @if (isInvalid('fechaInicio', registroForm)) {
+      <small class="text-red-400 mt-1">{{ getErrorMessage('fechaInicio', registroForm) }}</small>
+      }
+    </div>
+
+    <div class="flex flex-col">
+      <p-floatlabel variant="on">
+        <p-datepicker id="fechaFin" formControlName="fechaFin" iconDisplay="input" fluid="true" />
+        <label for="fechaFin"> <i class="pi pi-calendar me-1"></i> Fecha de fin</label>
+      </p-floatlabel>
+
+      @if (isInvalid('fechaFin', registroForm)) {
+      <small class="text-red-400 mt-1">{{ getErrorMessage('fechaFin', registroForm) }}</small>
+      }
+    </div>
+
+    <div class="flex flex-col">
+      <p-floatlabel variant="on">
+        <input id="codigo" pInputText formControlName="codigo" autocomplete="off" fluid="true" />
+        <label for="codigo" class="rounded">
+          <i class="pi pi-qrcode me-1"></i>
+          Código
+        </label>
+      </p-floatlabel>
+
+      @if (isInvalid('codigo', registroForm)) {
+      <small class="text-red-400 mt-1">{{ getErrorMessage('codigo', registroForm) }}</small>
+      }
+    </div>
+
+    <div class="flex flex-row gap-4">
+      <div class="flex flex-col mt-2 flex-1">
+        <p-floatlabel variant="on">
+          <input id="descuento" pInputText formControlName="descuento" autocomplete="off" fluid="true" />
+          <label for="descuento" class="rounded">
+            <i class="pi pi-percentage me-1"></i>
+            Descuento
+          </label>
+        </p-floatlabel>
+
+        @if (isInvalid('descuento', registroForm)) {
+        <small class="text-red-400 mt-1">{{ getErrorMessage('descuento', registroForm) }}</small>
+        }
+      </div>
+
+      <div class="flex flex-col mt-2 flex-1">
+        <p-floatlabel variant="on">
+          <input id="montoMinimo" pInputText formControlName="montoMinimo" autocomplete="off" fluid="true" />
+          <label for="montoMinimo" class="rounded">
+            <i class="pi pi-dollar me-1"></i>
+            Mínimo
+          </label>
+        </p-floatlabel>
+
+        @if (isInvalid('montoMinimo', registroForm)) {
+        <small class="text-red-400 mt-1">{{ getErrorMessage('montoMinimo', registroForm) }}</small>
+        }
+      </div>
+    </div>
+
+    <div class="flex justify-center py-4">
+      <p-button type="submit" [disabled]="registroForm.invalid || isLoading" label="Registrar promoción"
+        icon="pi pi-plus" [loading]="isLoading" />
+    </div>
+  </form>
+</p-dialog>
+
+<!-- Modal de actualizacion de producto -->
+<p-dialog header="Actualizar datos" [modal]="true" [(visible)]="visibleUpdate" [style]="{ width: '25rem' }"
+  maskStyleClass="backdrop-blur-sm">
+
+  <form [formGroup]="updateForm" (ngSubmit)="onUpdateSubmit()" class="flex flex-col gap-4">
+    <div class="flex flex-col mt-2">
+      <p-floatlabel variant="on">
+        <p-datepicker id="fechaInicio" formControlName="fechaInicio" iconDisplay="input" fluid="true" />
+        <label for="fechaInicio"> <i class="pi pi-calendar me-1"></i> Fecha de inicio</label>
+      </p-floatlabel>
+
+      @if (isInvalid('fechaInicio', updateForm)) {
+      <small class="text-red-400 mt-1">{{ getErrorMessage('fechaInicio', updateForm) }}</small>
+      }
+    </div>
+
+    <div class="flex flex-col">
+      <p-floatlabel variant="on">
+        <p-datepicker id="fechaFin" formControlName="fechaFin" iconDisplay="input" fluid="true" />
+        <label for="fechaFin"> <i class="pi pi-calendar me-1"></i> Fecha de fin</label>
+      </p-floatlabel>
+
+      @if (isInvalid('fechaFin', updateForm)) {
+      <small class="text-red-400 mt-1">{{ getErrorMessage('fechaFin', updateForm) }}</small>
+      }
+    </div>
+
+    <div class="flex flex-col">
+      <p-floatlabel variant="on">
+        <input id="codigo" pInputText formControlName="codigo" autocomplete="off" fluid="true" />
+        <label for="codigo" class="rounded">
+          <i class="pi pi-qrcode me-1"></i>
+          Código
+        </label>
+      </p-floatlabel>
+
+      @if (isInvalid('codigo', updateForm)) {
+      <small class="text-red-400 mt-1">{{ getErrorMessage('codigo', updateForm) }}</small>
+      }
+    </div>
+
+    <div class="flex flex-row gap-4">
+      <div class="flex flex-col mt-2 flex-1">
+        <p-floatlabel variant="on">
+          <input id="descuento" pInputText formControlName="descuento" autocomplete="off" fluid="true" />
+          <label for="descuento" class="rounded">
+            <i class="pi pi-percentage me-1"></i>
+            Descuento
+          </label>
+        </p-floatlabel>
+
+        @if (isInvalid('descuento', updateForm)) {
+        <small class="text-red-400 mt-1">{{ getErrorMessage('descuento', updateForm) }}</small>
+        }
+      </div>
+
+      <div class="flex flex-col mt-2 flex-1">
+        <p-floatlabel variant="on">
+          <input id="montoMinimo" pInputText formControlName="montoMinimo" autocomplete="off" fluid="true" />
+          <label for="montoMinimo" class="rounded">
+            <i class="pi pi-dollar me-1"></i>
+            Mínimo
+          </label>
+        </p-floatlabel>
+
+        @if (isInvalid('montoMinimo', updateForm)) {
+        <small class="text-red-400 mt-1">{{ getErrorMessage('montoMinimo', updateForm) }}</small>
+        }
+      </div>
+    </div>
+
+    <div class="flex justify-center">
+      <p-button type="submit" [disabled]="updateForm.invalid || isLoading" label="Actualizar" icon="pi pi-check"
+        [loading]="isLoading" />
+    </div>
+  </form>
+</p-dialog>
+
+<p-toast />
