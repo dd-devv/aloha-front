@@ -14,7 +14,7 @@ export class CloudinaryImagePipe implements PipeTransform {
    * @param options Opciones adicionales de transformación (opcional)
    * @returns URL transformada de Cloudinary
    */
-  transform(url: string, width: number, type: string, options?: { quality?: number }): string {
+  transform(url: string, width: number, type: 'avif' | 'webp' | 'jpeg', options?: { quality?: number }): string {
     if (!url || !url.includes('cloudinary.com') || !width) {
       return url; // Devuelve la URL original si no es válida o no es de Cloudinary
     }

@@ -7,16 +7,32 @@
 
         <p-button label="Agregar" [raised]="true" icon="pi pi-plus" severity="secondary" size="small"
           (click)="showDialog()" />
+
+        <p-iconfield class="hidden md:inline">
+          <p-inputicon styleClass="pi pi-search" />
+          <input type="text" pInputText placeholder="Buscar productos" [(ngModel)]="value" (input)="onInputChange()"
+            autocomplete="off" [disabled]="loading()" pSize="small" />
+        </p-iconfield>
       </div>
     </ng-template>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-      @for (product of products(); track product._id) {
+    <div class="inline md:hidden">
+      <div class="flex justify-center my-2">
+        <p-iconfield>
+          <p-inputicon styleClass="pi pi-search" />
+          <input type="text" pInputText placeholder="Buscar productos" [(ngModel)]="value" (input)="onInputChange()"
+            autocomplete="off" [disabled]="loading()" pSize="small" />
+        </p-iconfield>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 py-2">
+      @for (product of productsFiltrados() | paginate:currentPage:pageSize; track product._id) {
       <div class="card">
         <p-panel>
           <ng-template #header class="p-1">
             <div class="flex items-center gap-2">
-              <p-avatar [image]="product.galeria[0] | cloudinaryImage:200:'avif'" shape="square" />
+              <img [src]="product.galeria[0] | cloudinaryImage:200:'avif'" alt="" class="w-12 rounded">
               <span class="font-bold">{{product.codigo | uppercase}}</span>
             </div>
           </ng-template>
@@ -47,7 +63,9 @@
       </div>
       }
     </div>
+    <app-pagination [currentPage]="currentPage" [totalPages]="totalPages" (pageChange)="onPageChange($event)" />
   </p-fieldset>
+
 </div>
 
 <!-- Modal de registro de productos -->
@@ -111,8 +129,8 @@
     </div>
 
     <div class="card">
-      <p-fileupload #fileUploader name="demo[]" (onSelect)="onSelect($event)" [multiple]="true" accept="image/*" maxFileSize="1000000"
-        mode="advanced">
+      <p-fileupload #fileUploader name="demo[]" (onSelect)="onSelect($event)" [multiple]="true" accept="image/*"
+        maxFileSize="1000000" mode="advanced">
         <ng-template #empty>
           <div>Añadir imágenes del producto.</div>
         </ng-template>
@@ -199,8 +217,8 @@
     </div>
 
     <div class="card">
-      <p-fileupload #fileUploaderUpdate  name="demo1[]" (onSelect)="onSelectUpdate($event)" [multiple]="true" accept="image/*"
-        maxFileSize="1000000" mode="advanced">
+      <p-fileupload #fileUploaderUpdate name="demo1[]" (onSelect)="onSelectUpdate($event)" [multiple]="true"
+        accept="image/*" maxFileSize="1000000" mode="advanced">
         <ng-template #empty>
           <div>Modificar imágenes del producto.</div>
         </ng-template>
@@ -211,8 +229,8 @@
             <div class="relative">
               <img [src]="file.url || file" alt="Imagen del producto" width="100" class="rounded border">
 
-              <p-badge value="X" badgeSize="large"
-              class="absolute top-0 right-0 bg-red-500 text-white cursor-pointer" (click)="removeImageUpdate($index)" />
+              <p-badge value="X" badgeSize="large" class="absolute top-0 right-0 bg-red-500 text-white cursor-pointer"
+                (click)="removeImageUpdate($index)" />
 
               <!-- <button type="button" pButton pRipple icon="pi pi-times"
                 class="absolute top-0 right-0 p-1 bg-red-500 text-white

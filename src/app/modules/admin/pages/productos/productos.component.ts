@@ -1,6 +1,6 @@
-import { CommonModule, DatePipe, TitleCasePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CommonModule, DatePipe, isPlatformBrowser, TitleCasePipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject, OnInit, PLATFORM_ID, signal, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
@@ -20,6 +20,10 @@ import { ProductService } from '../../../../services/product.service';
 import { finalize } from 'rxjs';
 import { CloudinaryService } from '../../../../services/cloudinary.service';
 import { CloudinaryImagePipe } from '../../../../pipes/cloudinary-image.pipe';
+import { PaginationComponent } from '../../components/pagination/pagination.component';
+import { PaginatePipe } from '../../../../pipes/paginate.pipe';
+import { IconField } from 'primeng/iconfield';
+import { InputIcon } from 'primeng/inputicon';
 
 interface UploadEvent {
   originalEvent: Event;
@@ -36,6 +40,7 @@ interface UploadEvent {
     Tag,
     Dialog,
     InputText,
+    FormsModule,
     ReactiveFormsModule,
     FloatLabelModule,
     InputTextModule,
@@ -47,7 +52,11 @@ interface UploadEvent {
     FileUpload,
     AvatarModule,
     CloudinaryImagePipe,
-    BadgeModule
+    BadgeModule,
+    PaginationComponent,
+    PaginatePipe,
+    InputIcon,
+    IconField
   ],
   providers: [ConfirmationService, MessageService],
   templateUrl: './productos.component.html',
@@ -61,6 +70,7 @@ export default class ProductosComponent implements OnInit {
   private confirmationService = inject(ConfirmationService);
   private messageService = inject(MessageService);
   private cloudinaryService = inject(CloudinaryService);
+  private platformId = inject(PLATFORM_ID);
 
   visible: boolean = false;
   visibleUpdate: boolean = false;
@@ -73,12 +83,19 @@ export default class ProductosComponent implements OnInit {
 
   // Utilizando los signals del servicio directamente
   readonly products = this.productService.products;
+  productsFiltrados = signal<Product[]>([]);
   readonly loading = this.productService.loading;
   readonly error = this.productService.error;
+
+  value: string = '';
 
   uploadedFiles: any[] = [];
   uploadedFilesUpdate: any[] = [];
   newImagesToUpload: File[] = [];
+
+  //Para paginacion
+  currentPage = 1;
+  pageSize = 12;
 
   constructor() {
     this.registroForm = this.fb.group({
@@ -123,13 +140,61 @@ export default class ProductosComponent implements OnInit {
     this.cargarProductos();
   }
 
+  get totalPages(): number {
+    return Math.ceil(this.products().length / this.pageSize);
+  }
+
+  onPageChange(page: number): void {
+    if (isPlatformBrowser(this.platformId)) {
+      window.scrollTo({ top: 10, behavior: 'smooth' });
+    }
+    this.currentPage = page;
+  }
+
   cargarProductos(): void {
     this.productService.obtenerProductos().subscribe({
       // No necesitamos hacer nada aquí porque el servicio ya actualiza el signal
+      next: (res) => {
+        this.productsFiltrados.set(res.data);
+      },
       error: (err) => {
         console.error('Error al cargar productos:', err);
       }
     });
+  }
+
+  buscarProducto(): void {
+    if (!this.value || this.value.trim() === '') {
+      // Si no hay texto de búsqueda, aplicar solo el filtro de categorías
+      this.cargarProductos();
+      return;
+    }
+
+    const busqueda = this.value.toLowerCase().trim();
+    const productosBase = this.products();
+    let baseParaBusqueda = productosBase;
+
+    // Luego filtramos por término de búsqueda
+    const filtrados = baseParaBusqueda.filter(producto =>
+      producto.codigo.toLowerCase().includes(busqueda) ||
+      producto.nombre.toLowerCase().includes(busqueda)
+    );
+
+    this.productsFiltrados.set(filtrados);
+    this.currentPage = 1; // Reiniciar a la primera página en búsquedas
+
+    // Mostrar mensaje si no hay resultados
+    if (filtrados.length === 0 && !this.loading()) {
+      this.messageService.add({
+        severity: 'info',
+        summary: 'Búsqueda',
+        detail: 'No se encontraron productos para tu búsqueda'
+      });
+    }
+  }
+
+  onInputChange(): void {
+    this.buscarProducto();
   }
 
   resetUploader() {
