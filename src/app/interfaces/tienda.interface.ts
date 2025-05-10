@@ -4,6 +4,9 @@ export interface TiendaReq {
   telefono: string;
   whatsapp: string;
   logo:      string;
+  horaEntrada: number;
+  tolerancia: number;
+  numeroMesas: number;
 }
 
 export interface TiendaResp {
@@ -18,6 +21,9 @@ export interface Tienda {
   direccion: string;
   telefono: string;
   whatsapp: string;
+  horaEntrada: number;
+  tolerancia: number;
+  numeroMesas: number;
   logo:      string;
   deleted:   boolean;
   createdAt: Date;

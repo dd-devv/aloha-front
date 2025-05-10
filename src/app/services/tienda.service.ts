@@ -50,6 +50,9 @@ export class TiendaService {
       direccion: req.direccion,
       telefono: req.telefono,
       whatsapp: req.whatsapp,
+      horaEntrada: req.horaEntrada,
+      tolerancia: req.tolerancia,
+      numeroMesas: req.numeroMesas,
       logo: req.logo
     };
 
@@ -90,6 +93,9 @@ export class TiendaService {
       direccion: req.direccion,
       telefono: req.telefono,
       whatsapp: req.whatsapp,
+      horaEntrada: req.horaEntrada,
+      tolerancia: req.tolerancia,
+      numeroMesas: req.numeroMesas,
       logo: req.logo
     };
 

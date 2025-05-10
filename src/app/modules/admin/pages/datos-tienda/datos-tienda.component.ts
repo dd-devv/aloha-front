@@ -81,6 +81,23 @@ export default class DatosTiendaComponent implements OnInit {
         Validators.required,
         Validators.maxLength(9)
       ]],
+      horaEntrada: ['', [
+        Validators.required,
+        Validators.min(0),
+        Validators.max(23),
+        Validators.pattern('^[0-9]+$')
+      ]],
+      tolerancia: ['', [
+        Validators.required,
+        Validators.min(0),
+        Validators.max(59),
+        Validators.pattern('^[0-9]+$')
+      ]],
+      numeroMesas: ['', [
+        Validators.required,
+        Validators.min(0),
+        Validators.pattern('^[0-9]+$')
+      ]]
     });
   }
 
@@ -102,7 +119,11 @@ export default class DatosTiendaComponent implements OnInit {
           nombre: res.data.nombre,
           direccion: res.data.direccion,
           telefono: res.data.telefono,
-          whatsapp: res.data.whatsapp
+          whatsapp: res.data.whatsapp,
+          horaEntrada: res.data.horaEntrada,
+          tolerancia: res.data.tolerancia,
+          numeroMesas: res.data.numeroMesas
+
         });
 
         this.imageUrl = this.tienda()!.logo;
@@ -128,8 +149,31 @@ export default class DatosTiendaComponent implements OnInit {
           return 'El nombre es obligatorio';
         case 'direccion':
           return 'La dirección es obligatoria';
+        case 'telefono':
+          return 'Teléfono obligatorio';
+        case 'whatsapp':
+          return 'Whatsapp obligatorio';
+        case 'horaEntrada':
+          return 'La hora de entrada es obligatoria';
+        case 'tolerancia':
+          return 'La tolerancia es obligatoria';
+        case 'numeroMesas':
+          return 'Número de mesas obligatorio';
         default:
           return 'Este campo es obligatorio';
+      }
+    }
+
+    if (errors['pattern']) {
+      switch (controlName) {
+        case 'horaEntrada':
+          return 'Solo números de 00 a 23';
+        case 'tolerancia':
+          return 'Solo números de 00 a 59';
+        case 'numeroMesas':
+          return 'Solo números mayores a 0';
+        default:
+          return 'Formato inválido';
       }
     }
 
@@ -222,6 +266,9 @@ export default class DatosTiendaComponent implements OnInit {
         direccion: this.registroForm.value.direccion,
         telefono: this.registroForm.value.telefono,
         whatsapp: this.registroForm.value.whatsapp,
+        horaEntrada: this.registroForm.value.horaEntrada,
+        tolerancia: this.registroForm.value.tolerancia,
+        numeroMesas: this.registroForm.value.numeroMesas,
         logo: this.imageUrl
       })
         .pipe(
@@ -266,6 +313,9 @@ export default class DatosTiendaComponent implements OnInit {
         direccion: this.registroForm.value.direccion,
         telefono: this.registroForm.value.telefono,
         whatsapp: this.registroForm.value.whatsapp,
+        horaEntrada: this.registroForm.value.horaEntrada,
+        tolerancia: this.registroForm.value.tolerancia,
+        numeroMesas: this.registroForm.value.numeroMesas,
         logo: this.imageUrl
       })
         .pipe(
