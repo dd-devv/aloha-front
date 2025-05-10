@@ -1,1 +1,74 @@
-<p>asistencias works!</p>,
+<div class="card">
+  <p-fieldset>
+    <ng-template #header>
+      <div class="flex items-center gap-4 px-2 text-primary">
+        <i class="pi pi-users text-2xl"></i>
+        <span class="font-bold">Asistencias de empleados</span>
+
+      </div>
+    </ng-template>
+
+    <div class="flex justify-center my-3">
+      <p class="font-semibold text-center text-xl">
+        Registro de asistencias diarias
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+      @for (user of users(); track user._id) {
+      <div class="card">
+        <p-panel>
+          <ng-template #header class="p-1">
+            <div class="flex items-center gap-2">
+              <i class="pi pi-user text-xl"></i>
+              <span class="font-bold"> {{user.username}} </span>
+            </div>
+          </ng-template>
+          <ng-template #icons>
+
+            <p-button icon="pi pi-calendar-clock text-xl" severity="contrast" outlined="true" variant="text"
+              size="small" class="me-2" rounded pTooltip="Ver historial" tooltipPosition="bottom"
+              (click)="showDialogAsist(user._id, user.nombres + ' ' + user.apellidos)" />
+
+            <p-confirmpopup />
+
+            @if (isAsistenciaRegistrada(user._id)) {
+            <p-button icon="pi pi-check text-xl" severity="success" outlined="true" variant="text" size="small" rounded
+              pTooltip="Registrado" tooltipPosition="bottom" />
+            } @else {
+            <p-button icon="pi pi-circle text-xl" severity="contrast" outlined="true" variant="text" size="small"
+              rounded (click)="confirmAsist($event, user._id)" pTooltip="Registrar" tooltipPosition="bottom" />
+            }
+          </ng-template>
+          <p class="m-0">
+            {{user.nombres | titlecase}} {{user.apellidos | titlecase}} <p-tag severity="success" [value]="user.role" />
+          </p>
+        </p-panel>
+      </div>
+      }
+    </div>
+  </p-fieldset>
+</div>
+
+<!-- Modal de asistencias -->
+<p-dialog [header]="'Asistencias ' + name_user" [modal]="true" [(visible)]="showModal" [style]="{ width: '50rem' }"
+  maskStyleClass="backdrop-blur-sm" [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" [maximizable]="false">
+
+  <!-- Skeleton -->
+  @if (loadingTrabajador()) {
+
+  }
+
+  @if(!loadingTrabajador() && asistenciasTrabajador().length > 0) {
+  @for (asistencia of asistenciasTrabajador(); track asistencia._id) {
+  <p-tag [severity]="asistencia.tardanza ? 'warn' : 'success'" [pTooltip]="asistencia.tardanza ? 'Tarde' : 'A tiempo'"
+    tooltipPosition="bottom" value="{{asistencia.fechaEntrada | date:'dd/MM/YYYY HH:mm aa'}}" class="mx-2" />
+  }
+  }
+
+  @if (!loadingTrabajador() && asistenciasTrabajador().length == 0) {
+  <p>No se han registrado asistencias para este trabajador.</p>
+  }
+</p-dialog>
+
+<p-toast />

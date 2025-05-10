@@ -15,7 +15,7 @@ export class PlatosService {
   private platformId = inject(PLATFORM_ID);
   private apiUrl = environment.apiUrl;
 
-  // Signal para los usuarios
+  // Signal para los platos
   readonly platos = signal<Plato[]>([]);
 
   // Controlar si está cargando datos
