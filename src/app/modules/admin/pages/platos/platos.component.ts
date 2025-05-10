@@ -25,6 +25,7 @@ import { IconField } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
 import { PlatosService } from '../../../../services/platos.service';
 import { Select } from 'primeng/select';
+
 @Component({
   selector: 'app-platos',
   imports: [

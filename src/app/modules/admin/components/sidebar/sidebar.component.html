@@ -13,11 +13,21 @@
     <hr class="border-gray-500">
 
     <div class="my-4">
-      <a class="px-2 flex items-center hover:text-primary font-semibold hover:font-bold" [routerLink]="['/admin/usuarios']"
-        routerLinkActive="text-primary font-semibold">
+      <a class="px-2 flex items-center hover:text-primary font-semibold hover:font-bold"
+        [routerLink]="['/admin/usuarios']" routerLinkActive="text-primary font-semibold">
         <i class="pi pi-users py-1"></i>
         @if (hovered()) {
         <span class="ms-2">Usuarios</span>
+        }
+      </a>
+    </div>
+
+    <div class="my-4">
+      <a class="px-2 flex items-center hover:text-primary hover:font-bold" [routerLink]="['/admin/asistencia']"
+        routerLinkActive="text-primary font-semibold">
+        <i class="pi pi-check-square py-1"></i>
+        @if (hovered()) {
+        <span class="ms-2">Asistencias</span>
         }
       </a>
     </div>
@@ -75,7 +85,7 @@
     <div class="my-4">
       <a class="px-2 flex items-center hover:text-primary hover:font-bold" [routerLink]="['/admin/ventas']"
         routerLinkActive="text-primary font-semibold">
-        <i class="pi pi-check-square py-1"></i>
+        <i class="pi pi-dollar py-1"></i>
         @if (hovered()) {
         <span class="ms-2">Ventas</span>
         }
