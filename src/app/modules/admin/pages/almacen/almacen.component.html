@@ -1,1 +1,134 @@
-<p>almacen works!</p>,
+<div class="card">
+  <p-fieldset>
+    <ng-template #header>
+      <div class="flex items-center gap-4 px-2 text-primary">
+        <i class="pi pi-objects-column text-2xl"></i>
+        <span class="font-bold">Movimientos</span>
+
+        <p-button label="Agregar" [raised]="true" icon="pi pi-plus" severity="secondary" size="small"
+          (click)="showDialog()" />
+
+        <p-iconfield class="hidden md:inline">
+          <p-inputicon styleClass="pi pi-search" />
+          <input type="text" pInputText placeholder="Buscar movimientos" [(ngModel)]="value" (input)="onInputChange()"
+            autocomplete="off" [disabled]="loading()" pSize="small" />
+        </p-iconfield>
+      </div>
+    </ng-template>
+
+    <div class="inline md:hidden">
+      <div class="flex justify-center my-2">
+        <p-iconfield>
+          <p-inputicon styleClass="pi pi-search" />
+          <input type="text" pInputText placeholder="Buscar movimientos" [(ngModel)]="value" (input)="onInputChange()"
+            autocomplete="off" [disabled]="loading()" pSize="small" />
+        </p-iconfield>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 py-2">
+      @for (movimiento of movimientosFiltrados() | paginate:currentPage:pageSize; track movimiento._id) {
+      <div class="card">
+        <p-panel>
+          <ng-template #header class="p-1">
+            <div class="flex items-center gap-2">
+              <img [src]="movimiento.producto.galeria[0] | cloudinaryImage:200:'avif'" alt="" class="w-12 rounded">
+              <span class="font-bold">{{movimiento.producto.codigo | uppercase}}</span>
+            </div>
+          </ng-template>
+          <ng-template #icons>
+
+            <p-confirmpopup />
+
+            <p-button icon="pi pi-trash" severity="danger" outlined="true" variant="text" size="small" rounded
+              (click)="eliminarMovimiento($event, movimiento._id)" />
+          </ng-template>
+
+          <p class="m-0">
+            {{movimiento.producto.nombre | titlecase}} <p-tag severity="secondary" icon="pi pi-times"
+              class="text-sm ms-1" [value]="movimiento.cantidad" />
+          </p>
+
+          <div class="flex flex-wrap items-center justify-between gap-4 mt-1">
+            <span class="text-sm text-surface-500 dark:text-surface-400">
+
+              <p-tag [severity]="movimiento.tipo == 'entrada' ? 'success':'warn'" class="text-sm"
+                [value]="movimiento.tipo | uppercase" />
+
+              <span class="ms-2">
+                Creado {{movimiento.createdAt | date: 'shortDate'}}
+              </span>
+            </span>
+          </div>
+        </p-panel>
+      </div>
+      }
+    </div>
+
+    <app-pagination [currentPage]="currentPage" [totalPages]="totalPages" (pageChange)="onPageChange($event)" />
+  </p-fieldset>
+
+</div>
+
+<!-- Modal de registro de movimiento -->
+<p-dialog header="Registrar movimiento" [modal]="true" [(visible)]="showModal" [style]="{ width: '25rem' }"
+  maskStyleClass="backdrop-blur-sm">
+  <form [formGroup]="registroForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+    <div class="flex flex-col mt-2">
+      <p-floatlabel variant="on">
+        <p-select [options]="products()" id="producto" formControlName="producto" optionLabel="nombre" [filter]="true"
+          filterBy="nombre" [showClear]="true" placeholder="Selecciona un producto" fluid="true">
+          <ng-template #selectedItem let-selectedOption>
+            <div class="flex items-center gap-2">
+              <img [src]="selectedOption.galeria[0] | cloudinaryImage:50:'avif'" style="width: 18px" />
+              <div>{{ selectedOption.nombre }}</div>
+            </div>
+          </ng-template>
+          <ng-template let-product #item>
+            <div class="flex items-center gap-2">
+              <img [src]="product.galeria[0] | cloudinaryImage:50:'avif'" style="width: 18px" />
+              <div>{{ product.nombre }}</div>
+            </div>
+          </ng-template>
+        </p-select>
+      </p-floatlabel>
+
+      @if (isInvalid('producto', registroForm)) {
+      <small class="text-red-400 mt-1">{{ getErrorMessage('producto', registroForm) }}</small>
+      }
+    </div>
+
+    <div class="flex flex-col mt-2">
+      <p-floatlabel class="w-full" variant="on">
+        <p-select id="tipo" formControlName="tipo" inputId="tipo" [options]="tiposMov" optionLabel="name"
+          styleClass="w-full" />
+        <label for="tipo"><i class="pi pi-arrow-right-arrow-left me-1"></i> Tipo de movimiento</label>
+      </p-floatlabel>
+
+      @if (isInvalid('tipo', registroForm)) {
+      <small class="text-red-400 mt-1">{{ getErrorMessage('tipo', registroForm) }}</small>
+      }
+    </div>
+
+    <div class="flex flex-col mt-2">
+      <p-floatlabel variant="on">
+        <input id="cantidad" pInputText formControlName="cantidad" autocomplete="off" fluid="true" />
+        <label for="cantidad" class="rounded">
+          <i class="pi pi-database me-1"></i>
+          Cantidad
+        </label>
+      </p-floatlabel>
+
+      @if (isInvalid('cantidad', registroForm)) {
+      <small class="text-red-400 mt-1">{{ getErrorMessage('cantidad', registroForm) }}</small>
+      }
+    </div>
+
+    <div class="flex justify-center py-4">
+      <p-button type="submit" [disabled]="registroForm.invalid || isLoading" label="Registrar movimiento"
+        icon="pi pi-plus" [loading]="isLoading" />
+    </div>
+  </form>
+</p-dialog>
+
+<p-toast />

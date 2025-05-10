@@ -1,4 +1,5 @@
 export * from './asistencia.interfaces';
+export * from './movimiento.interface';
 export * from './plato.interface';
 export * from './product.interface';
 export * from './promocion.interface';

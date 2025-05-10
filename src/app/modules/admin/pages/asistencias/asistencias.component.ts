@@ -61,7 +61,7 @@ export default class AsistenciasComponent {
   }
 
   ngOnInit(): void {
-    // Obtener los usuarios al inicializar el componente
+    // Obtener asistencias
     this.cargarAsistencias();
     this.cargarUsuarios();
   }
