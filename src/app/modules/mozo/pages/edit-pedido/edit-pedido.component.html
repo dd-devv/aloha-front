@@ -15,9 +15,9 @@
 
     @if (!loadingVentas() && !loadingTienda()) {
     @for (mesa of getMesasOcupadas(); track $index) {
-    <div class="bg-primary hover:bg-primary-500 rounded-lg shadow h-28 flex items-center justify-center cursor-pointer"
+    <div class="bg-surface-200 hover:bg-surface-300 rounded-lg shadow h-28 flex items-center justify-center cursor-pointer"
       (click)="showDialog(mesa)">
-      <div class="flex items-center justify-center">
+      <div class="flex items-center justify-center text-gray-900">
         <span class="text-6xl font-semibold">{{mesa}}</span>
       </div>
     </div>
@@ -28,7 +28,7 @@
 
 <!-- Modal de modificación de pedidos -->
 <p-dialog header="Modificar pedido: Mesa {{mesaSeleccionada}}" [modal]="true" [(visible)]="visible"
-  [style]="{ width: '25rem' }" maskStyleClass="backdrop-blur-sm">
+  [style]="{ width: '30rem' }" maskStyleClass="backdrop-blur-sm">
 
   <div class="min-h-96">
     <p-multiselect [options]="platosDisponibles" [(ngModel)]="selectedPlatos" placeholder="Seleccione platos"

@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
 import { TokenStorageService } from './token-storage.service';
 import { environment } from '../../environments/environment';
-import { GetVentasRes, PlatoVenta, Venta, VentaReq, VentaRes } from '../interfaces/venta.interface';
+import { GetVentasRes, Venta, VentaReq, VentaRes } from '../interfaces/venta.interface';
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { catchError, Observable, of, tap, throwError } from 'rxjs';
 

@@ -2,9 +2,10 @@ import { Routes } from '@angular/router';
 import { LayoutPublicComponent } from './modules/public/layout-public/layout-public.component';
 import { AuthLayoutComponent } from './modules/auth/auth-layout/auth-layout.component';
 import { LayoutAdminComponent } from './modules/admin/layout-admin/layout-admin.component';
-import { adminGuard, mozoGuard } from './guards/auth.guard';
+import { adminGuard, chefGuard, mozoGuard } from './guards/auth.guard';
 import { alreadyAuthenticatedGuard } from './guards/already-authenticated.guard';
 import LayoutMozoComponent from './modules/mozo/layout-mozo/layout-mozo.component';
+import LayoutChefComponent from './modules/chef/layout-chef/layout-chef.component';
 
 export const routes: Routes = [
   {
@@ -108,6 +109,17 @@ export const routes: Routes = [
       {
         path: 'editar-pedido',
         loadComponent: () => import('./modules/mozo/pages/edit-pedido/edit-pedido.component')
+      }
+    ]
+  },
+  {
+    path: 'chef',
+    component: LayoutChefComponent,
+    canActivate: [chefGuard],
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./modules/chef/pages/inicio-chef/inicio-chef.component')
       }
     ]
   },
