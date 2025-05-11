@@ -1,4 +1,4 @@
-<div class="fixed left-0 top-40 h-screen mx-2 z-50" (mouseenter)="hovered.set(true)" (mouseleave)="hovered.set(false)">
+<div class="fixed left-0 top-30 h-screen mx-2 z-50" (mouseenter)="hovered.set(true)" (mouseleave)="hovered.set(false)">
   <div class="border border-gray-500 rounded-sm p-1 bg-gray-100/20 backdrop-blur-xl"
     [class]="hovered() ? 'w-48' : 'w-12'">
 
@@ -143,6 +143,14 @@
       </a>
     </div>
 
+    <div class="my-3">
+      <a class="px-2 flex items-center hover:font-bold cursor-pointer" (click)="toggleTheme()">
+        <i class="pi !text-xl py-1" [class]="(isDarkTheme$ | async) ? 'pi pi-sun' : 'pi pi-moon'"></i>
+        @if (hovered()) {
+        <span class="ms-2">Cambiar tema</span>
+        }
+      </a>
+    </div>
   </div>
 </div>
 

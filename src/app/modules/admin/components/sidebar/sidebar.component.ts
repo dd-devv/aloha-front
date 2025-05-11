@@ -4,6 +4,9 @@ import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import AuthService from '../../../../services/auth.service';
+import { AsyncPipe } from '@angular/common';
+import { Observable } from 'rxjs';
+import { ThemeService } from '../../../../services/theme.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -11,7 +14,8 @@ import AuthService from '../../../../services/auth.service';
     RouterLink,
     RouterLinkActive,
     ConfirmDialog,
-    ButtonModule
+    ButtonModule,
+    AsyncPipe
   ],
   providers: [ConfirmationService],
   templateUrl: './sidebar.component.html',
@@ -21,6 +25,16 @@ export class SidebarComponent implements OnInit {
   private confirmationService = inject(ConfirmationService);
   private authService = inject(AuthService);
   hovered = signal(false);
+  isDarkTheme$: Observable<boolean>;
+
+  constructor(private themeService: ThemeService) {
+    this.isDarkTheme$ = this.themeService.isDarkTheme$;
+  }
+
+
+  toggleTheme() {
+    this.themeService.toggleTheme();
+  }
 
   ngOnInit(): void {
   }
