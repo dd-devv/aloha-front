@@ -11,6 +11,7 @@ export interface Plato {
   codigo:    string;
   galeria:   string[];
   estado:    string;
+  cantidad: number;
   deleted:   boolean;
   _id:       string;
   createdAt: Date;

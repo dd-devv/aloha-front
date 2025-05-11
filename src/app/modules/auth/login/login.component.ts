@@ -59,15 +59,10 @@ export default class LoginComponent {
           this.router.navigate(['/']);
         },
         error: (error) => {
-          this.messageService.add({ severity: 'error', summary: 'Error', detail: error.error.error || error.error.message, life: 3000 });
+
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: error.error.message, life: 3000 });
 
           this.isLoading = false;
-
-          if (error.error.tempToken) {
-            setTimeout(() => {
-              this.router.navigate(['/verify-whatsapp']);
-            }, 2000);
-          }
 
         }
       });

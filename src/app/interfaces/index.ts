@@ -8,3 +8,4 @@ export * from './responses.interface';
 export * from './tienda.interface';
 export * from './token.interface';
 export * from './user.interfaces';
+export * from './venta.interface';

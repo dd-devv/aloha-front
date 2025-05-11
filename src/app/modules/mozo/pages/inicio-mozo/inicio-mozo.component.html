@@ -1,0 +1,26 @@
+<!-- Contenedor principal que centra vertical y horizontalmente -->
+<div class="flex h-screen w-full justify-center items-center p-4">
+
+  <!-- Contenedor de las cards con espaciado entre ellas -->
+  <div class="flex flex-col md:flex-row gap-12">
+
+    <!-- Card 1: Nuevo pedido -->
+    <div class="w-64 bg-primary rounded-lg shadow h-28 flex items-center justify-center cursor-pointer"
+      [routerLink]="['/mozo/mesas']">
+      <div class="flex items-center justify-center">
+        <i class="pi pi-plus text-4xl mr-4"></i>
+        <span class="text-xl font-semibold">Nuevo pedido</span>
+      </div>
+    </div>
+
+    <!-- Card 2: Modificar pedido -->
+    <div class="w-64 bg-surface-200 rounded-lg shadow h-28 flex items-center justify-center cursor-pointer"
+      [routerLink]="['/mozo/editar-pedido']">
+      <div class="flex items-center justify-center">
+        <i class="pi pi-pencil text-4xl text-gray-900 mr-4"></i>
+        <span class="text-xl font-semibold text-gray-900">Modificar pedido</span>
+      </div>
+    </div>
+
+  </div>
+</div>

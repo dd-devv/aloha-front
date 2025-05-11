@@ -123,7 +123,7 @@
     </div>
 
     <div class="my-4">
-      <a class="px-2 flex items-center text-red-400 cursor-pointer">
+      <a class="px-2 flex items-center text-red-400 cursor-pointer" (click)="confirm1($event)">
         <i class="pi pi-sign-out py-1"></i>
         @if (hovered()) {
         <span class="ms-2">Cerrar sesión</span>
@@ -145,3 +145,5 @@
 
   </div>
 </div>
+
+<p-confirmdialog />

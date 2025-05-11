@@ -2,8 +2,9 @@ import { Routes } from '@angular/router';
 import { LayoutPublicComponent } from './modules/public/layout-public/layout-public.component';
 import { AuthLayoutComponent } from './modules/auth/auth-layout/auth-layout.component';
 import { LayoutAdminComponent } from './modules/admin/layout-admin/layout-admin.component';
-import { adminGuard } from './guards/auth.guard';
+import { adminGuard, mozoGuard } from './guards/auth.guard';
 import { alreadyAuthenticatedGuard } from './guards/already-authenticated.guard';
+import LayoutMozoComponent from './modules/mozo/layout-mozo/layout-mozo.component';
 
 export const routes: Routes = [
   {
@@ -88,6 +89,25 @@ export const routes: Routes = [
       {
         path: 'datos-tienda',
         loadComponent: () => import('./modules/admin/pages/datos-tienda/datos-tienda.component')
+      }
+    ]
+  },
+  {
+    path: 'mozo',
+    component: LayoutMozoComponent,
+    canActivate: [mozoGuard],
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./modules/mozo/pages/inicio-mozo/inicio-mozo.component')
+      },
+      {
+        path: 'mesas',
+        loadComponent: () => import('./modules/mozo/pages/mesas/mesas.component')
+      },
+      {
+        path: 'editar-pedido',
+        loadComponent: () => import('./modules/mozo/pages/edit-pedido/edit-pedido.component')
       }
     ]
   },
