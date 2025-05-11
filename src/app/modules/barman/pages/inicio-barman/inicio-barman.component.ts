@@ -1,22 +1,20 @@
-// inicio-chef.component.ts
 import { ChangeDetectionStrategy, Component, inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
-import { CheckboxModule } from 'primeng/checkbox';
-import { ToastModule } from 'primeng/toast';
 import { CardModule } from 'primeng/card';
+import { CheckboxModule } from 'primeng/checkbox';
 import { TableModule } from 'primeng/table';
-import { ComandaService } from '../../../../services/comanda.service';
-import { DatumComanda, Comanda } from '../../../../interfaces/comanda.interface'; // Ajusta la ruta según tu estructura
-import { finalize } from 'rxjs';
-import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 import { CloudinaryImagePipe } from '../../../../pipes/cloudinary-image.pipe';
+import { MessageService } from 'primeng/api';
+import { ComandaService } from '../../../../services/comanda.service';
+import { DatumComanda } from '../../../../interfaces';
 import { environment } from '../../../../../environments/environment';
 import { io, Socket } from 'socket.io-client';
 import { isPlatformBrowser } from '@angular/common';
 
 @Component({
-  selector: 'app-inicio-chef',
+  selector: 'app-inicio-barman',
   imports: [
     FormsModule,
     CardModule,
@@ -27,10 +25,10 @@ import { isPlatformBrowser } from '@angular/common';
     CloudinaryImagePipe
   ],
   providers: [MessageService],
-  templateUrl: './inicio-chef.component.html',
+  templateUrl: './inicio-barman.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export default class InicioChefComponent implements OnInit {
+export default class InicioBarmanComponent implements OnInit {
   private comandaService = inject(ComandaService);
   private messageService = inject(MessageService);
   comandasAll = this.comandaService.comandasAll;

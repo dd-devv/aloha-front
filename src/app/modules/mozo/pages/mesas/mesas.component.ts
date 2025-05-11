@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { TiendaService } from '../../../../services/tienda.service';
 import { VentaService } from '../../../../services/venta.service';
 import { PlatosService } from '../../../../services/platos.service';
@@ -9,11 +9,13 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { Plato, PlatoVentaReq } from '../../../../interfaces';
 import { CloudinaryImagePipe } from '../../../../pipes/cloudinary-image.pipe';
 import { DataView } from 'primeng/dataview';
-import { CommonModule, CurrencyPipe } from '@angular/common';
+import { CommonModule, CurrencyPipe, isPlatformBrowser } from '@angular/common';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
+import { environment } from '../../../../../environments/environment';
+import { io, Socket } from 'socket.io-client';
 
 @Component({
   selector: 'app-mesas',
@@ -40,6 +42,10 @@ export default class MesasComponent implements OnInit {
   private ventaService = inject(VentaService);
   private platosService = inject(PlatosService);
   private messageService = inject(MessageService);
+  public url_socket = environment.url_socket;
+  private platformId = inject(PLATFORM_ID);
+  private socket!: Socket;
+
 
   tienda = this.tiendaService.tienda;
   ventas = this.ventaService.ventasPendientes;
@@ -52,6 +58,16 @@ export default class MesasComponent implements OnInit {
 
   visible: boolean = false;
   subtotal: number = 0;
+
+  constructor() {
+    if (isPlatformBrowser(this.platformId)) {
+      this.socket = io(environment.url_socket, {
+        path: '/socket.io/'  // Especifica la misma ruta que en el backend
+      });
+      this.socket.on('connect', () => {
+      });
+    }
+  }
 
   ngOnInit(): void {
     this.obtenerTienda();
@@ -164,6 +180,12 @@ export default class MesasComponent implements OnInit {
         if (response.success) {
           this.messageService.add({ severity: 'success', summary: 'Registrado', detail: response.message, life: 3000 });
           this.visible = false;
+
+          //Emitir el socket
+          if (isPlatformBrowser(this.platformId)) {
+            this.socket.emit('crear-venta', response.data);
+          }
+
         } else {
           console.error('Error al registrar venta:', response.message);
         }

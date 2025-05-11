@@ -2,10 +2,11 @@ import { Routes } from '@angular/router';
 import { LayoutPublicComponent } from './modules/public/layout-public/layout-public.component';
 import { AuthLayoutComponent } from './modules/auth/auth-layout/auth-layout.component';
 import { LayoutAdminComponent } from './modules/admin/layout-admin/layout-admin.component';
-import { adminGuard, chefGuard, mozoGuard } from './guards/auth.guard';
+import { adminGuard, barmanGuard, chefGuard, mozoGuard } from './guards/auth.guard';
 import { alreadyAuthenticatedGuard } from './guards/already-authenticated.guard';
 import LayoutMozoComponent from './modules/mozo/layout-mozo/layout-mozo.component';
 import LayoutChefComponent from './modules/chef/layout-chef/layout-chef.component';
+import LayoutBarmanComponent from './modules/barman/layout-barman/layout-barman.component';
 
 export const routes: Routes = [
   {
@@ -120,6 +121,17 @@ export const routes: Routes = [
       {
         path: '',
         loadComponent: () => import('./modules/chef/pages/inicio-chef/inicio-chef.component')
+      }
+    ]
+  },
+  {
+    path: 'barman',
+    component: LayoutBarmanComponent,
+    canActivate: [barmanGuard],
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./modules/barman/pages/inicio-barman/inicio-barman.component')
       }
     ]
   },
