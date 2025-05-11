@@ -1,48 +1,24 @@
-<!-- orders.component.html -->
-<div class="flex justify-center align-items-center p-4">
-  <div class="h-full w-full">
-    <p class="text-center text-xl font-semibold my-4 text-primary">Pedidos por mesa</p>
+<!-- Contenedor principal que centra vertical y horizontalmente -->
+<div class="flex h-screen w-full justify-center items-center p-4">
 
-    @if (loading()) {
-      Cargandoo
-    }
+  <!-- Contenedor de las cards con espaciado entre ellas -->
+  <div class="flex flex-col md:flex-row gap-12">
 
-    @if (!loading()) {
-
-    }
-
-    <!-- Cards -->
-    @for (mesa of comandasAll(); track $index) {
-    <p-card styleClass="mb-4">
-      <ng-template pTemplate="header">
-        <h3 class="text-xl font-bold text-center py-3 m-0">Mesa {{mesa.mesa}} </h3>
-      </ng-template>
-
-      <div class="mb-4">
-        <!-- Lista de comandas con p-table -->
-        <p-table [value]="mesa.comandas" styleClass="p-datatable-sm">
-          <ng-template pTemplate="body" let-comanda>
-            <tr>
-              <td class="flex-1 font-medium text-color">
-                <span class="flex items-center">
-                  <img [src]="comanda.plato.galeria[0] | cloudinaryImage:200:'avif'" class="w-12 mr-2 rounded"
-                    [alt]="comanda.plato.nombre">
-                  <span class="text-sm">{{comanda.plato.nombre}}</span>
-                </span>
-              </td>
-              <td class="flex-1 align-middle text-end text-xl">
-                <i class="pi pi-times"></i> {{comanda.cantidad}}
-                <p-checkbox [(ngModel)]="comandaCheckedMap[comanda._id]" [binary]="true" class="ms-2 !pb-2"
-                  inputId="comanda-{{comanda._id}}" value="Large" size="large" (onChange)="marcarComoEntregado(comanda._id)" />
-              </td>
-            </tr>
-          </ng-template>
-        </p-table>
+    <!-- Card 1: Nuevo pedido -->
+    <div class="w-64 bg-primary rounded-lg shadow h-28 flex items-center justify-center cursor-pointer"
+      [routerLink]="['/chef/pedidos']">
+      <div class="flex items-center justify-center">
+        <i class="pi pi-receipt text-4xl mr-4"></i>
+        <span class="text-xl font-semibold">Ver pedidos</span>
       </div>
-    </p-card>
-    }
+    </div>
 
+    <a class="px-2 flex justify-center items-center text-red-400 cursor-pointer" (click)="confirm1($event)">
+      <i class="pi pi-sign-out py-1"></i>
+      <span class="ms-2">Cerrar sesión</span>
+    </a>
   </div>
 </div>
 
-<p-toast />
+<app-change-theme />
+<p-confirmdialog />

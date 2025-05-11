@@ -1,96 +1,51 @@
-// inicio-chef.component.ts
-import { ChangeDetectionStrategy, Component, inject, OnInit, PLATFORM_ID } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { ChangeThemeComponent } from '../../../public/common/change-theme/change-theme.component';
+import { ConfirmationService } from 'primeng/api';
+import AuthService from '../../../../services/auth.service';
+import { ConfirmDialog } from 'primeng/confirmdialog';
 import { ButtonModule } from 'primeng/button';
-import { CheckboxModule } from 'primeng/checkbox';
-import { ToastModule } from 'primeng/toast';
-import { CardModule } from 'primeng/card';
-import { TableModule } from 'primeng/table';
-import { ComandaService } from '../../../../services/comanda.service';
-import { DatumComanda, Comanda } from '../../../../interfaces/comanda.interface'; // Ajusta la ruta según tu estructura
-import { finalize } from 'rxjs';
-import { MessageService } from 'primeng/api';
-import { CloudinaryImagePipe } from '../../../../pipes/cloudinary-image.pipe';
-import { environment } from '../../../../../environments/environment';
-import { io, Socket } from 'socket.io-client';
-import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-inicio-chef',
   imports: [
-    FormsModule,
-    CardModule,
-    TableModule,
-    CheckboxModule,
-    ButtonModule,
-    ToastModule,
-    CloudinaryImagePipe
+    RouterLink,
+    ChangeThemeComponent,
+    ConfirmDialog,
+    ButtonModule
   ],
-  providers: [MessageService],
+  providers: [ConfirmationService],
   templateUrl: './inicio-chef.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export default class InicioChefComponent implements OnInit {
-  private comandaService = inject(ComandaService);
-  private messageService = inject(MessageService);
-  comandasAll = this.comandaService.comandasAll;
-  loading = this.comandaService.loading;
-  public url_socket = environment.url_socket;
-  private platformId = inject(PLATFORM_ID);
-  private socket!: Socket;
+export default class InicioChefComponent {
+  private confirmationService = inject(ConfirmationService);
+  private authService = inject(AuthService);
 
-  comandaCheckedMap: { [id: string]: boolean } = {};
-
-  constructor() {
-    if (isPlatformBrowser(this.platformId)) {
-      this.socket = io(environment.url_socket, {
-        path: '/socket.io/'  // Especifica la misma ruta que en el backend
-      });
-      this.socket.on('connect', () => {
-      });
-    }
-  }
-
-  ngOnInit() {
-    this.obtenerComandas();
-
-    this.socket.on('venta-creada', () => {
-      this.obtenerComandas();
-    });
-  }
-
-  obtenerComandas() {
-    this.comandaService.obtenerComandas().subscribe({
-      next: (res) => {
-        this.inicializarEstadoComandas();
+  confirm1(event: Event) {
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: '¿Seguro que desea cerrar su sesión?',
+      header: 'Cerrar sesión',
+      closable: true,
+      closeOnEscape: true,
+      icon: 'pi pi-exclamation-triangle',
+      rejectButtonProps: {
+        label: 'Cancelar',
+        severity: 'secondary',
+        outlined: true,
       },
-      error: (err) => {
-        console.error('Error al cargar comandas:', err);
-      }
-    });
-  }
-
-  inicializarEstadoComandas() {
-    const datumComandas: DatumComanda[] | undefined = this.comandasAll();
-    if (datumComandas) {
-      datumComandas.forEach(datumComanda => {
-        datumComanda.comandas.forEach(comanda => {
-          this.comandaCheckedMap[comanda._id] = comanda.estado === 'listo';
-        });
-      });
-    }
-  }
-
-  marcarComoEntregado(id_comanda: string) {
-    this.comandaService.actualizarComanda('listo', id_comanda).subscribe({
-      next: (res) => {
-        this.obtenerComandas();
-        this.messageService.add({ severity: 'success', summary: 'Registrado', detail: res.message, life: 3000 });
+      acceptButtonProps: {
+        label: 'Sí, cerrar sesión',
+        severity: 'danger'
       },
-      error: (err) => {
-        console.error('Error al registrar producto:', err);
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: err.message, life: 3000 });
-      }
+      accept: () => {
+        this.authService.logout();
+      },
+      reject: () => {
+
+      },
     });
   }
+
 }

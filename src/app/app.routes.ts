@@ -121,6 +121,10 @@ export const routes: Routes = [
       {
         path: '',
         loadComponent: () => import('./modules/chef/pages/inicio-chef/inicio-chef.component')
+      },
+      {
+        path: 'pedidos',
+        loadComponent: () => import('./modules/chef/pages/pedidos-chef/pedidos-chef.component')
       }
     ]
   },
@@ -132,6 +136,10 @@ export const routes: Routes = [
       {
         path: '',
         loadComponent: () => import('./modules/barman/pages/inicio-barman/inicio-barman.component')
+      },
+      {
+        path: 'pedidos',
+        loadComponent: () => import('./modules/barman/pages/pedidos-barman/pedidos-barman.component')
       }
     ]
   },
