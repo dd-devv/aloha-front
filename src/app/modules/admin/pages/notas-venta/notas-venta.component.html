@@ -1,1 +1,74 @@
-<p>notas-venta works!</p>,
+<div class="card">
+  <p-fieldset>
+    <ng-template #header>
+      <div class="flex items-center gap-4 px-2 text-primary">
+        <i class="pi pi-receipt text-2xl"></i>
+        <span class="font-bold">Notas de venta</span>
+      </div>
+    </ng-template>
+
+    <!-- Contenedor principal que centra vertical y horizontalmente -->
+    <div class="flex flex-col justify-center items-center">
+
+      <!-- Contenedor de grid responsive -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 w-full max-w-4xl">
+
+        @if (loading()) {
+        <div class="col-span-full text-center">
+          <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+          <p>Cargando...</p>
+        </div>
+        }
+
+        @if (!loading()) {
+        @for (nota of notaVentas(); track nota._id) {
+        <p-fieldset>
+          <ng-template #header>
+            <div class="flex items-center gap-4">
+              <span class="font-medium">{{nota.codigo}} | <span class="text-sm text-gray-400">
+                  <i class="pi pi-calendar text-sm mx-1"></i> {{nota.createdAt | date:'dd/MM/YY hh:mm aa'}}
+                </span></span>
+
+              <p-button icon="pi pi-cloud-download" [rounded]="true" [text]="true" [raised]="true" severity="success"
+                size="small" (onClick)="dscargarPdfNotaVenta(nota.codigo)" />
+            </div>
+          </ng-template>
+
+          <p class="text-center mb-2">
+            <span class="text-xl font-semibold text-primary">Mesa {{nota.mesa}}
+              @if (nota.PorcentajeDescuento > 0) {
+              <p-tag [value]="'- ' + nota.PorcentajeDescuento.toString() + '%'" severity="secondary" class="ms-1" />
+              }
+            </span>
+          </p>
+
+          <div class="card">
+            <p-table>
+              <ng-template #header>
+                @for (plato of nota.platos; track $index) {
+                <tr>
+                  <td> {{plato.nombre}} </td>
+                  <td class="text-center text-sm">S/ {{plato.precio}} </td>
+                  <td class="text-center"> <i class="pi pi-times text-xs"></i> {{plato.cantidad}} </td>
+                  <td class="text-end text-sm">S/ {{plato.subtotal}}</td>
+                </tr>
+                }
+              </ng-template>
+            </p-table>
+          </div>
+
+          <div class="flex justify-between py-1 px-2 mt-4 bg-gray-300/20 rounded">
+            <div class="font-medium">Total:</div>
+            <div class="font-medium"> {{nota.total | currency: 'S/ '}}</div>
+          </div>
+
+        </p-fieldset>
+
+        }
+        }
+      </div>
+    </div>
+  </p-fieldset>
+</div>
+
+<p-toast />

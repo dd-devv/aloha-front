@@ -112,6 +112,35 @@ export class VentaService {
       );
   }
 
+  confirmarVenta(promocion: string | null, id_venta: string): Observable<VentaRes> {
+
+    if (isPlatformServer(this.platformId)) {
+      return of({ success: false, message: 'Operación no disponible en SSR', data: {} as Venta } as VentaRes);
+    }
+
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.http.put<VentaRes>(`${this.apiUrl}ventas/${id_venta}/confirmar`, { promocion }, {
+      headers: {
+        Authorization: `Bearer ${this.authToken}`
+      }
+    })
+      .pipe(
+        tap(response => {
+          this.ventasPendientes.update(ventas => ventas.filter(venta => venta._id !== id_venta));
+          this.loading.set(false);
+        }),
+        catchError(error => {
+          this.loading.set(false);
+          this.error.set(error.error || 'Error al confirmar venta');
+          return throwError(() => ({
+            error: error.error
+          }));
+        })
+      );
+  }
+
   cencelarVenta(id_venta: string): Observable<VentaRes> {
 
     if (isPlatformServer(this.platformId)) {
@@ -128,7 +157,7 @@ export class VentaService {
       .pipe(
         tap(response => {
           if (response.data) {
-            // Quitar el plato del arreglo existente
+            // Quitar la venta del arreglo existente
             this.ventas.update(ventas => ventas.filter(venta => venta._id !== id_venta));
           }
           this.loading.set(false);
@@ -184,6 +213,37 @@ export class VentaService {
     this.error.set(null);
 
     return this.http.get<GetVentasRes>(`${this.apiUrl}ventas/mozo/pendientes`, {
+      headers: {
+        Authorization: `Bearer ${this.authToken}`
+      }
+    })
+      .pipe(
+        tap(response => {
+          if (response.data) {
+            this.ventasPendientes.set(response.data);
+          }
+          this.loading.set(false);
+        }),
+        catchError(error => {
+          this.loading.set(false);
+          this.error.set(error.error || 'Error al obtener ventas');
+          return throwError(() => ({
+            error: error.error
+          }));
+        })
+      );
+  }
+
+  obtenerVentasAdmin(): Observable<GetVentasRes> {
+
+    if (isPlatformServer(this.platformId)) {
+      return of({ success: true, message: '', data: [] } as GetVentasRes);
+    }
+
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.http.get<GetVentasRes>(`${this.apiUrl}ventas/admin/pendientes`, {
       headers: {
         Authorization: `Bearer ${this.authToken}`
       }

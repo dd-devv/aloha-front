@@ -50,9 +50,7 @@ export default class EditPedidoComponent implements OnInit {
   ventas = this.ventaService.ventasPendientes;
   platos = this.platosService.platos;
 
-  // Cambiamos el tipo a PlatoVenta para los seleccionados
   selectedPlatos: PlatoVenta[] = [];
-  // Platos disponibles siguen siendo del tipo Plato
   platosDisponibles: Plato[] = [];
 
   loadingVentas = this.ventaService.loading;

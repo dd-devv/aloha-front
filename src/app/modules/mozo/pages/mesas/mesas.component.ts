@@ -73,6 +73,12 @@ export default class MesasComponent implements OnInit {
     this.obtenerTienda();
     this.obtenerVentasMozo();
     this.obtenerPlatos();
+
+    if (isPlatformBrowser(this.platformId)) {
+      this.socket.on('venta-confirmada', () => {
+        this.obtenerVentasMozo();
+      });
+    }
   }
 
   showDialog(mesa: number) {
@@ -183,7 +189,7 @@ export default class MesasComponent implements OnInit {
 
           //Emitir el socket
           if (isPlatformBrowser(this.platformId)) {
-            this.socket.emit('crear-venta', response.data);
+            this.socket.emit('crear-venta', { data: true });
           }
 
         } else {

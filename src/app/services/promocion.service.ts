@@ -116,6 +116,34 @@ export class PromocionService {
       );
   }
 
+  obtenerPromocionCode(codigo: string, monto: number): Observable<PromocionResp> {
+
+    if (isPlatformServer(this.platformId)) {
+      return of({ success: false, message: 'Operación no disponible en SSR', data: {} as Promocion } as PromocionResp);
+    }
+
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.http.get<PromocionResp>(`${this.apiUrl}promociones/vigentes/${codigo}/${monto}`, {
+      headers: {
+        Authorization: `Bearer ${this.authToken}`
+      }
+    })
+      .pipe(
+        tap(response => {
+          this.loading.set(false);
+        }),
+        catchError(error => {
+          this.loading.set(false);
+          this.error.set(error.error || 'Error al obtener promoción');
+          return throwError(() => ({
+            error: error.error
+          }));
+        })
+      );
+  }
+
   eliminarPromocion(id_promocion: string): Observable<PromocionResp> {
 
     if (isPlatformServer(this.platformId)) {
