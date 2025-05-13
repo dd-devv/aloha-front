@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
 import { TokenStorageService } from './token-storage.service';
 import { environment } from '../../environments/environment';
@@ -263,5 +263,58 @@ export class VentaService {
           }));
         })
       );
+  }
+
+  obtenerPdfVenta(id_venta: string, width?: number): Observable<Blob> {
+    if (isPlatformServer(this.platformId)) {
+      return throwError(() => new Error('Operación no disponible en SSR'));
+    }
+
+    // Configurar los headers
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.authToken}`,
+      'Accept': 'application/pdf'
+    });
+
+    // Agregar parámetro de ancho si está definido
+    const params: any = {};
+    if (width) {
+      params.width = width.toString();
+    }
+
+    return this.http.get(`${this.apiUrl}ventas/pdf/${id_venta}`, {
+      headers: headers,
+      params: params,
+      responseType: 'blob'
+    }).pipe(
+      catchError(error => {
+        return throwError(() => this.handleError(error));
+      })
+    );
+  }
+
+  private handleError(error: any): Error {
+    // Puedes personalizar el manejo de errores aquí
+    console.error('Error al obtener el PDF:', error);
+    return new Error(error.error?.message || 'Error al obtener el PDF de la nota de venta');
+  }
+
+  // Método para abrir el PDF en una nueva pestaña
+  abrirPdfEnNuevaPestaña(pdfBlob: Blob): void {
+    const pdfUrl = URL.createObjectURL(pdfBlob);
+    window.open(pdfUrl, '_blank');
+    setTimeout(() => URL.revokeObjectURL(pdfUrl), 1000);
+  }
+
+  // Método para descargar el PDF
+  descargarPdf(pdfBlob: Blob, nombreArchivo: string): void {
+    const downloadLink = document.createElement('a');
+    const url = URL.createObjectURL(pdfBlob);
+    downloadLink.href = url;
+    downloadLink.download = nombreArchivo || 'nota-venta.pdf';
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 }

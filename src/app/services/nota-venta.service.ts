@@ -36,6 +36,7 @@ export class NotaVentaService {
       this.authToken = null;
     }
   }
+
   obtenerPdfNotaVenta(codigo: string, width?: number): Observable<Blob> {
     if (isPlatformServer(this.platformId)) {
       return throwError(() => new Error('Operación no disponible en SSR'));
@@ -56,7 +57,7 @@ export class NotaVentaService {
     return this.http.get(`${this.apiUrl}notas-venta/pdf/${codigo}`, {
       headers: headers,
       params: params,
-      responseType: 'blob' // Importante para manejar la respuesta como Blob
+      responseType: 'blob'
     }).pipe(
       catchError(error => {
         return throwError(() => this.handleError(error));
@@ -74,7 +75,6 @@ export class NotaVentaService {
   abrirPdfEnNuevaPestaña(pdfBlob: Blob): void {
     const pdfUrl = URL.createObjectURL(pdfBlob);
     window.open(pdfUrl, '_blank');
-    // Liberar el objeto URL después de un tiempo para evitar memory leaks
     setTimeout(() => URL.revokeObjectURL(pdfUrl), 1000);
   }
 

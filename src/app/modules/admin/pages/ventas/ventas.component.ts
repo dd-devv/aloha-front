@@ -265,10 +265,20 @@ export default class VentasComponent implements OnInit {
   }
 
   dscargarPdfNotaVenta(codigo: string) {
-
     this.notaVentaService.obtenerPdfNotaVenta(codigo).subscribe({
       next: (pdfBlob) => {
-        this.notaVentaService.descargarPdf(pdfBlob, `nota-venta-${codigo}.pdf`);
+        this.notaVentaService.descargarPdf(pdfBlob, `Venta-${codigo}.pdf`);
+      },
+      error: (err) => {
+        console.error('Error al obtener el PDF:', err);
+      }
+    });
+  }
+
+  descargarPdfVenta(id_venta: string, numero_venta: string) {
+    this.ventaService.obtenerPdfVenta(id_venta).subscribe({
+      next: (pdfBlob) => {
+        this.ventaService.descargarPdf(pdfBlob, `Venta-${numero_venta}.pdf`);
       },
       error: (err) => {
         console.error('Error al obtener el PDF:', err);

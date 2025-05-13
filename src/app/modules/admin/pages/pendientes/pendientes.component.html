@@ -27,6 +27,9 @@
             <div class="flex items-center gap-4">
               <span class="font-medium">{{venta.numeroVenta}} | <span class="text-sm">
                   <i class="pi pi-clock text-sm mx-1"></i> {{venta.createdAt | timeAgo}} </span></span>
+
+              <p-button icon="pi pi-cloud-download" [rounded]="true" [raised]="true" severity="contrast"
+                size="small" (onClick)="descargarPdfVenta(venta._id, venta.numeroVenta)" />
             </div>
           </ng-template>
 

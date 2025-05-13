@@ -49,6 +49,9 @@
               <p-button icon="pi pi-cloud-download" [rounded]="true" [text]="true" [raised]="true" severity="success"
                 size="small" (onClick)="dscargarPdfNotaVenta(venta.numeroVenta)" />
               } @else {
+              <p-button icon="pi pi-cloud-download" [rounded]="true" [text]="true" [raised]="true" severity="success"
+                size="small" (onClick)="descargarPdfVenta(venta._id, venta.numeroVenta)" />
+
               <p-button icon="pi pi-check" [rounded]="true" [text]="true" [raised]="true" severity="success"
                 size="small" (onClick)="showDialog(venta)" />
               }
