@@ -1,1 +1,37 @@
-<p>graficas works!</p>,
+<div class="card">
+  <p-fieldset>
+    <ng-template #header>
+      <div class="flex items-center gap-4 px-2 text-primary">
+        <i class="pi pi-chart-bar text-2xl"></i>
+        <span class="font-bold">Gráficas</span>
+      </div>
+    </ng-template>
+
+    <div class="p-4">
+      <div class="col-10">
+        <div class="card">
+          <h5>Reporte de ventas
+
+            <p-select [options]="periodoOptions" [(ngModel)]="periodo" optionLabel="label" optionValue="value"
+              placeholder="Seleccione periodo" (onChange)="cambiarPeriodo()" size="small" class="ms-2" />
+          </h5>
+          <div class="mb-3">
+          </div>
+          <div class="h-30rem">
+            <p-chart type="bar" [data]="ventasData()" [options]="ventasOptions()"></p-chart>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-10 mt-6">
+        <div class="card">
+          <h5>Platos Más Vendidos</h5>
+
+          <div class="flex justify-center">
+            <p-chart type="polarArea" [data]="platosData()" [options]="platosOptions()" class="w-full"></p-chart>
+          </div>
+        </div>
+      </div>
+    </div>
+  </p-fieldset>
+</div>

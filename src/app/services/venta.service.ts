@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
 import { TokenStorageService } from './token-storage.service';
 import { environment } from '../../environments/environment';
-import { GetVentasRes, Venta, VentaReq, VentaRes } from '../interfaces/venta.interface';
+import { DataPlatoChart, DataVentaChart, GetVentasRes, PlatosChart, Venta, VentaReq, VentaRes, VentasChart } from '../interfaces/venta.interface';
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { catchError, Observable, of, tap, throwError } from 'rxjs';
 
@@ -18,6 +18,8 @@ export class VentaService {
   // Signal para las ventas
   readonly ventas = signal<Venta[]>([]);
   readonly ventasPendientes = signal<Venta[]>([]);
+  readonly platosChart = signal<DataPlatoChart>({} as DataPlatoChart);
+  readonly ventasChart = signal<DataVentaChart>({} as DataVentaChart);
 
   // Controlar si está cargando datos
   readonly loading = signal<boolean>(false);
@@ -317,4 +319,70 @@ export class VentaService {
     document.body.removeChild(downloadLink);
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
+
+  //Para graficas
+
+  obtenerVentasChart(periodo: string): Observable<VentasChart> {
+
+    if (isPlatformServer(this.platformId)) {
+      return of({} as VentasChart);
+    }
+
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.http.get<VentasChart>(`${this.apiUrl}ventas/ventas/chart/${periodo}`, {
+      headers: {
+        Authorization: `Bearer ${this.authToken}`
+      }
+    })
+      .pipe(
+        tap(response => {
+          if (response.data) {
+            this.ventasChart.set(response.data);
+          }
+          this.loading.set(false);
+        }),
+        catchError(error => {
+          this.loading.set(false);
+          this.error.set(error.error || 'Error al obtener ventas');
+          return throwError(() => ({
+            error: error.error
+          }));
+        })
+      );
+  }
+
+  obtenerPlatosChart(): Observable<PlatosChart> {
+
+    if (isPlatformServer(this.platformId)) {
+      return of({} as PlatosChart);
+    }
+
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.http.get<PlatosChart>(`${this.apiUrl}ventas/platos/chart`, {
+      headers: {
+        Authorization: `Bearer ${this.authToken}`
+      }
+    })
+      .pipe(
+        tap(response => {
+          if (response.data) {
+            this.platosChart.set(response.data);
+          }
+          this.loading.set(false);
+        }),
+        catchError(error => {
+          this.loading.set(false);
+          this.error.set(error.error || 'Error al obtener ventas de platos');
+          return throwError(() => ({
+            error: error.error
+          }));
+        })
+      );
+  }
+
+
 }

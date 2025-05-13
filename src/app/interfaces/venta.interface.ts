@@ -44,3 +44,26 @@ export interface GetVentasRes {
   message: string;
   data:    Venta[];
 }
+
+export interface PlatosChart {
+  success: boolean;
+  message: string;
+  data:    DataPlatoChart;
+}
+
+export interface DataPlatoChart {
+  platos: string[];
+  ventas: number[];
+}
+
+export interface VentasChart {
+  success: boolean;
+  message: string;
+  data:    DataVentaChart;
+}
+
+export interface DataVentaChart {
+  fechas:      string[];
+  sumVentas:   number[];
+  inventarios: number[];
+}
