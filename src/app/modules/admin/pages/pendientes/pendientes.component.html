@@ -11,7 +11,7 @@
     <div class="flex flex-col justify-center items-center">
 
       <!-- Contenedor de grid responsive -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 w-full max-w-4xl">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 w-full">
 
         @if (loadingVentas() || loadingTienda()) {
         <div class="col-span-full text-center">
@@ -67,7 +67,7 @@
   </p-fieldset>
 </div>
 
-<!-- Modal de modificación de pedidos -->
+<!-- Modal de confirmación de venta -->
 <p-dialog header="Confirmar venta" [modal]="true" [(visible)]="visible" [style]="{ width: '24rem' }"
   maskStyleClass="backdrop-blur-sm">
 

@@ -32,7 +32,6 @@ import { Tag } from 'primeng/tag';
 })
 export default class NotasVentaComponent implements OnInit {
   private notaVentaService = inject(NotaVentaService);
-  public url_socket = environment.url_socket;
 
   notaVentas = this.notaVentaService.notasVenta;
   loading = this.notaVentaService.loading;

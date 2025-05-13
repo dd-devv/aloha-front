@@ -67,13 +67,13 @@ export class ButtonDialComponent implements OnInit {
           this.router.navigate(['/admin/graficas']);
         },
       },
-      {
-        label: 'Reportes',
-        icon: 'text-lg pi pi-folder',
-        command: () => {
-          this.router.navigate(['/admin/reportes']);
-        },
-      },
+      // {
+      //   label: 'Reportes',
+      //   icon: 'text-lg pi pi-folder',
+      //   command: () => {
+      //     this.router.navigate(['/admin/reportes']);
+      //   },
+      // },
       {
         label: 'Ventas',
         icon: 'text-lg pi pi-check-square',

@@ -89,6 +89,10 @@ export const routes: Routes = [
         loadComponent: () => import('./modules/admin/pages/cierre-caja/cierre-caja.component')
       },
       {
+        path: 'historial-cierre-caja',
+        loadComponent: () => import('./modules/admin/pages/historial-cierres-caja/historial-cierres-caja.component')
+      },
+      {
         path: 'datos-tienda',
         loadComponent: () => import('./modules/admin/pages/datos-tienda/datos-tienda.component')
       }

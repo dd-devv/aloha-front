@@ -202,5 +202,4 @@ export default class PendientesComponent implements OnInit {
       }
     });
   }
-
 }

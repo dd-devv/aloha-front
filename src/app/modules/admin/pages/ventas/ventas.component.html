@@ -1,1 +1,125 @@
-<p>ventas works!</p>,
+<div class="card">
+  <p-fieldset>
+    <ng-template #header>
+      <div class="flex items-center gap-4 px-2 text-primary">
+        <i class="pi pi-dollar text-2xl"></i>
+        <span class="font-bold">Ventas</span>
+
+        <p-iconfield class="hidden md:inline">
+          <p-inputicon styleClass="pi pi-search" />
+          <input type="text" pInputText placeholder="Ej. V-00001" [(ngModel)]="value" (input)="onInputChange()"
+            autocomplete="off" [disabled]="loadingVentas()" pSize="small" />
+        </p-iconfield>
+      </div>
+    </ng-template>
+
+    <div class="inline md:hidden">
+      <div class="flex justify-center my-2">
+        <p-iconfield>
+          <p-inputicon styleClass="pi pi-search" />
+          <input type="text" pInputText placeholder="Ej. V-00001" [(ngModel)]="value" (input)="onInputChange()"
+            autocomplete="off" [disabled]="loadingVentas()" pSize="small" />
+        </p-iconfield>
+      </div>
+    </div>
+
+    <!-- Contenedor principal que centra vertical y horizontalmente -->
+    <div class="flex flex-col justify-center items-center">
+
+      <!-- Contenedor de grid responsive -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
+
+        @if (loadingVentas() || loadingTienda()) {
+        <div class="col-span-full text-center">
+          <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+          <p>Cargando...</p>
+        </div>
+        }
+
+        @if (!loadingVentas() && !loadingTienda()) {
+        @for (venta of ventasFiltradas() | paginate:currentPage:pageSize; track venta._id) {
+        <p-fieldset>
+          <ng-template #header>
+            <div class="flex items-center gap-4">
+              <span class="font-medium">{{venta.numeroVenta}} | <span class="text-sm text-gray-400">
+                  <i class="pi pi-calendar text-sm mx-1"></i> {{venta.createdAt | date:'dd/MM/YY hh:mm aa'}}
+                </span></span>
+
+              @if (venta.estado == 'pagado') {
+              <p-button icon="pi pi-cloud-download" [rounded]="true" [text]="true" [raised]="true" severity="success"
+                size="small" (onClick)="dscargarPdfNotaVenta(venta.numeroVenta)" />
+              } @else {
+              <p-button icon="pi pi-check" [rounded]="true" [text]="true" [raised]="true" severity="success"
+                size="small" (onClick)="showDialog(venta)" />
+              }
+            </div>
+          </ng-template>
+
+          <p class="text-center">
+            <span class="text-xl font-semibold text-primary">Mesa {{venta.mesa}} </span>
+          </p>
+
+          <div class="card">
+            <p-table>
+              <ng-template #header>
+                @for (plato of venta.platos; track $index) {
+                <tr>
+                  <td> {{plato.nombre}} </td>
+                  <td class="text-center text-sm">S/ {{plato.precio}} </td>
+                  <td class="text-center"> <i class="pi pi-times text-xs"></i> {{plato.cantidad}} </td>
+                  <td class="text-end text-sm">S/ {{plato.subtotal}}</td>
+                </tr>
+                }
+              </ng-template>
+            </p-table>
+          </div>
+
+          <div class="flex justify-between py-1 px-2 mt-4 bg-gray-300/20 rounded">
+            <div class="font-medium">Total:</div>
+            <div class="font-medium"> {{venta.total | currency: 'S/ '}}</div>
+          </div>
+        </p-fieldset>
+
+        }
+        }
+      </div>
+    </div>
+
+    <app-pagination [currentPage]="currentPage" [totalPages]="totalPages" (pageChange)="onPageChange($event)" />
+  </p-fieldset>
+</div>
+
+<!-- Modal de confirmación de venta -->
+<p-dialog header="Confirmar venta" [modal]="true" [(visible)]="visible" [style]="{ width: '24rem' }"
+  maskStyleClass="backdrop-blur-sm">
+
+  <p class="text-center">
+    ¿Confirmar venta <span class="font-semibold">{{num_venta}} </span> de la mesa <span
+      class="font-semibold">{{mesa_venta}}</span>?
+  </p>
+
+  <div class="flex justify-between py-1 px-2 mt-6 bg-gray-300/20 rounded">
+    <div class="font-semibold">Total:</div>
+    <div class="font-semibold"> {{total_venta | currency: 'S/ '}}</div>
+  </div>
+
+  <div class="mt-6">
+    <p class="mb-2">
+      Agregar descuento
+    </p>
+    <p-inputgroup>
+      <input pInputText placeholder="Código de promoción" [(ngModel)]="promo_code" />
+      <p-inputgroup-addon>
+        <p-button icon="pi pi-search" severity="success" variant="text" (click)="obtenerPromocion()"
+          [disabled]="descontado || promo_code.length == 0" />
+      </p-inputgroup-addon>
+    </p-inputgroup>
+  </div>
+
+  <div class="card flex justify-center mt-8">
+    <p-button label="Confirmar venta" size="small" icon="pi pi-check" severity="success" (onClick)="confirmarVenta()"
+      [loading]="loadingVentas()" />
+  </div>
+</p-dialog>
+
+<p-toast />

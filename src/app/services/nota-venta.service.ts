@@ -17,6 +17,7 @@ export class NotaVentaService {
 
   // Signal para los usuarios
   readonly notasVenta = signal<NotaVenta[]>([]);
+  readonly notasVentaNoInc = signal<NotaVenta[]>([]);
 
   // Controlar si está cargando datos
   readonly loading = signal<boolean>(false);
@@ -107,6 +108,37 @@ export class NotaVentaService {
         tap(response => {
           if (response.data) {
             this.notasVenta.set(response.data);
+          }
+          this.loading.set(false);
+        }),
+        catchError(error => {
+          this.loading.set(false);
+          this.error.set(error.error || 'Error al obtener notas de venta');
+          return throwError(() => ({
+            error: error.error
+          }));
+        })
+      );
+  }
+
+  obtenerNotasVentaNoincluidas(): Observable<NotasVentaRes> {
+
+    if (isPlatformServer(this.platformId)) {
+      return of({ success: true, message: '', data: [] } as NotasVentaRes);
+    }
+
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.http.get<NotasVentaRes>(`${this.apiUrl}notas-venta/cierre/no_incluidas`, {
+      headers: {
+        Authorization: `Bearer ${this.authToken}`
+      }
+    })
+      .pipe(
+        tap(response => {
+          if (response.data) {
+            this.notasVentaNoInc.set(response.data);
           }
           this.loading.set(false);
         }),

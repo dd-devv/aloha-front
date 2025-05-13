@@ -17,6 +17,7 @@ export class AlmacenService {
 
   // Signal para los movimientos
   readonly movimientos = signal<Movimiento[]>([]);
+  readonly movimientosNoInc = signal<Movimiento[]>([]);
 
   // Controlar si está cargando datos
   readonly loading = signal<boolean>(false);
@@ -92,6 +93,37 @@ export class AlmacenService {
         tap(response => {
           if (response.data) {
             this.movimientos.set(response.data);
+          }
+          this.loading.set(false);
+        }),
+        catchError(error => {
+          this.loading.set(false);
+          this.error.set(error.error || 'Error al obtener movimientos');
+          return throwError(() => ({
+            error: error.error
+          }));
+        })
+      );
+  }
+
+  obtenerMovimientosNoIncluidas(): Observable<MovimientosRes> {
+
+    if (isPlatformServer(this.platformId)) {
+      return of({ success: true, message: '', data: [] } as MovimientosRes);
+    }
+
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.http.get<MovimientosRes>(`${this.apiUrl}inventario/cierre/no_incluidas`, {
+      headers: {
+        Authorization: `Bearer ${this.authToken}`
+      }
+    })
+      .pipe(
+        tap(response => {
+          if (response.data) {
+            this.movimientosNoInc.set(response.data);
           }
           this.loading.set(false);
         }),

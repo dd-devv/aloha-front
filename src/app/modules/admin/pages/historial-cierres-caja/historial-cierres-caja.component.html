@@ -1,0 +1,66 @@
+<div class="card">
+  <p-fieldset>
+    <ng-template #header>
+      <div class="flex items-center gap-4 px-2 text-primary">
+        <i class="pi pi-lock text-2xl"></i>
+        <span class="font-bold">Cierres de caja</span>
+      </div>
+    </ng-template>
+
+
+    <!-- Contenedor principal que centra vertical y horizontalmente -->
+    <div class="flex flex-col justify-center items-center">
+
+      <!-- Contenedor de grid responsive -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
+
+        @if (loading()) {
+        <div class="col-span-full text-center">
+          <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+          <p>Cargando...</p>
+        </div>
+        }
+
+        @if (!loading()) {
+        @for (cierre of cierresCaja() | paginate:currentPage:pageSize; track cierre._id) {
+        <p-fieldset>
+          <ng-template #header>
+            <div class="flex items-center gap-4">
+              <span class="text-sm text-gray-400">
+                <i class="pi pi-calendar text-sm mx-1"></i> {{cierre.createdAt | date:'dd/MM/YY hh:mm aa'}}
+              </span>
+            </div>
+          </ng-template>
+
+          <div class="card mt-2">
+            <p-table>
+              <ng-template #header>
+                <tr>
+                  <td> Ventas: </td>
+                  <td class="text-end text-sm">{{cierre.totalVentas | currency: 'S/ '}}</td>
+                </tr>
+                <tr>
+                  <td> Ingresos almacén: </td>
+                  <td class="text-end text-sm">{{cierre.totalIngresosAlmacen | currency: 'S/ '}}</td>
+                </tr>
+                <tr>
+                  <td> Salidas almacén: </td>
+                  <td class="text-end text-sm">{{cierre.totalEgresosAlmacen | currency: 'S/ '}}</td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+
+          <div class="flex justify-between py-1 px-2 mt-4 bg-gray-300/20 rounded">
+            <div class="font-medium">Balance total:</div>
+            <div class="font-medium"> {{cierre.balanceTotal | currency: 'S/ '}}</div>
+          </div>
+        </p-fieldset>
+        }
+        }
+      </div>
+    </div>
+
+    <app-pagination [currentPage]="currentPage" [totalPages]="totalPages" (pageChange)="onPageChange($event)" />
+  </p-fieldset>
+</div>
