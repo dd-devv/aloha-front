@@ -21,6 +21,10 @@ export const routes: Routes = [
       {
         path: 'contacto',
         loadComponent: () => import('./modules/public/pages/contact/contact.component')
+      },
+      {
+        path: 'terminos-condiciones',
+        loadComponent: () => import('./modules/public/pages/terminos-condiciones/terminos-condiciones.component')
       }
     ]
   },
