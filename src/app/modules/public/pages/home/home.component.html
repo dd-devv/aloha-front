@@ -1,10 +1,10 @@
-<div class="min-h-screen bg-[#112B2A] text-white">
+<div class="min-h-screen bg-[#F2F7F5]">
   <!-- Header/Navigation -->
   <header class="border-b border-amber-400">
     <div class="container mx-auto p-2 flex justify-between items-center">
-      <div class="text-xl text-white">
-        <img src="../../../../../assets/images/logo.png" alt="Logo aloha restobar" width="120" [routerLink]="['/']"
-          class="cursor-pointer">
+      <div class="text-xl text-back">
+        <img src="../../../../../assets/images/logo-white.png" alt="Logo aloha restobar" width="120"
+          [routerLink]="['/']" class="cursor-pointer">
       </div>
       <nav class="hidden md:flex space-x-8">
         <!-- <a href="#" class="text-white hover:text-amber-400 p-menuitem-link">Inicio</a>
@@ -12,9 +12,13 @@
         <a href="#" class="text-white hover:text-amber-400 p-menuitem-link">Servicios</a>
         <a href="#" class="text-white hover:text-amber-400 p-menuitem-link">Contáctanos</a> -->
       </nav>
-      <p-button class="text-white px-2 font-semibold">
-        Reservar ahora
-      </p-button>
+      <a class="border border-amber-500 text-white px-6 py-3
+            rounded-full bg-amber-500
+            transition-colors p-button font-semibold"
+        href="https://wa.me/51957949393?text=¡Hola%20Aloha%20Restobar!%20%20Me%20encantaría%20reservar%20una%20mesa%20para%20disfrutar%20de%20su%20deliciosa%20comida.%20¿Tienen%20disponibilidad%20para%20este%20día?"
+        target="_blank">
+        Reservar ahora <i class="pi pi-arrow-right ml-2"></i>
+      </a>
     </div>
   </header>
 
@@ -22,23 +26,24 @@
   <section class="py-10">
     <div class="container mx-auto px-4 items-center">
       <div class="mb-8">
-        <h1 class="text-5xl mb-4">
+        <h1 class="text-5xl text-black mb-4">
           <span class="text-amber-500 font-medium">Muchos sabores</span> <br />
           en un mismo lugar.
         </h1>
-        <p class="text-gray-300 mb-8">
+        <p class="text-gray-600 mb-8">
           ¡Sumérgete en una explosión de sabores! Nuestras alitas crujientes por fuera y jugosas por dentro son la
           excusa perfecta para reunirte con amigos. Acompáñalos con nuestras refrescantes creaciones
-          tropicales hasta exóticas mezclas hawaianas, nuestra barra te invita a descubrir combinaciones únicas que
-          complementan a la perfección el picante adictivo de nuestras legendarias alitas.
+          tropicales hasta exóticas mezclas hawaianas.
         </p>
 
-        <div class="fex justify-between">
-          <button class="border border-amber-500 text-amber-500 px-6 py-3
-            rounded-full flex items-center hover:bg-amber-500 hover:text-white
-            transition-colors p-button p-button-outlined">
+        <div class="">
+          <a class="border border-amber-500 text-amber-500 px-6 py-3
+            rounded-full hover:bg-amber-500 hover:text-white
+            transition-colors p-button p-button-outlined font-semibold"
+            href="https://wa.me/51957949393?text=¡Hola%20Aloha%20Restobar!%20%20Me%20encantaría%20reservar%20una%20mesa%20para%20disfrutar%20de%20su%20deliciosa%20comida.%20¿Tienen%20disponibilidad%20para%20este%20día?"
+            target="_blank">
             Reservar <i class="pi pi-arrow-right ml-2"></i>
-          </button>
+          </a>
         </div>
       </div>
 
@@ -65,7 +70,7 @@
             Relájate en nuestro ambiente
           </h2>
         </div>
-        <p class="text-gray-300 mb-8">
+        <p class="text-gray-600 mb-8">
           Sumérgete en una experiencia única donde el sabor y la comodidad se unen perfectamente. Nuestro
           local ha sido diseñado pensando en cada detalle para ofrecerte un espacio donde puedas
           disfrutar de momentos inolvidables. Desde la iluminación ambiental hasta nuestra selección musical,
@@ -79,10 +84,11 @@
               <br />
               Salón comedor
             </h3>
-            <button
-              class="border border-pink-500 text-pink-500 px-6 py-3 rounded-full flex items-center hover:bg-pink-500 hover:text-white transition-colors mt-4 p-button p-button-outlined">
+            <a class="border border-pink-500 text-pink-500 px-6 py-3 rounded-full hover:bg-pink-500 hover:text-white transition-colors mt-4 p-button p-button-outlined"
+              href="https://wa.me/51957949393?text=¡Hola%20Aloha%20Restobar!%20%20Me%20encantaría%20reservar%20una%20mesa%20para%20disfrutar%20de%20su%20deliciosa%20comida.%20¿Tienen%20disponibilidad%20para%20este%20día?"
+              target="_blank">
               Reservar ahora <i class="pi pi-arrow-right ml-2"></i>
-            </button>
+            </a>
           </div>
           <div class="flex justify-end">
             <img src="https://res.cloudinary.com/dtttoiss7/image/upload/f_avif,q_30/v1747526878/MAI-TAI_uwktqc.png"
@@ -96,32 +102,34 @@
   <!-- Categorías Section -->
   <section class="py-10 border-t border-amber-400">
     <div class="container mx-auto px-4">
-      <div class="flex justify-between items-center mb-12">
+      <div class="flex justify-between items-center mb-8">
         <h2 class="text-3xl text-amber-500">Nuestras categorías</h2>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 
-        <div class="col-span-2 bg-[#0A1A1F] rounded-lg p-8 p-card">
+        <div class="col-span-2 bg-gray-200 rounded-lg p-8 p-card">
           <div class="grid md:grid-cols-2 gap-6 p-card-body">
             <div>
               <h3 class="text-4xl text-red-500 mb-4 p-card-title font-medium">
                 Alitas
               </h3>
-              <p class="text-gray-300 mb-6 p-card-content">
+              <p class="text-gray-600 mb-6 p-card-content">
                 Descubre nuestras alitas premium en diversas presentaciones que conquistarán tu paladar. Desde las
                 tradicionales Buffalo con distintos niveles de picante, hasta nuestras exclusivas creaciones como las
                 acevichadas, BBQ honey y teriyaki.
               </p>
 
-              <p class="text-gray-300 mb-8 p-card-content">
+              <p class="text-gray-600 mb-8 p-card-content">
                 Todas nuestras alitas se sirven con papas fritas caseras y nuestras salsas especiales elaboradas
                 diariamente.
               </p>
-              <button class="border border-red-500 text-red-500 px-6 py-3 rounded-full
-                flex items-center hover:bg-red-500 hover:text-white transition-colors p-button p-button-outlined">
+              <a class="border border-red-500 text-red-500 px-6 py-3 rounded-full
+                hover:bg-red-500 hover:text-white transition-colors p-button p-button-outlined"
+                href="https://wa.me/51957949393?text=¡Hola%20Aloha%20Restobar!%20%20Soy%20un%20gran%20fanático%20de%20las%20alitas%20y%20me%20gustaría%20conocer%20todas%20las%20variedades%20y%20salsas%20que%20ofrecen."
+                target="_blank">
                 Consultar variedades <i class="pi pi-arrow-right ml-2"></i>
-              </button>
+              </a>
             </div>
             <div>
               <img
@@ -131,26 +139,27 @@
           </div>
         </div>
 
-        <div class="col-span-2 bg-[#0A1A1F] rounded-lg p-8 p-card">
+        <div class="col-span-2 bg-gray-200 rounded-lg p-8 p-card">
           <div class="grid md:grid-cols-2 gap-6 p-card-body">
             <div>
               <h3 class="text-4xl text-green-500 mb-4 p-card-title font-medium">
                 Cócteles
               </h3>
-              <p class="text-gray-300 mb-6 p-card-content">
+              <p class="text-gray-600 mb-6 p-card-content">
                 Nuestra barra ofrece una experiencia única con cócteles clásicos y de autor. Disfruta de nuestras
                 especialidades tropicales como el Mai Tai, Piña Colada y Sex on the Beach, así como nuestros
                 refrescantes mojitos en versiones de maracuyá, fresa y arándanos.
               </p>
 
-              <p class="text-gray-300 mb-8 p-card-content">
+              <p class="text-gray-600 mb-8 p-card-content">
                 Además, contamos con una selección de cócteles hawaianos exclusivos preparados con frutas frescas y
                 destilados premium que complementan perfectamente nuestras alitas.
               </p>
-              <button
-                class="border border-green-500 text-green-500 px-6 py-3 rounded-full flex items-center hover:bg-green-500 hover:text-white transition-colors p-button p-button-outlined">
+              <a class="border border-green-500 text-green-500 px-6 py-3 rounded-full hover:bg-green-500 hover:text-white transition-colors p-button p-button-outlined"
+                href="https://wa.me/51957949393?text=¡Hola%20Aloha%20Restobar!%20%20He%20oído%20maravillas%20sobre%20sus%20cócteles%20y%20me%20encantaría%20saber%20qué%20especialidades%20tienen%20en%20su%20carta.%20¿Ofrecen%20algún%20cóctel%20signature%20o%20con%20un%20toque%20tropical?"
+                target="_blank">
                 Consultar tipos <i class="pi pi-arrow-right ml-2"></i>
-              </button>
+              </a>
             </div>
             <div>
               <img
@@ -166,7 +175,7 @@
   <!-- Por qué Section -->
   <section class="py-10 border-t border-amber-400">
     <div class="container mx-auto px-4">
-      <h2 class="text-4xl text-white mb-8">¿Por qué elegirnos?</h2>
+      <h2 class="text-4xl text-black mb-8">¿Por qué elegirnos?</h2>
 
       <div class="grid md:grid-cols-2 gap-8 items-center">
         <div class="card">
@@ -183,9 +192,9 @@
         </div>
         <div>
           <h3 class="text-3xl text-amber-500 mb-6 font-medium">
-            Por nuestra variedad y exquisitez de nuestros platos
+            Por la variedad y exquisitez de nuestras preparaciones
           </h3>
-          <p class="text-gray-300 mb-8">
+          <p class="text-gray-600 mb-8">
             Nuestro restobar se distingue por ofrecer una experiencia gastronómica única donde las alitas de pollo son
             las protagonistas. Cada receta ha sido cuidadosamente perfeccionada para garantizar el equilibrio perfecto
             entre sabor, textura y presentación. Complementamos nuestra oferta con una selecta carta de cócteles
@@ -197,78 +206,77 @@
               <div class="text-amber-500 mr-3">
                 <i class="pi pi-home w-8 h-8 flex items-center justify-center"></i>
               </div>
-              <p class="text-gray-300">Ambiente acogedor y música seleccionada.</p>
+              <p class="text-gray-600">Ambiente acogedor y música seleccionada.</p>
             </div>
             <div class="flex items-start mb-4">
               <div class="text-amber-500 mr-3">
                 <i class="pi pi-heart w-8 h-8 flex items-center justify-center"></i>
               </div>
-              <p class="text-gray-300">Ingredientes frescos y de primera calidad.</p>
+              <p class="text-gray-600">Ingredientes frescos y de primera calidad.</p>
             </div>
             <div class="flex items-start mb-4">
               <div class="text-amber-500 mr-3">
                 <i class="pi pi-star w-8 h-8 flex items-center justify-center"></i>
               </div>
-              <p class="text-gray-300">Salsas caseras con recetas exclusivas.</p>
+              <p class="text-gray-600">Salsas caseras con recetas exclusivas.</p>
             </div>
             <div class="flex items-start mb-4">
               <div class="text-amber-500 mr-3">
                 <i class="pi pi-check-circle w-8 h-8 flex items-center justify-center"></i>
               </div>
-              <p class="text-gray-300">Servicio atento y personalizado.</p>
+              <p class="text-gray-600">Servicio atento y personalizado.</p>
             </div>
             <div class="flex items-start mb-4">
               <div class="text-amber-500 mr-3">
                 <i class="pi pi-map-marker w-8 h-8 flex items-center justify-center"></i>
               </div>
-              <p class="text-gray-300">Ubicación estratégica y fácil acceso.</p>
+              <p class="text-gray-600">Ubicación estratégica y fácil acceso.</p>
             </div>
             <div class="flex items-start mb-4">
               <div class="text-amber-500 mr-3">
                 <i class="pi pi-thumbs-up w-8 h-8 flex items-center justify-center"></i>
               </div>
-              <p class="text-gray-300">Cocciones perfectas y presentaciones únicas.</p>
+              <p class="text-gray-600">Cocciones perfectas y presentaciones únicas.</p>
             </div>
             <div class="flex items-start mb-4">
               <div class="text-amber-500 mr-3">
                 <i class="pi pi-clock w-8 h-8 flex items-center justify-center"></i>
               </div>
-              <p class="text-gray-300">Horario extendido para tu comodidad.</p>
+              <p class="text-gray-600">Horario extendido para tu comodidad.</p>
             </div>
             <div class="flex items-start mb-4">
               <div class="text-amber-500 mr-3">
                 <i class="pi pi-globe w-8 h-8 flex items-center justify-center"></i>
               </div>
-              <p class="text-gray-300">Fusión de sabores internacionales en cada plato.</p>
+              <p class="text-gray-600">Fusión de sabores internacionales en cada plato.</p>
             </div>
           </div>
 
-          <button
-            class="border border-amber-500 text-amber-500 px-6 py-3 rounded-full flex items-center hover:bg-amber-500 hover:text-white transition-colors mt-6 p-button p-button-outlined">
+          <a class="border border-amber-500 text-amber-500 px-6 py-3 rounded-full hover:bg-amber-500 hover:text-white transition-colors mt-6 p-button p-button-outlined"
+            href="https://wa.me/51957949393?text=¡Hola%20Aloha%20Restobar!%20%20Estoy%20pensando%20en%20visitarlos%20hoy%20mismo%20y%20me%20gustaría%20saber%20qué%20platos%20tienen%20disponibles%20para%20hoy.%20¿Cuentan%20con%20alguna%20especialidad%20del%20día%20o%20plato%20recomendado%20por%20el%20chef?%20¿Hay%20algo%20que%20se%20agote%20rápido%20y%20que%20debería%20reservar%20con%20anticipación?%20¡Tengo%20muchas%20ganas%20de%20probar%20su%20cocina!%20Gracias%20por%20la%20información.%20"
+            target="_blank">
             Consultar disponibilidad <i class="pi pi-arrow-right ml-2"></i>
-          </button>
+          </a>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Ubicación -->
-  <section class="py-16 border-t border-amber-400">
+  <section class="py-12 border-t border-amber-400">
     <div class="container mx-auto px-4">
-      <div class="flex justify-between items-center mb-12">
+      <div class="flex justify-between items-center mb-8">
         <div class="flex items-center">
           <i class="pi pi-map-marker ml-2 text-amber-500 text-3xl"></i>
         </div>
-        <h2 class="text-3xl text-white">Ubícanos</h2>
+        <h2 class="text-3xl text-black">Ubícanos</h2>
       </div>
 
-      <div class="rounded-xl border-2 border-amber-400">
-        <div class="p-4">
-          <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d261.4730117790286!2d-74.2241722587294!3d-13.155888231290072!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x91127dbea9857489%3A0xfa67ee6cb2218ffe!2sAloha%20Restobar!5e1!3m2!1ses-419!2spe!4v1747365874383!5m2!1ses-419!2spe"
-            height="450" style="border:0; width:100%;" allowfullscreen="true" loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade" class="rounded-lg"></iframe>
-        </div>
+      <div class="">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d261.4730117790286!2d-74.2241722587294!3d-13.155888231290072!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x91127dbea9857489%3A0xfa67ee6cb2218ffe!2sAloha%20Restobar!5e1!3m2!1ses-419!2spe!4v1747365874383!5m2!1ses-419!2spe"
+          height="450" style="border:0; width:100%;" allowfullscreen="true" loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade" class="rounded-lg"></iframe>
       </div>
     </div>
   </section>
