@@ -27,7 +27,7 @@
 </div>
 
 <!-- Modal de registro de platos -->
-<p-dialog header="Registrar venta: Mesa {{mesaSeleccionada}}" [modal]="true" [(visible)]="visible"
+<p-dialog header="Registrar pedido: Mesa {{mesaSeleccionada}}" [modal]="true" [(visible)]="visible"
   [style]="{ width: '25rem' }" maskStyleClass="backdrop-blur-sm">
 
   <div class="min-h-96">
@@ -47,11 +47,11 @@
     <div class="card mt-4">
       <p-dataView #dv [value]="selectedPlatos">
         <ng-template #list let-items>
-          <div class="grid">
+          <div class="">
             <div class="col-12" *ngFor="let item of items; let first = first">
               <div class="flex p-4 gap-4" [ngClass]="{ 'border-t border-surface-200 dark:border-surface-700': !first }">
                 <!-- Imagen a la izquierda -->
-                <div class="flex-none w-40">
+                <div class="flex-none w-30">
                   <img class="rounded-border w-full" [src]="item.galeria[0] | cloudinaryImage:150:'avif'"
                     [alt]="item.nombre" />
                 </div>
@@ -59,24 +59,24 @@
                 <!-- Contenido a la derecha alineado verticalmente con la imagen -->
                 <div class="">
                   <!-- Nombre del producto -->
-                  <div class="text-sm font-medium text-green-400">{{ item.nombre }}</div>
+                  <div class="font-medium text-green-500">{{ item.nombre }}</div>
 
                   <!-- Precio y precio total -->
                   <div class="flex justify-between mt-2">
-                    <span class="text-lg font-semibold">
+                    <span class="text-xl font-semibold">
                       {{item.precio | currency:'S/ '}}
                     </span>
                   </div>
 
                   <!-- Control de cantidad -->
                   <div class="flex gap-2 items-center mt-2">
-                    <p-button icon="pi pi-minus" severity="secondary" styleClass="p-button-sm"
+                    <p-button icon="pi pi-minus" severity="secondary"
                       (click)="decrementarCantidad(item)" />
 
                     <input pInputText type="number" [value]="item.cantidad" style="width: 60px" class="text-center"
                       (change)="actualizarCantidad(item, $event)" />
 
-                    <p-button icon="pi pi-plus" severity="secondary" styleClass="p-button-sm"
+                    <p-button icon="pi pi-plus" severity="secondary"
                       (click)="incrementarCantidad(item)" />
                   </div>
                 </div>
@@ -94,7 +94,7 @@
     </div>
 
     <!-- Resumen de la venta -->
-    <div class="flex justify-between p-4 mt-4 bg-surface-50 dark:bg-surface-800 rounded-md">
+    <div class="flex justify-between p-4 mt-4 bg-gray-300/30 rounded-md">
       <div class="text-lg font-bold">Subtotal:</div>
       <div class="text-lg font-bold">{{subtotal | currency:'S/ '}}</div>
     </div>
@@ -102,7 +102,7 @@
 
   <div class="flex justify-end gap-2 mt-4">
     <p-button label="Cancelar" severity="secondary" (click)="visible = false" />
-    <p-button label="Guardar venta" icon="pi pi-check" severity="success" [disabled]="selectedPlatos.length === 0"
+    <p-button label="Guardar pedido" icon="pi pi-check" severity="success" [disabled]="selectedPlatos.length === 0"
       (click)="guardarVenta()" [loading]="loadingVentas()" />
   </div>
 

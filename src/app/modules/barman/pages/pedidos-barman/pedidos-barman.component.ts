@@ -52,9 +52,11 @@ export default class PedidosBarmanComponent implements OnInit {
   ngOnInit() {
     this.obtenerComandas();
 
-    this.socket.on('venta-creada', () => {
-      this.obtenerComandas();
-    });
+    if (isPlatformBrowser(this.platformId)) {
+      this.socket.on('venta-creada', () => {
+        this.obtenerComandas();
+      });
+    }
   }
 
   obtenerComandas() {

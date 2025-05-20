@@ -15,7 +15,8 @@
 
     @if (!loadingVentas() && !loadingTienda()) {
     @for (mesa of getMesasOcupadas(); track $index) {
-    <div class="bg-surface-200 hover:bg-surface-300 rounded-lg shadow h-28 flex items-center justify-center cursor-pointer"
+    <div
+      class="bg-surface-200 hover:bg-surface-300 rounded-lg shadow h-28 flex items-center justify-center cursor-pointer"
       (click)="showDialog(mesa)">
       <div class="flex items-center justify-center text-gray-900">
         <span class="text-6xl font-semibold">{{mesa}}</span>
@@ -29,6 +30,14 @@
 <!-- Modal de modificación de pedidos -->
 <p-dialog header="Modificar pedido: Mesa {{mesaSeleccionada}}" [modal]="true" [(visible)]="visible"
   [style]="{ width: '30rem' }" maskStyleClass="backdrop-blur-sm">
+
+  <div class="card mb-4">
+    <p-message closable severity="warn">
+      <small>
+        Puedes agergar platos desde el siguiente cuadro
+      </small>
+    </p-message>
+  </div>
 
   <div class="min-h-96">
     <p-multiselect [options]="platosDisponibles" [(ngModel)]="selectedPlatos" placeholder="Seleccione platos"
@@ -51,11 +60,11 @@
     <div class="card mt-4">
       <p-dataView #dv [value]="selectedPlatos">
         <ng-template #list let-items>
-          <div class="grid">
+          <div class="">
             <div class="col-12" *ngFor="let item of items; let first = first">
               <div class="flex p-4 gap-4" [ngClass]="{ 'border-t border-surface-200 dark:border-surface-700': !first }">
                 <!-- Imagen a la izquierda -->
-                <div class="flex-none w-40">
+                <div class="flex-none w-30">
                   @if (item.galeria && item.galeria[0]) {
                   <img class="rounded-border w-full" [src]="item.galeria[0] | cloudinaryImage:150:'avif'"
                     [alt]="item.nombre" />
@@ -72,28 +81,31 @@
                 <!-- Contenido a la derecha alineado verticalmente con la imagen -->
                 <div class="">
                   <!-- Nombre del producto -->
-                  <div class="text-sm font-medium text-green-400">{{ item.nombre }}</div>
+                  <div class="font-medium text-green-400">{{ item.nombre }}</div>
 
                   <!-- Precio y precio total -->
                   <div class="flex justify-between mt-2">
-                    <span class="text-lg font-semibold">
+                    <span class="text-xl font-semibold">
                       {{item.precio | currency:'S/ '}}
                     </span>
                   </div>
 
                   <!-- Control de cantidad -->
                   <div class="flex gap-2 items-center mt-2">
-                    <p-button icon="pi pi-minus" severity="secondary" styleClass="p-button-sm"
-                      (click)="decrementarCantidad(item)" />
+
+                    @if (item.tipo) {
+                    <p-button icon="pi pi-minus" severity="secondary" (click)="decrementarCantidad(item)" />
+                    }
 
                     <input pInputText type="number" [value]="item.cantidad" style="width: 60px" class="text-center"
-                      (change)="actualizarCantidad(item, $event)" />
+                      (change)="actualizarCantidad(item, $event)" [readonly]="!item.tipo" />
 
-                    <p-button icon="pi pi-plus" severity="secondary" styleClass="p-button-sm"
-                      (click)="incrementarCantidad(item)" />
+                    @if (item.tipo) {
+                    <p-button icon="pi pi-plus" severity="secondary" (click)="incrementarCantidad(item)" />
+                    }
 
-                    <p-button icon="pi pi-trash" severity="danger" styleClass="p-button-sm"
-                      (click)="eliminarPlato(item)" />
+
+                    <p-button icon="pi pi-trash" severity="danger" class="ms-2" (click)="eliminarPlato(item)" />
                   </div>
                 </div>
               </div>

@@ -16,6 +16,7 @@ import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { environment } from '../../../../../environments/environment';
 import { io, Socket } from 'socket.io-client';
+import { Message } from 'primeng/message';
 
 @Component({
   selector: 'app-modificar-pedidos',
@@ -31,7 +32,8 @@ import { io, Socket } from 'socket.io-client';
     InputGroupAddonModule,
     InputTextModule,
     ButtonModule,
-    ToastModule
+    ToastModule,
+    Message
   ],
   providers: [MessageService],
   templateUrl: './edit-pedido.component.html',
