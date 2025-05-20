@@ -67,3 +67,22 @@ export interface DataVentaChart {
   sumVentas:   number[];
   inventarios: number[];
 }
+
+export interface FlujoCajaRes {
+  success: boolean;
+  message: string;
+  data:    DataFlujo;
+}
+
+export interface DataFlujo {
+  totalIngresos: number;
+  totalEgresos:  number;
+  detalle:       DetalleFlujo[];
+}
+
+export interface DetalleFlujo {
+  fecha:            Date;
+  ingresosPorMesa:  { [key: string]: number };
+  totalIngresosDia: number;
+  egresosDia:       number;
+}

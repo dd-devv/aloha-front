@@ -67,6 +67,13 @@ export class ButtonDialComponent implements OnInit {
           this.router.navigate(['/admin/graficas']);
         },
       },
+      {
+        label: 'Flujo de caja',
+        icon: 'text-lg pi pi-arrow-right-arrow-left',
+        command: () => {
+          this.router.navigate(['/admin/flujo-caja']);
+        },
+      },
       // {
       //   label: 'Reportes',
       //   icon: 'text-lg pi pi-folder',
@@ -76,7 +83,7 @@ export class ButtonDialComponent implements OnInit {
       // },
       {
         label: 'Ventas',
-        icon: 'text-lg pi pi-check-square',
+        icon: 'text-lg pi pi-dollar',
         command: () => {
           this.router.navigate(['/admin/ventas']);
         },

@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
 import { TokenStorageService } from './token-storage.service';
 import { environment } from '../../environments/environment';
-import { DataPlatoChart, DataVentaChart, GetVentasRes, PlatosChart, Venta, VentaReq, VentaRes, VentasChart } from '../interfaces/venta.interface';
+import { DataFlujo, DataPlatoChart, DataVentaChart, FlujoCajaRes, GetVentasRes, PlatosChart, Venta, VentaReq, VentaRes, VentasChart } from '../interfaces/venta.interface';
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { catchError, Observable, of, tap, throwError } from 'rxjs';
 
@@ -20,6 +20,7 @@ export class VentaService {
   readonly ventasPendientes = signal<Venta[]>([]);
   readonly platosChart = signal<DataPlatoChart>({} as DataPlatoChart);
   readonly ventasChart = signal<DataVentaChart>({} as DataVentaChart);
+  readonly flujoCaja = signal<DataFlujo>({} as DataFlujo);
 
   // Controlar si está cargando datos
   readonly loading = signal<boolean>(false);
@@ -377,6 +378,37 @@ export class VentaService {
         catchError(error => {
           this.loading.set(false);
           this.error.set(error.error || 'Error al obtener ventas de platos');
+          return throwError(() => ({
+            error: error.error
+          }));
+        })
+      );
+  }
+
+  obtenerFlujoCaja(inicio: string, fin: string): Observable<FlujoCajaRes> {
+
+    if (isPlatformServer(this.platformId)) {
+      return of({} as FlujoCajaRes);
+    }
+
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.http.get<FlujoCajaRes>(`${this.apiUrl}ventas/ventas/flujo-caja/${inicio}/${fin}`, {
+      headers: {
+        Authorization: `Bearer ${this.authToken}`
+      }
+    })
+      .pipe(
+        tap(response => {
+          if (response.data) {
+            this.flujoCaja.set(response.data);
+          }
+          this.loading.set(false);
+        }),
+        catchError(error => {
+          this.loading.set(false);
+          this.error.set(error.error || 'Error al obtener flujo de caja');
           return throwError(() => ({
             error: error.error
           }));

@@ -1,0 +1,128 @@
+<div class="card">
+  <p-fieldset class="mb-4">
+    <ng-template pTemplate="header">
+      <div class="flex items-center gap-4 px-2 text-primary">
+        <i class="pi pi-arrow-right-arrow-left text-2xl"></i>
+        <span class="font-bold">Flujo de caja</span>
+
+        <div class="hidden md:inline">
+          <div class="card flex justify-center">
+            <p-datepicker [(ngModel)]="fechaInicio" (onSelect)="onFechaInicioChange($event)" [maxDate]="fechaFin"
+              [showIcon]="true" inputId="inicio" placeholder="Inicio" readonlyInput="true" size="small" />
+          </div>
+        </div>
+
+        <div class="hidden md:inline">
+          <div class="card flex justify-center">
+            <p-datepicker [(ngModel)]="fechaFin" (onSelect)="onFechaFinChange($event)" [minDate]="fechaInicio"
+              [maxDate]="maxDate" [showIcon]="true" inputId="fin" placeholder="Fin" readonlyInput="true" size="small" />
+          </div>
+        </div>
+
+        <p-button icon="pi pi-refresh" (onClick)="obtenerFlujoCaja()"
+          styleClass="p-button-rounded p-button-text p-button-sm" />
+      </div>
+    </ng-template>
+
+    <!-- Contenedor principal con scroll -->
+    <div class="flex flex-col justify-center">
+
+      <div class="inline md:hidden">
+        <div class="card w-full">
+          <p-datepicker fluid="true" [(ngModel)]="fechaInicio" (onSelect)="onFechaInicioChange($event)"
+            [maxDate]="fechaFin" [showIcon]="true" inputId="inicioMobile" placeholder="Inicio" readonlyInput="true"
+            size="small" />
+        </div>
+      </div>
+
+      <div class="inline md:hidden mt-4">
+        <div class="card w-full">
+          <p-datepicker fluid="true" [(ngModel)]="fechaFin" (onSelect)="onFechaFinChange($event)"
+            [minDate]="fechaInicio" [maxDate]="maxDate" [showIcon]="true" inputId="finMobile" placeholder="Fin"
+            readonlyInput="true" size="small" />
+        </div>
+      </div>
+    </div>
+
+  </p-fieldset>
+
+  @if (loadingFlujo()) {
+  <div class="col-span-full text-center">
+    <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+    <p>Cargando...</p>
+  </div>
+  }
+
+  @if (!loadingFlujo() && flujoCaja()) {
+  <!-- Resumen de totales -->
+  <div class="grid grid-cols-2 gap-4 my-6">
+    <div class="p-3 rounded-lg bg-green-500/10">
+      <div class="text-center">
+        <h3 class="text-lg font-bold text-green-500">Ingresos</h3>
+        <p class="text-xl font-medium">{{ flujoCaja().totalIngresos | currency:'S/ ' }}</p>
+      </div>
+    </div>
+    <div class="p-3 rounded-lg bg-red-500/10">
+      <div class="text-center">
+        <h3 class="text-lg font-bold text-red-500">Egresos</h3>
+        <p class="text-xl font-medium">{{ flujoCaja().totalEgresos | currency:'S/ ' }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabla de detalles por día con ancho mínimo para evitar que se comprima demasiado -->
+  <div class="min-w-full">
+    <p-table [value]="flujoCaja().detalle" styleClass="p-datatable-sm">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Fecha</th>
+          <th class="whitespace-nowrap">Ingresos por mesa</th>
+          <th class="whitespace-nowrap">Total ingresos</th>
+          <th class="whitespace-nowrap">Total egresos</th>
+          <th class="whitespace-nowrap">Balance I-E</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-detalle>
+        <tr>
+          <td>{{ detalle.fecha | date:'dd/MM/yyyy' }}</td>
+          <td>
+            @for (mesa of getMesasKeys(detalle.ingresosPorMesa); track $index) {
+            <div>
+              Mesa {{ mesa }}: {{ detalle.ingresosPorMesa[mesa] | currency:'S/ ' }}
+            </div>
+            }
+          </td>
+          <td class="font-medium text-purple-500">{{ detalle.totalIngresosDia | currency:'S/ ' }}</td>
+          <td class="font-medium text-orange-500">{{ detalle.egresosDia | currency:'S/ ' }}</td>
+          <td class="font-medium">
+            {{ detalle.totalIngresosDia - detalle.egresosDia | currency:'S/ ' }}
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="footer">
+        <tr>
+          <td colspan="2" class="text-right font-bold">Totales:</td>
+          <td class="text-green-500 font-bold">{{ flujoCaja().totalIngresos | currency:'S/ ' }}
+          </td>
+          <td class="text-red-400 font-bold">{{ flujoCaja().totalEgresos | currency:'S/ ' }}</td>
+          <td
+            [class]="{'text-green-500': flujoCaja().totalIngresos - flujoCaja().totalEgresos > 0, 'text-red-400': flujoCaja().totalIngresos - flujoCaja().totalEgresos < 0}"
+            class="font-bold">
+            {{ flujoCaja().totalIngresos - flujoCaja().totalEgresos | currency:'S/ ' }}
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="5" class="text-center p-4">No hay datos disponibles para el periodo seleccionado.</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+  }
+
+  <div class="card flex justify-center gap-4 mt-6">
+    <p-button label="Exportar en PDF" icon="pi pi-file-pdf" severity="contrast" [outlined]="true" [raised]="true" />
+    <p-button label="Exportar en XLS" icon="pi pi-file-excel" severity="success" [outlined]="true" [raised]="true" />
+  </div>
+</div>

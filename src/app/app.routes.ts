@@ -81,6 +81,10 @@ export const routes: Routes = [
         loadComponent: () => import('./modules/admin/pages/ventas/ventas.component')
       },
       {
+        path: 'flujo-caja',
+        loadComponent: () => import('./modules/admin/pages/flujo-caja/flujo-caja.component')
+      },
+      {
         path: 'reportes',
         loadComponent: () => import('./modules/admin/pages/reportes/reportes.component')
       },
