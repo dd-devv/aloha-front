@@ -25,6 +25,14 @@ export const routes: Routes = [
       {
         path: 'terminos-condiciones',
         loadComponent: () => import('./modules/public/pages/terminos-condiciones/terminos-condiciones.component')
+      },
+      {
+        path: 'nosotros',
+        loadComponent: () => import('./modules/public/pages/nosotros/nosotros.component')
+      },
+      {
+        path: 'menu',
+        loadComponent: () => import('./modules/public/pages/menu/menu.component')
       }
     ]
   },

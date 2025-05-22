@@ -1,0 +1,51 @@
+<div class="min-h-screen bg-surface-900 text-white">
+  <app-header />
+
+  <!-- menu -->
+  <section class="py-16 px-6 bg-surface-900">
+    <h2 class="text-4xl md:text-5xl font-bold text-center my-8">Ofrecemos</h2>
+
+    <!-- Menu Categories -->
+    <div class="flex flex-wrap justify-center gap-8 mb-12">
+      <button class="text-gray-400">Alitas</button>
+      <button class="text-gray-400">Bebidas</button>
+      <button class="text-gray-400">Cócteles</button>
+      <button class="text-gray-400">Tropicales</button>
+    </div>
+
+    <div class="card">
+
+      @if (loading()) {
+      <div class="col-span-full text-center">
+        <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+        <p>Cargando...</p>
+      </div>
+      }
+
+      @if (!loading()) {
+      <p-carousel [value]="platos()" [numVisible]="3" [numScroll]="3" [circular]="true"
+        [responsiveOptions]="responsiveOptions" autoplayInterval="5000">
+        <ng-template let-product #item>
+          <div class="border border-surface-200 dark:border-surface-700 rounded m-2 p-4">
+            <div class="mb-4">
+              <div class="relative mx-auto">
+                <img [src]="product.galeria[0] | cloudinaryImage:400:'avif'" [alt]="product.nombre"
+                  class="w-full rounded-border" />
+              </div>
+            </div>
+            <div class="mb-4 font-medium">{{ product.nombre }}</div>
+            <div class="flex justify-between items-center">
+              <div class="mt-0 font-medium text-lg">{{ product.precio | currency: 'S/ ' }}</div>
+              <span>
+                <p-button label="Consultar" icon="pi pi-whatsapp" styleClass="ml-2" outlined="true" severity="success"
+                  iconPos="right" />
+              </span>
+            </div>
+          </div>
+        </ng-template>
+      </p-carousel>
+      }
+
+    </div>
+  </section>
+</div>

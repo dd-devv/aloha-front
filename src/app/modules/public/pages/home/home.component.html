@@ -1,275 +1,217 @@
-<div class="min-h-screen bg-[#F2F7F5]">
-  <!-- Header/Navigation -->
-  <header class="border-b border-amber-400">
-    <div class="container mx-auto p-2 flex justify-between items-center">
-      <div class="text-xl text-back">
-        <img src="../../../../../assets/images/logo-white.png" alt="Logo aloha restobar" width="120"
-          [routerLink]="['/']" class="cursor-pointer">
-      </div>
-      <nav class="hidden md:flex space-x-8">
-        <!-- <a href="#" class="text-white hover:text-amber-400 p-menuitem-link">Inicio</a>
-        <a href="#" class="text-white hover:text-amber-400 p-menuitem-link">Nosotros</a>
-        <a href="#" class="text-white hover:text-amber-400 p-menuitem-link">Servicios</a>
-        <a href="#" class="text-white hover:text-amber-400 p-menuitem-link">Contáctanos</a> -->
-      </nav>
-      <a class="border border-amber-500 text-white px-6 py-3
-            rounded-full bg-amber-500
-            transition-colors p-button font-semibold"
-        href="https://wa.me/51955051526?text=¡Hola%20Aloha%20Restobar!%20%20Me%20encantaría%20reservar%20una%20mesa%20para%20disfrutar%20de%20su%20deliciosa%20comida.%20¿Tienen%20disponibilidad%20para%20este%20día?"
-        target="_blank">
-        Reservar ahora <i class="pi pi-arrow-right ml-2"></i>
-      </a>
-    </div>
-  </header>
+<div class="min-h-screen bg-surface-900 text-white">
 
   <!-- Hero Section -->
-  <section class="py-10">
-    <div class="container mx-auto px-4 items-center">
-      <div class="mb-8">
-        <h1 class="text-5xl text-black mb-4">
-          <span class="text-amber-500 font-medium">Muchos sabores</span> <br />
-          en un mismo lugar.
-        </h1>
-        <p class="text-gray-600 mb-8">
-          ¡Sumérgete en una explosión de sabores! Nuestras alitas crujientes por fuera y jugosas por dentro son la
-          excusa perfecta para reunirte con amigos. Acompáñalos con nuestras refrescantes creaciones
-          tropicales hasta exóticas mezclas hawaianas.
-        </p>
+  <section class="relative w-full h-screen bg-surface-900 overflow-hidden">
+    <!-- Header/Navigation -->
+    <app-header />
 
-        <div class="">
-          <a class="border border-amber-500 text-amber-500 px-6 py-3
-            rounded-full hover:bg-amber-500 hover:text-white
-            transition-colors p-button p-button-outlined font-semibold"
-            href="https://wa.me/51955051526?text=¡Hola%20Aloha%20Restobar!%20%20Me%20encantaría%20reservar%20una%20mesa%20para%20disfrutar%20de%20su%20deliciosa%20comida.%20¿Tienen%20disponibilidad%20para%20este%20día?"
-            target="_blank">
-            Reservar <i class="pi pi-arrow-right ml-2"></i>
-          </a>
-        </div>
-      </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <img src="https://res.cloudinary.com/dtttoiss7/image/upload/f_avif,q_40/v1747529947/Alitas_ey8rkc.png"
-          alt="Alitas BBQ" class="rounded-lg object-cover h-full" />
-        <img
-          src="https://res.cloudinary.com/dtttoiss7/image/upload/f_avif,q_60/v1747526859/interior-restaurant_emxdke.png"
-          alt="Restaurant interior" class="rounded-lg object-cover w-full" />
-      </div>
+    <div class="absolute inset-0 bg-cover bg-center z-0 transition-all duration-500 ease-in-out"
+      [style]="'background-image: url(' + currentBackgroundImage + '); background-blend-mode: overlay; background-color: rgba(0,0,0,0.4);'">
     </div>
-  </section>
 
-  <!-- Comfortable Section -->
-  <section class="py-10 border-t border-amber-400">
-    <div class="container px-4 grid md:grid-cols-2 gap-4 items-center">
-      <div class="relative">
-        <img src="https://res.cloudinary.com/dtttoiss7/image/upload/f_avif,q_50/v1747526868/ALITAS-BBQ_quwctd.png"
-          alt="Alitas bbq Aloha" class="rounded-full object-cover" />
-      </div>
-      <div>
-        <div class="flex items-center mb-4">
-          <h2 class="text-4xl text-pink-500">
-            Relájate en nuestro ambiente
+    <div class="relative z-10 h-full flex flex-col justify-center items-center px-2">
+
+      <div class="w-full">
+        <div class="max-w-fit backdrop-blur-sm px-2 rounded-lg">
+          <h2 class="text-5xl md:text-7xl font-bold mb-4 text-start">
+            Aloha <span class="text-amber-500">Restobar</span>
           </h2>
         </div>
-        <p class="text-gray-600 mb-8">
-          Sumérgete en una experiencia única donde el sabor y la comodidad se unen perfectamente. Nuestro
-          local ha sido diseñado pensando en cada detalle para ofrecerte un espacio donde puedas
-          disfrutar de momentos inolvidables. Desde la iluminación ambiental hasta nuestra selección musical,
-          todo está cuidadosamente elegido para complementar nuestra exclusiva carta de alitas y cócteles exóticos.
-        </p>
+      </div>
 
-        <div class="grid grid-cols-2">
-          <div class="mt-8">
-            <h3 class="text-xl mb-2">
-              Amplio y espectacular
-              <br />
-              Salón comedor
-            </h3>
-            <a class="border border-pink-500 text-pink-500 px-6 py-3 rounded-full hover:bg-pink-500 hover:text-white transition-colors mt-4 p-button p-button-outlined"
-              href="https://wa.me/51955051526?text=¡Hola%20Aloha%20Restobar!%20%20Me%20encantaría%20reservar%20una%20mesa%20para%20disfrutar%20de%20su%20deliciosa%20comida.%20¿Tienen%20disponibilidad%20para%20este%20día?"
-              target="_blank">
-              Reservar ahora <i class="pi pi-arrow-right ml-2"></i>
-            </a>
+      <div class="w-full mb-8">
+        <div class="flex items-center space-x-8 mt-6 max-w-fit backdrop-blur-sm px-2 rounded-lg">
+          <div class="flex items-center">
+            <i class="pi pi-clock text-amber-400 mr-1 text-lg"></i>
+            <span>7:00 pm - 12:00 am</span>
           </div>
-          <div class="flex justify-end">
-            <img src="https://res.cloudinary.com/dtttoiss7/image/upload/f_avif,q_30/v1747526878/MAI-TAI_uwktqc.png"
-              alt="Mai tai Aloha" class="rounded-lg w-25" />
+          <div class="flex items-center">
+            <i class="pi pi-map-marker text-amber-400 mr-1 text-lg"></i>
+            <span>Jr. Asamblea #433 - 2do Piso</span>
           </div>
         </div>
       </div>
-    </div>
-  </section>
 
-  <!-- Categorías Section -->
-  <section class="py-10 border-t border-amber-400">
-    <div class="container mx-auto px-4">
-      <div class="flex justify-between items-center mb-8">
-        <h2 class="text-3xl text-amber-500">Nuestras categorías</h2>
+      <div class="w-full">
+        <a class="mt-12 border border-gray-200 hover:border-amber-500 hover:bg-amber-500 p-4
+        transition-colors cursor-pointer rounded-lg"
+          href="https://wa.me/51955051526?text=¡Hola%20Aloha%20Restobar!%20%20Me%20encantaría%20reservar%20una%20mesa%20para%20disfrutar%20de%20su%20deliciosa%20comida.%20¿Tienen%20disponibilidad%20para%20este%20día?"
+          target="_blank">
+          Consultar disponibilidad
+          <i class="pi pi-arrow-right ms-1"></i>
+        </a>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-
-        <div class="col-span-2 bg-gray-200 rounded-lg p-8 p-card">
-          <div class="grid md:grid-cols-2 gap-6 p-card-body">
-            <div>
-              <h3 class="text-4xl text-red-500 mb-4 p-card-title font-medium">
-                Alitas
-              </h3>
-              <p class="text-gray-600 mb-6 p-card-content">
-                Descubre nuestras alitas premium en diversas presentaciones que conquistarán tu paladar. Desde las
-                tradicionales Buffalo con distintos niveles de picante, hasta nuestras exclusivas creaciones como las
-                acevichadas, BBQ honey y teriyaki.
-              </p>
-
-              <p class="text-gray-600 mb-8 p-card-content">
-                Todas nuestras alitas se sirven con papas fritas caseras y nuestras salsas especiales elaboradas
-                diariamente.
-              </p>
-              <a class="border border-red-500 text-red-500 px-6 py-3 rounded-full
-                hover:bg-red-500 hover:text-white transition-colors p-button p-button-outlined"
-                href="https://wa.me/51955051526?text=¡Hola%20Aloha%20Restobar!%20%20Soy%20un%20gran%20fanático%20de%20las%20alitas%20y%20me%20gustaría%20conocer%20todas%20las%20variedades%20y%20salsas%20que%20ofrecen."
-                target="_blank">
-                Consultar variedades <i class="pi pi-arrow-right ml-2"></i>
-              </a>
-            </div>
-            <div>
-              <img
-                src="https://res.cloudinary.com/dtttoiss7/image/upload/f_avif,q_40/v1747526908/ALITAS-ACEVICHADAS_npzrgd.png"
-                alt="Alitas acevichadas Aloha" class="rounded-lg object-cover w-full h-full" />
-            </div>
-          </div>
-        </div>
-
-        <div class="col-span-2 bg-gray-200 rounded-lg p-8 p-card">
-          <div class="grid md:grid-cols-2 gap-6 p-card-body">
-            <div>
-              <h3 class="text-4xl text-green-500 mb-4 p-card-title font-medium">
-                Cócteles
-              </h3>
-              <p class="text-gray-600 mb-6 p-card-content">
-                Nuestra barra ofrece una experiencia única con cócteles clásicos y de autor. Disfruta de nuestras
-                especialidades tropicales como el Mai Tai, Piña Colada y Sex on the Beach, así como nuestros
-                refrescantes mojitos en versiones de maracuyá, fresa y arándanos.
-              </p>
-
-              <p class="text-gray-600 mb-8 p-card-content">
-                Además, contamos con una selección de cócteles hawaianos exclusivos preparados con frutas frescas y
-                destilados premium que complementan perfectamente nuestras alitas.
-              </p>
-              <a class="border border-green-500 text-green-500 px-6 py-3 rounded-full hover:bg-green-500 hover:text-white transition-colors p-button p-button-outlined"
-                href="https://wa.me/51955051526?text=¡Hola%20Aloha%20Restobar!%20%20He%20oído%20maravillas%20sobre%20sus%20cócteles%20y%20me%20encantaría%20saber%20qué%20especialidades%20tienen%20en%20su%20carta.%20¿Ofrecen%20algún%20cóctel%20signature%20o%20con%20un%20toque%20tropical?"
-                target="_blank">
-                Consultar tipos <i class="pi pi-arrow-right ml-2"></i>
-              </a>
-            </div>
-            <div>
-              <img
-                src="https://res.cloudinary.com/dtttoiss7/image/upload/f_avif,q_40/v1747526892/MOJITO-CLASICO_hupcrq.png"
-                alt="Mojito clásico Aloha" class="rounded-lg object-cover w-full h-full" />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Por qué Section -->
-  <section class="py-10 border-t border-amber-400">
-    <div class="container mx-auto px-4">
-      <h2 class="text-4xl text-black mb-8">¿Por qué elegirnos?</h2>
-
-      <div class="grid md:grid-cols-2 gap-8 items-center">
-        <div class="card">
-          <p-galleria [value]="images" [showItemNavigators]="true" [showThumbnails]="false" [showIndicators]="true"
-            [showItemNavigatorsOnHover]="true" [autoPlay]="true" [circular]="true"
-            [responsiveOptions]="responsiveOptions" [containerStyle]="{ 'max-width': '640px' }">
-            <ng-template #item let-item>
-              <img [src]="item.src" [alt]="item.name" style="width: 100%; display: block;" />
-            </ng-template>
-            <ng-template #caption let-item class="p-1">
-              <div class="font-medium">{{ item.name }}</div>
-            </ng-template>
-          </p-galleria>
-        </div>
-        <div>
-          <h3 class="text-3xl text-amber-500 mb-6 font-medium">
-            Por la variedad y exquisitez de nuestras preparaciones
-          </h3>
-          <p class="text-gray-600 mb-8">
-            Nuestro restobar se distingue por ofrecer una experiencia gastronómica única donde las alitas de pollo son
-            las protagonistas. Cada receta ha sido cuidadosamente perfeccionada para garantizar el equilibrio perfecto
-            entre sabor, textura y presentación. Complementamos nuestra oferta con una selecta carta de cócteles
-            artesanales que realzan la experiencia culinaria.
-          </p>
-
-          <div class="grid grid-cols-2 gap-6">
-            <div class="flex items-start mb-4">
-              <div class="text-amber-500 mr-3">
-                <i class="pi pi-home w-8 h-8 flex items-center justify-center"></i>
-              </div>
-              <p class="text-gray-600">Ambiente acogedor y música seleccionada.</p>
-            </div>
-            <div class="flex items-start mb-4">
-              <div class="text-amber-500 mr-3">
-                <i class="pi pi-heart w-8 h-8 flex items-center justify-center"></i>
-              </div>
-              <p class="text-gray-600">Ingredientes frescos y de primera calidad.</p>
-            </div>
-            <div class="flex items-start mb-4">
-              <div class="text-amber-500 mr-3">
-                <i class="pi pi-star w-8 h-8 flex items-center justify-center"></i>
-              </div>
-              <p class="text-gray-600">Salsas caseras con recetas exclusivas.</p>
-            </div>
-            <div class="flex items-start mb-4">
-              <div class="text-amber-500 mr-3">
-                <i class="pi pi-check-circle w-8 h-8 flex items-center justify-center"></i>
-              </div>
-              <p class="text-gray-600">Servicio atento y personalizado.</p>
-            </div>
-            <div class="flex items-start mb-4">
-              <div class="text-amber-500 mr-3">
-                <i class="pi pi-map-marker w-8 h-8 flex items-center justify-center"></i>
-              </div>
-              <p class="text-gray-600">Ubicación estratégica y fácil acceso.</p>
-            </div>
-            <div class="flex items-start mb-4">
-              <div class="text-amber-500 mr-3">
-                <i class="pi pi-thumbs-up w-8 h-8 flex items-center justify-center"></i>
-              </div>
-              <p class="text-gray-600">Cocciones perfectas y presentaciones únicas.</p>
-            </div>
-            <div class="flex items-start mb-4">
-              <div class="text-amber-500 mr-3">
-                <i class="pi pi-clock w-8 h-8 flex items-center justify-center"></i>
-              </div>
-              <p class="text-gray-600">Horario extendido para tu comodidad.</p>
-            </div>
-            <div class="flex items-start mb-4">
-              <div class="text-amber-500 mr-3">
-                <i class="pi pi-globe w-8 h-8 flex items-center justify-center"></i>
-              </div>
-              <p class="text-gray-600">Fusión de sabores internacionales en cada plato.</p>
-            </div>
-          </div>
-
-          <a class="border border-amber-500 text-amber-500 px-6 py-3 rounded-full hover:bg-amber-500 hover:text-white transition-colors mt-6 p-button p-button-outlined"
-            href="https://wa.me/51955051526?text=¡Hola%20Aloha%20Restobar!%20%20Estoy%20pensando%20en%20visitarlos%20hoy%20mismo%20y%20me%20gustaría%20saber%20qué%20platos%20tienen%20disponibles%20para%20hoy.%20¿Cuentan%20con%20alguna%20especialidad%20del%20día%20o%20plato%20recomendado%20por%20el%20chef?%20¿Hay%20algo%20que%20se%20agote%20rápido%20y%20que%20debería%20reservar%20con%20anticipación?%20¡Tengo%20muchas%20ganas%20de%20probar%20su%20cocina!%20Gracias%20por%20la%20información.%20"
-            target="_blank">
-            Consultar disponibilidad <i class="pi pi-arrow-right ml-2"></i>
+      <div class="w-full mt-12 inline md:hidden">
+        <div class="flex space-x-4 max-w-fit backdrop-blur-sm px-2 py-1 rounded-lg">
+          <a href="https://www.facebook.com/share/16HoCToW8d/?mibextid=wwXIfr" target="_blank"
+            class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white hover:text-pink-400">
+            <i class="pi pi-tiktok hover:text-pink-400 text-2xl"></i>
+          </a>
+          <a href="https://www.tiktok.com/@aloha.restobar" target="_blank"
+            class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white hover:text-blue-400">
+            <i class="pi pi-facebook hover:text-blue-400 text-2xl"></i>
+          </a>
+          <a href="https://www.instagram.com/aloha.restobarpe" target="_blank"
+            class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white hover:text-pink-500">
+            <i class="pi pi-instagram hover:text-pink-500 text-2xl"></i>
+          </a>
+          <!-- <a href="tel:955051526" target="_blank"
+          class="w-8 h-8 rounded-full bg-gray-400 flex items-center justify-center">
+          <i class="pi pi-phone text-white text-2xl"></i>
+        </a> -->
+          <a href="https://wa.me/51955051526" target="_blank"
+            class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white hover:text-green-500">
+            <i class="pi pi-whatsapp hover:text-green-500 text-2xl"></i>
           </a>
         </div>
       </div>
+
     </div>
   </section>
 
-  <!-- Ubicación -->
-  <section class="py-12 border-t border-amber-400">
-    <div class="container mx-auto px-4">
+  <!-- Menu Section -->
+  <section class="py-16 px-6 bg-surface-900">
+    <h2 class="text-4xl md:text-5xl font-bold text-center mb-8">Nuestras especialidades</h2>
+
+    <!-- Menu Categories -->
+    <div class="flex flex-wrap justify-center gap-8 mb-12">
+      <button class="text-gray-400">Alitas</button>
+      <button class="text-gray-400">Bebidas</button>
+      <button class="text-gray-400">Cócteles</button>
+      <button class="text-gray-400">Tropicales</button>
+    </div>
+
+    <div class="card">
+
+      @if (loading()) {
+      <div class="col-span-full text-center">
+        <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+        <p>Cargando...</p>
+      </div>
+      }
+
+      @if (!loading()) {
+      <p-carousel [value]="platos()" [numVisible]="3" [numScroll]="3" [circular]="true"
+        [responsiveOptions]="responsiveOptions" autoplayInterval="5000">
+        <ng-template let-product #item>
+          <div class="border border-surface-200 dark:border-surface-700 rounded m-2 p-4">
+            <div class="mb-4">
+              <div class="relative mx-auto">
+                <img [src]="product.galeria[0] | cloudinaryImage:400:'avif'" [alt]="product.nombre"
+                  class="w-full rounded-border" />
+              </div>
+            </div>
+            <div class="mb-4 font-medium">{{ product.nombre }}</div>
+            <div class="flex justify-between items-center">
+              <div class="mt-0 font-medium text-lg">{{ product.precio | currency: 'S/ ' }}</div>
+              <span>
+                <p-button label="Consultar" icon="pi pi-whatsapp" styleClass="ml-2" outlined="true" severity="success"
+                  iconPos="right" />
+              </span>
+            </div>
+          </div>
+        </ng-template>
+      </p-carousel>
+      }
+
+    </div>
+  </section>
+
+  <!-- Ingredients Section -->
+  <section class="py-20 px-6 bg-surface-800 relative">
+    <div class="max-w-3xl mx-auto text-center">
+      <h2 class="text-4xl font-bold mb-8">Lo mejor para nuestros clientes</h2>
+      <p class="text-gray-300 mb-8 text-lg">
+        Nos enorgullece enormemente seleccionar cuidadosamente nuestros ingredientes para garantizar que los sabores de
+        nuestra comida sean lo más deliciosos y auténticos posible.
+      </p>
+
+      <div class="flex flex-wrap justify-center items-center gap-8">
+        <img src="../../../../../assets/images/fresh-ingredients.png" width="320" alt="Fresh herb"
+          class="object-contain" />
+      </div>
+    </div>
+  </section>
+
+  <!-- Comments Section -->
+  <section class="py-20 px-6 bg-surface-900 relative">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="text-4xl font-bold mb-8">Nuestros clientes dicen</h2>
+      <p class="text-gray-300 mb-8">
+        Opiniones y calificaciones sinceras de nuestros clientes.
+      </p>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <!-- Comment 1 -->
+        <div class="rounded-lg bg-surface-800 p-4">
+          <div class="flex justify-between">
+            <span class="font-semibold">Junior Pariona</span>
+            <span>
+              <i class="pi pi-star-fill text-amber-400 me-1"></i>
+              <i class="pi pi-star-fill text-amber-400 me-1"></i>
+              <i class="pi pi-star-fill text-amber-400 me-1"></i>
+              <i class="pi pi-star-fill text-amber-400 me-1"></i>
+              <i class="pi pi-star-fill text-amber-400"></i>
+            </span>
+          </div>
+
+          <p class="text-sm mt-2">
+            La comida fue simplemente espectacular; cada plato estaba lleno de sabor y presentado de manera impecable.
+            El personal fue muy atento y profesional, siempre asegurándose de que todo estuviera perfecto.
+          </p>
+        </div>
+
+        <!-- Comment 2 -->
+        <div class="rounded-lg bg-surface-800 p-4">
+          <div class="flex justify-between">
+            <span class="font-semibold">Robert Mendez</span>
+            <span>
+              <i class="pi pi-star-fill text-amber-400 me-1"></i>
+              <i class="pi pi-star-fill text-amber-400 me-1"></i>
+              <i class="pi pi-star-fill text-amber-400 me-1"></i>
+              <i class="pi pi-star-fill text-amber-400 me-1"></i>
+              <i class="pi pi-star-half-fill text-amber-400"></i>
+            </span>
+          </div>
+
+          <p class="text-sm mt-2">
+            ¡Qué delicia de lugar! El ambiente es relajado y perfecto para una cena en pareja o con amigos. La carta
+            ofrece una gran variedad de opciones y todas las que probamos fueron deliciosas.
+          </p>
+        </div>
+        <!-- Comment 1 -->
+        <div class="rounded-lg bg-surface-800 p-4">
+          <div class="flex justify-between">
+            <span class="font-semibold">Jhon Quispe</span>
+            <span>
+              <i class="pi pi-star-fill text-amber-400 me-1"></i>
+              <i class="pi pi-star-fill text-amber-400 me-1"></i>
+              <i class="pi pi-star-fill text-amber-400 me-1"></i>
+              <i class="pi pi-star-fill text-amber-400 me-1"></i>
+              <i class="pi pi-star text-amber-400"></i>
+            </span>
+          </div>
+
+          <p class="text-sm mt-2">
+            La comida era deliciosa y se notaba que estaba hecha con ingredientes frescos y de alta calidad. El personal
+            fue muy atento y nos hicieron sentir muy bienvenidos. El ambiente era moderno perfecto para una
+            noche con amigos.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Map Section -->
+  <section class="py-20 px-6 bg-surface-900 relative">
+    <div class="container mx-auto">
       <div class="flex justify-between items-center mb-8">
         <div class="flex items-center">
-          <i class="pi pi-map-marker ml-2 text-amber-500 text-3xl"></i>
+          <i class="pi pi-map-marker ml-2 text-3xl"></i>
         </div>
-        <h2 class="text-3xl text-black">Ubícanos</h2>
+        <h2 class="text-3xl">Ubícanos</h2>
       </div>
 
       <div class="">
@@ -277,6 +219,72 @@
           src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d261.4730117790286!2d-74.2241722587294!3d-13.155888231290072!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x91127dbea9857489%3A0xfa67ee6cb2218ffe!2sAloha%20Restobar!5e1!3m2!1ses-419!2spe!4v1747365874383!5m2!1ses-419!2spe"
           height="450" style="border:0; width:100%;" allowfullscreen="true" loading="lazy"
           referrerpolicy="no-referrer-when-downgrade" class="rounded-lg"></iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chars section -->
+  <section class="py-20 px-6 bg-surface-800 relative">
+    <div class="container max-w-3xl mx-auto ">
+      <h2 class="text-4xl mb-8">¿Por qué elegirnos?</h2>
+
+      <div>
+        <p class="mb-8">
+          Nuestro restobar se distingue por ofrecer una experiencia gastronómica única donde las alitas de pollo son
+          las protagonistas. Cada receta ha sido cuidadosamente perfeccionada para garantizar el equilibrio perfecto
+          entre sabor, textura y presentación.
+        </p>
+
+        <div class="grid grid-cols-2 gap-6">
+          <div class="flex items-start mb-4">
+            <div class="text-amber-500 mr-3">
+              <i class="pi pi-home w-8 h-8 flex items-center justify-center"></i>
+            </div>
+            <p class="text-gray-300">Ambiente acogedor y música seleccionada.</p>
+          </div>
+          <div class="flex items-start mb-4">
+            <div class="text-amber-500 mr-3">
+              <i class="pi pi-heart w-8 h-8 flex items-center justify-center"></i>
+            </div>
+            <p class="text-gray-300">Ingredientes frescos y de primera calidad.</p>
+          </div>
+          <div class="flex items-start mb-4">
+            <div class="text-amber-500 mr-3">
+              <i class="pi pi-star w-8 h-8 flex items-center justify-center"></i>
+            </div>
+            <p class="text-gray-300">Salsas caseras con recetas exclusivas.</p>
+          </div>
+          <div class="flex items-start mb-4">
+            <div class="text-amber-500 mr-3">
+              <i class="pi pi-check-circle w-8 h-8 flex items-center justify-center"></i>
+            </div>
+            <p class="text-gray-300">Servicio atento y personalizado.</p>
+          </div>
+          <div class="flex items-start mb-4">
+            <div class="text-amber-500 mr-3">
+              <i class="pi pi-map-marker w-8 h-8 flex items-center justify-center"></i>
+            </div>
+            <p class="text-gray-300">Ubicación estratégica y fácil acceso.</p>
+          </div>
+          <div class="flex items-start mb-4">
+            <div class="text-amber-500 mr-3">
+              <i class="pi pi-thumbs-up w-8 h-8 flex items-center justify-center"></i>
+            </div>
+            <p class="text-gray-300">Cocciones perfectas y presentaciones únicas.</p>
+          </div>
+          <div class="flex items-start mb-4">
+            <div class="text-amber-500 mr-3">
+              <i class="pi pi-clock w-8 h-8 flex items-center justify-center"></i>
+            </div>
+            <p class="text-gray-300">Horario extendido para tu comodidad.</p>
+          </div>
+          <div class="flex items-start mb-4">
+            <div class="text-amber-500 mr-3">
+              <i class="pi pi-globe w-8 h-8 flex items-center justify-center"></i>
+            </div>
+            <p class="text-gray-300">Fusión de sabores internacionales en cada plato.</p>
+          </div>
+        </div>
       </div>
     </div>
   </section>

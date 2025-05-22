@@ -1,1 +1,48 @@
-<p>header works!</p>,
+<!-- Header/Navigation -->
+<div class="absolute z-50 w-full px-2 py-2 flex items-center justify-between bg-surface-700/50">
+  <div class="">
+    <img src="../../../../../assets/images/logo.png" alt="Logo aloha restobar" width="90" [routerLink]="['/']"
+      class="cursor-pointer">
+  </div>
+
+  <div class="flex space-x-4">
+    <a [routerLink]="['/']" routerLinkActive="font-medium text-amber-500 underline"
+      [routerLinkActiveOptions]="{exact:true}" class="hover:font-semibold">
+      Inicio
+    </a>
+    <a [routerLink]="['/menu']" routerLinkActive="font-medium text-amber-500 underline">
+      Menú
+    </a>
+    <a [routerLink]="['/nosotros']" routerLinkActive="font-medium text-amber-500 underline">
+      Nosotros
+    </a>
+    <a href="">
+      Contacto
+    </a>
+  </div>
+
+  <div class="hidden md:inline">
+    <div class="flex space-x-4">
+      <a href="https://www.facebook.com/share/16HoCToW8d/?mibextid=wwXIfr" target="_blank"
+        class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white hover:text-pink-400">
+        <i class="pi pi-tiktok hover:text-pink-400"></i>
+      </a>
+      <a href="https://www.tiktok.com/@aloha.restobar" target="_blank"
+        class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white hover:text-blue-400">
+        <i class="pi pi-facebook hover:text-blue-400"></i>
+      </a>
+      <a href="https://www.instagram.com/aloha.restobarpe" target="_blank"
+        class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white hover:text-pink-500">
+        <i class="pi pi-instagram hover:text-pink-500"></i>
+      </a>
+      <!-- <a href="tel:955051526" target="_blank"
+            class="w-8 h-8 rounded-full bg-gray-400 flex items-center justify-center">
+            <i class="pi pi-phone text-white"></i>
+          </a> -->
+      <a href="https://wa.me/51955051526" target="_blank"
+        class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white hover:text-green-500">
+        <i class="pi pi-whatsapp hover:text-green-500"></i>
+      </a>
+    </div>
+  </div>
+</div>

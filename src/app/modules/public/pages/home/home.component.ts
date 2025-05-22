@@ -1,27 +1,84 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, OnDestroy, ChangeDetectorRef, Inject, PLATFORM_ID, inject } from '@angular/core';
+import { CurrencyPipe, isPlatformBrowser } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import { CarouselModule } from 'primeng/carousel';
+import { Carousel } from 'primeng/carousel';
 import { MenuModule } from 'primeng/menu';
-import { RouterLink } from '@angular/router';
-import { GalleriaModule } from 'primeng/galleria';
 import { FormsModule } from '@angular/forms';
+import { PlatosService } from '../../../../services/platos.service';
+import { CloudinaryImagePipe } from '../../../../pipes/cloudinary-image.pipe';
+import { HeaderComponent } from '../../common/header/header.component';
 
 @Component({
   selector: 'app-home',
   imports: [
     ButtonModule,
-    CarouselModule,
+    Carousel,
     CardModule,
     MenuModule,
-    RouterLink,
-    GalleriaModule,
-    FormsModule
+    FormsModule,
+    CurrencyPipe,
+    CloudinaryImagePipe,
+    HeaderComponent
   ],
   templateUrl: './home.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export default class HomeComponent {
+export default class HomeComponent implements OnInit, OnDestroy {
+
+  bgImages = [
+    '../../../../../assets/images/alitas.avif',
+    '../../../../../assets/images/cocteleria-tiki.webp',
+    '../../../../../assets/images/alitas3.avif'
+  ];
+
+  currentImageIndex = 0;
+  private intervalId: any;
+  private isBrowser: boolean;
+  private platoService = inject(PlatosService);
+  platos = this.platoService.platos;
+  loading = this.platoService.loading;
+
+  constructor(
+    private cdr: ChangeDetectorRef,
+    @Inject(PLATFORM_ID) platformId: Object
+  ) {
+    this.isBrowser = isPlatformBrowser(platformId);
+  }
+
+  ngOnInit() {
+    // Solo ejecutar en el navegador
+    if (this.isBrowser) {
+      this.startImageRotation();
+      this.obtenerPlatos();
+    }
+  }
+
+  obtenerPlatos() {
+    this.platoService.obtenerPlatos().subscribe({
+      error: (err) => {
+        console.log(err);
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
+  }
+
+  private startImageRotation() {
+    this.intervalId = setInterval(() => {
+      this.currentImageIndex = (this.currentImageIndex + 1) % this.bgImages.length;
+      this.cdr.detectChanges();
+    }, 4000);
+  }
+
+  get currentBackgroundImage() {
+    return this.bgImages[this.currentImageIndex];
+  }
+
   images = [
     {
       src: 'https://res.cloudinary.com/dtttoiss7/image/upload/f_avif,q_30/v1747526907/AKU-AKU_wnovej.png',
@@ -89,18 +146,21 @@ export default class HomeComponent {
     },
   ];
 
-  responsiveOptions: any[] = [
+  responsiveOptions = [
     {
-      breakpoint: '991px',
-      numVisible: 4
+      breakpoint: '1024px',
+      numVisible: 3,
+      numScroll: 1
     },
     {
-      breakpoint: '767px',
-      numVisible: 3
+      breakpoint: '768px',
+      numVisible: 2,
+      numScroll: 1
     },
     {
-      breakpoint: '575px',
-      numVisible: 1
+      breakpoint: '560px',
+      numVisible: 1,
+      numScroll: 1
     }
   ];
 }
