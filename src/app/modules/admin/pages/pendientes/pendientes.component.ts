@@ -18,6 +18,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputGroup } from 'primeng/inputgroup';
 import { PromocionService } from '../../../../services/promocion.service';
 import { NotaVentaService } from '../../../../services/nota-venta.service';
+import { Select } from 'primeng/select';
 
 @Component({
   selector: 'app-pendientes',
@@ -33,7 +34,8 @@ import { NotaVentaService } from '../../../../services/nota-venta.service';
     InputGroupAddon,
     InputGroupAddonModule,
     InputTextModule,
-    InputGroup
+    InputGroup,
+    Select
   ],
   providers: [MessageService],
   templateUrl: './pendientes.component.html',
@@ -63,6 +65,18 @@ export default class PendientesComponent implements OnInit {
   promo_code = '';
   descontado: boolean = false;
   id_promocion: string | null = null;
+
+  medios_pago = [
+    { name: 'Yape', code: 'Yape' },
+    { name: 'Plin', code: 'Plin' },
+    { name: 'Efectivo', code: 'Efectivo' },
+    { name: 'Transferencia', code: 'Transferencia' }
+  ];
+
+  selectedMP: { name: string; code: string } = {
+    name: '',
+    code: ''
+  };
 
   constructor() {
     if (isPlatformBrowser(this.platformId)) {
@@ -156,7 +170,7 @@ export default class PendientesComponent implements OnInit {
   }
 
   confirmarVenta() {
-    this.ventaService.confirmarVenta(this.id_promocion, this.id_venta).subscribe({
+    this.ventaService.confirmarVenta(this.id_promocion, this.selectedMP.code, this.id_venta).subscribe({
       next: (res) => {
         this.messageService.add({
           severity: 'success',

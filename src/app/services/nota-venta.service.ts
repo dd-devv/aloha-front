@@ -5,6 +5,7 @@ import { environment } from '../../environments/environment';
 import { NotasVentaRes, NotaVenta } from '../interfaces/notaVenta.interface';
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { catchError, Observable, of, tap, throwError } from 'rxjs';
+import { DataFlujo } from '../interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -90,6 +91,18 @@ export class NotaVentaService {
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
+  // Método para descargar en xls
+  descargarXls(pdfBlob: Blob, nombreArchivo: string): void {
+    const downloadLink = document.createElement('a');
+    const url = URL.createObjectURL(pdfBlob);
+    downloadLink.href = url;
+    downloadLink.download = nombreArchivo || 'nota-venta.xlsx';
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
   obtenerNotasVenta(): Observable<NotasVentaRes> {
 
     if (isPlatformServer(this.platformId)) {
@@ -150,5 +163,57 @@ export class NotaVentaService {
           }));
         })
       );
+  }
+
+  obtenerPdfReportes(data: DataFlujo): Observable<Blob> {
+    if (isPlatformServer(this.platformId)) {
+      return throwError(() => new Error('Operación no disponible en SSR'));
+    }
+
+    // Configurar los headers
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.authToken}`,
+      'Accept': 'application/pdf'
+    });
+
+    // Agregar parámetro de ancho si está definido
+    const params: any = {};
+
+
+    return this.http.post(`${this.apiUrl}notas-venta/reportes/pdf`, { data }, {
+      headers: headers,
+      params: params,
+      responseType: 'blob'
+    }).pipe(
+      catchError(error => {
+        return throwError(() => this.handleError(error));
+      })
+    );
+  }
+
+  obtenerExcelReportes(data: DataFlujo): Observable<Blob> {
+    if (isPlatformServer(this.platformId)) {
+      return throwError(() => new Error('Operación no disponible en SSR'));
+    }
+
+    // Configurar los headers
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.authToken}`,
+      'Accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    });
+
+    // Agregar parámetro de ancho si está definido
+    const params: any = {};
+
+
+    return this.http.post(`${this.apiUrl}notas-venta/reportes/excel`, { data }, {
+      headers: headers,
+      params: params,
+      responseType: 'blob'
+    }).pipe(
+      catchError(error => {
+        return throwError(() => this.handleError(error));
+      })
+    );
   }
 }

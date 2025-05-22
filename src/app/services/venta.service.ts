@@ -115,7 +115,7 @@ export class VentaService {
       );
   }
 
-  confirmarVenta(promocion: string | null, id_venta: string): Observable<VentaRes> {
+  confirmarVenta(promocion: string | null, medio_pago: string, id_venta: string): Observable<VentaRes> {
 
     if (isPlatformServer(this.platformId)) {
       return of({ success: false, message: 'Operación no disponible en SSR', data: {} as Venta } as VentaRes);
@@ -124,7 +124,7 @@ export class VentaService {
     this.loading.set(true);
     this.error.set(null);
 
-    return this.http.put<VentaRes>(`${this.apiUrl}ventas/${id_venta}/confirmar`, { promocion }, {
+    return this.http.put<VentaRes>(`${this.apiUrl}ventas/${id_venta}/confirmar`, { promocion, medio_pago }, {
       headers: {
         Authorization: `Bearer ${this.authToken}`
       }

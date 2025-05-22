@@ -5,8 +5,8 @@ import { TableModule } from 'primeng/table';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { FormsModule } from '@angular/forms';
-import { CalendarModule } from 'primeng/calendar';
 import { DatePicker } from 'primeng/datepicker';
+import { NotaVentaService } from '../../../../services/nota-venta.service';
 
 @Component({
   selector: 'app-flujo-caja',
@@ -26,6 +26,7 @@ import { DatePicker } from 'primeng/datepicker';
 export default class FlujoCajaComponent implements OnInit {
 
   private ventaService = inject(VentaService);
+  private nVentaService = inject(NotaVentaService);
 
   flujoCaja = this.ventaService.flujoCaja;
   loadingFlujo = this.ventaService.loading;
@@ -86,10 +87,6 @@ export default class FlujoCajaComponent implements OnInit {
 
   obtenerFlujoCaja() {
     this.ventaService.obtenerFlujoCaja(this.inicio, this.fin).subscribe({
-      next: (res) => {
-        // Los datos ya se actualizan automáticamente a través del signal
-        console.log('Flujo de caja cargado:', this.flujoCaja());
-      },
       error: (err) => {
         console.error('Error al cargar flujo de caja:', err);
       }
@@ -99,5 +96,29 @@ export default class FlujoCajaComponent implements OnInit {
   // Método para obtener las llaves (números de mesa) de un objeto ingresosPorMesa
   getMesasKeys(ingresosPorMesa: { [key: string]: number }): string[] {
     return Object.keys(ingresosPorMesa);
+  }
+
+  exportarPdf() {
+    this.nVentaService.obtenerPdfReportes(this.flujoCaja()).subscribe({
+      next: (pdfBlob) => {
+
+        this.nVentaService.descargarPdf(pdfBlob, `reportes-ventas.pdf`);
+      },
+      error: (err) => {
+        console.error('Error al obtener el PDF:', err);
+      }
+    });
+  }
+
+  exportarXls() {
+    this.nVentaService.obtenerExcelReportes(this.flujoCaja()).subscribe({
+      next: (pdfBlob) => {
+
+        this.nVentaService.descargarXls(pdfBlob, `reportes-ventas.xlsx`);
+      },
+      error: (err) => {
+        console.error('Error al obtener el XLS:', err);
+      }
+    });
   }
 }

@@ -28,8 +28,8 @@
               <span class="font-medium">{{venta.numeroVenta}} | <span class="text-sm">
                   <i class="pi pi-clock text-sm mx-1"></i> {{venta.createdAt | timeAgo}} </span></span>
 
-              <p-button icon="pi pi-cloud-download" [rounded]="true" [raised]="true" severity="contrast"
-                size="small" (onClick)="descargarPdfVenta(venta._id, venta.numeroVenta)" />
+              <p-button icon="pi pi-cloud-download" [rounded]="true" [raised]="true" severity="contrast" size="small"
+                (onClick)="descargarPdfVenta(venta._id, venta.numeroVenta)" />
             </div>
           </ng-template>
 
@@ -84,6 +84,11 @@
     <div class="font-semibold"> {{total_venta | currency: 'S/ '}}</div>
   </div>
 
+  <div class="card flex justify-center mt-6 w-full">
+    <p-select [options]="medios_pago" [(ngModel)]="selectedMP" optionLabel="name" placeholder="Medio de pago"
+      fluid="true" class="w-full" />
+  </div>
+
   <div class="mt-6">
     <p class="mb-2">
       Agregar descuento
@@ -99,7 +104,7 @@
 
   <div class="card flex justify-center mt-8">
     <p-button label="Confirmar venta" size="small" icon="pi pi-check" severity="success" (onClick)="confirmarVenta()"
-      [loading]="loadingVentas()" />
+      [loading]="loadingVentas()" [disabled]="!selectedMP" />
   </div>
 </p-dialog>
 

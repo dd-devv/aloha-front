@@ -21,6 +21,7 @@ import { PaginationComponent } from '../../components/pagination/pagination.comp
 import { PaginatePipe } from '../../../../pipes/paginate.pipe';
 import { InputIcon } from 'primeng/inputicon';
 import { IconField } from 'primeng/iconfield';
+import { Select } from 'primeng/select';
 
 @Component({
   selector: 'app-pendientes',
@@ -40,7 +41,8 @@ import { IconField } from 'primeng/iconfield';
     PaginationComponent,
     PaginatePipe,
     InputIcon,
-    IconField
+    IconField,
+    Select
   ],
   providers: [MessageService],
   templateUrl: './ventas.component.html',
@@ -76,6 +78,18 @@ export default class VentasComponent implements OnInit {
   promo_code = '';
   descontado: boolean = false;
   id_promocion: string | null = null;
+
+  medios_pago = [
+    { name: 'Yape', code: 'Yape' },
+    { name: 'Plin', code: 'Plin' },
+    { name: 'Efectivo', code: 'Efectivo' },
+    { name: 'Transferencia', code: 'Transferencia' }
+  ];
+
+  selectedMP: { name: string; code: string } = {
+    name: '',
+    code: ''
+  };
 
   constructor() {
     if (isPlatformBrowser(this.platformId)) {
@@ -217,7 +231,7 @@ export default class VentasComponent implements OnInit {
   }
 
   confirmarVenta() {
-    this.ventaService.confirmarVenta(this.id_promocion, this.id_venta).subscribe({
+    this.ventaService.confirmarVenta(this.id_promocion, this.selectedMP.code, this.id_venta).subscribe({
       next: (res) => {
         this.messageService.add({
           severity: 'success',

@@ -122,7 +122,9 @@
   }
 
   <div class="card flex justify-center gap-4 mt-6">
-    <p-button label="Exportar en PDF" icon="pi pi-file-pdf" severity="contrast" [outlined]="true" [raised]="true" />
-    <p-button label="Exportar en XLS" icon="pi pi-file-excel" severity="success" [outlined]="true" [raised]="true" />
+    <p-button label="Exportar en PDF" icon="pi pi-file-pdf" severity="contrast" [outlined]="true" [raised]="true"
+      (onClick)="exportarPdf()" />
+    <p-button label="Exportar en XLS" icon="pi pi-file-excel" severity="success" [outlined]="true" [raised]="true"
+      (onClick)="exportarXls()" />
   </div>
 </div>
