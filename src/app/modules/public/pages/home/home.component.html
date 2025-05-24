@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-surface-900 text-white">
+<div class="bg-surface-900 text-white">
 
   <!-- Hero Section -->
   <section class="relative w-full h-screen bg-surface-900 overflow-hidden">
@@ -7,7 +7,7 @@
 
 
     <div class="absolute inset-0 bg-cover bg-center z-0 transition-all duration-500 ease-in-out"
-      [style]="'background-image: url(' + currentBackgroundImage + '); background-blend-mode: overlay; background-color: rgba(0,0,0,0.4);'">
+      [style]="'background-image: url(' + currentBackgroundImage + '); background-blend-mode: overlay; background-color: rgba(0,0,0,0.2);'">
     </div>
 
     <div class="relative z-10 h-full flex flex-col justify-center items-center px-2">
@@ -21,14 +21,14 @@
       </div>
 
       <div class="w-full mb-8">
-        <div class="flex items-center space-x-8 mt-6 max-w-fit backdrop-blur-sm px-2 rounded-lg">
-          <div class="flex items-center">
-            <i class="pi pi-clock text-amber-400 mr-1 text-lg"></i>
-            <span>7:00 pm - 12:00 am</span>
+        <div class="grid grid-cols-1 md:grid-cols-2 space-x-8 mt-6 max-w-fit backdrop-blur-sm p-2 rounded-lg">
+          <div class="flex items-center mt-1">
+            <i class="pi pi-clock text-amber-400 mr-2 text-lg"></i>
+            <span>6 PM - 12 AM</span>
           </div>
-          <div class="flex items-center">
-            <i class="pi pi-map-marker text-amber-400 mr-1 text-lg"></i>
-            <span>Jr. Asamblea #433 - 2do Piso</span>
+          <div class="flex items-center mt-1">
+            <i class="pi pi-map-marker text-amber-400 mr-2 text-lg"></i>
+            <a href="https://maps.app.goo.gl/U4Lhf9ZeVLTGF5996" target="_blank">Jr. Asamblea #433 - 2do Piso</a>
           </div>
         </div>
       </div>

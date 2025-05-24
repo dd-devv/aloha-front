@@ -33,6 +33,10 @@ export const routes: Routes = [
       {
         path: 'menu',
         loadComponent: () => import('./modules/public/pages/menu/menu.component')
+      },
+      {
+        path: 'contacto',
+        loadComponent: () => import('./modules/public/pages/contact/contact.component')
       }
     ]
   },
