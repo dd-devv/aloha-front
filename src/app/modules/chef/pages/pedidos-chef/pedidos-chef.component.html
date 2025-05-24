@@ -4,18 +4,20 @@
     <p class="text-center text-xl font-semibold my-4 text-primary">Pedidos por mesa</p>
 
     @if (loading()) {
-      Cargandoo
+
     }
 
     @if (!loading()) {
-
-    }
-
     <!-- Cards -->
     @for (mesa of comandasAll(); track $index) {
     <p-card styleClass="mb-4">
       <ng-template pTemplate="header">
+        @if (mesa.mesa == 0) {
+        <h3 class="text-xl font-bold text-center py-3 m-0">Barra</h3>
+        }
+        @if (mesa.mesa !== 0) {
         <h3 class="text-xl font-bold text-center py-3 m-0">Mesa {{mesa.mesa}} </h3>
+        }
       </ng-template>
 
       <div class="mb-4">
@@ -33,13 +35,15 @@
               <td class="flex-1 align-middle text-end text-xl">
                 <i class="pi pi-times"></i> {{comanda.cantidad}}
                 <p-checkbox [(ngModel)]="comandaCheckedMap[comanda._id]" [binary]="true" class="ms-2 !pb-2"
-                  inputId="comanda-{{comanda._id}}" value="Large" size="large" (onChange)="marcarComoEntregado(comanda._id)" />
+                  inputId="comanda-{{comanda._id}}" value="Large" size="large"
+                  (onChange)="marcarComoEntregado(comanda._id)" />
               </td>
             </tr>
           </ng-template>
         </p-table>
       </div>
     </p-card>
+    }
     }
 
   </div>
