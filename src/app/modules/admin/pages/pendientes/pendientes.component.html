@@ -3,7 +3,9 @@
     <ng-template #header>
       <div class="flex items-center gap-4 px-2 text-primary">
         <i class="pi pi-shopping-cart text-2xl"></i>
-        <span class="font-bold">Ventas pendientes por mesa</span>
+        <span class="font-bold">Ventas pendientes</span>
+
+        <p-button label="Venta" size="small" icon="pi pi-plus" (onClick)="showDialogVenta()" />
       </div>
     </ng-template>
 
@@ -104,8 +106,102 @@
 
   <div class="card flex justify-center mt-8">
     <p-button label="Confirmar venta" size="small" icon="pi pi-check" severity="success" (onClick)="confirmarVenta()"
-      [loading]="loadingVentas()" [disabled]="!selectedMP" />
+      [loading]="loadingVentas()" [disabled]="!selectedMP.code" />
   </div>
 </p-dialog>
 
+<!-- Modal de registro de venta -->
+<p-dialog header="Registrar venta en Barra" [modal]="true" [(visible)]="visible1" [style]="{ width: '25rem' }"
+  maskStyleClass="backdrop-blur-sm">
+
+  <div class="min-h-96">
+
+    <div class="card mb-6">
+      <p-message closable severity="warn" icon="pi pi-exclamation-triangle">
+        <small>
+          Las ventas de barra deben ser pagadas antes de registrar.
+        </small>
+      </p-message>
+    </div>
+
+    <p-multiselect [options]="platos()" [(ngModel)]="selectedPlatos" placeholder="Seleccione platos"
+      optionLabel="nombre" styleClass="w-full" display="chip" (onChange)="onPlatoSelect($event)">
+      <ng-template pTemplate="item" let-plato>
+        <div class="flex items-center gap-2">
+          <img [src]="plato.galeria[0] | cloudinaryImage:100:'avif'" style="width: 24px" class="rounded" />
+          <div>{{ plato.nombre }}</div>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header">
+        <div class="font-medium px-3 py-2">Seleccione platos o bebidas</div>
+      </ng-template>
+    </p-multiselect>
+
+    <div class="card flex justify-center mt-6 w-full">
+      <p-select [options]="medios_pago" [(ngModel)]="selectedMP" optionLabel="name" placeholder="Medio de pago"
+        fluid="true" class="w-full" />
+    </div>
+
+    <div class="card mt-4">
+      <p-dataView #dv [value]="selectedPlatos">
+        <ng-template #list let-items>
+          <div class="">
+            <div class="col-12" *ngFor="let item of items; let first = first">
+              <div class="flex p-4 gap-4" [ngClass]="{ 'border-t border-surface-200 dark:border-surface-700': !first }">
+                <!-- Imagen a la izquierda -->
+                <div class="flex-none w-30">
+                  <img class="rounded-border w-full" [src]="item.galeria[0] | cloudinaryImage:150:'avif'"
+                    [alt]="item.nombre" />
+                </div>
+
+                <!-- Contenido a la derecha alineado verticalmente con la imagen -->
+                <div class="">
+                  <!-- Nombre del producto -->
+                  <div class="font-medium text-green-500">{{ item.nombre }}</div>
+
+                  <!-- Precio y precio total -->
+                  <div class="flex justify-between mt-2">
+                    <span class="text-xl font-semibold">
+                      {{item.precio | currency:'S/ '}}
+                    </span>
+                  </div>
+
+                  <!-- Control de cantidad -->
+                  <div class="flex gap-2 items-center mt-2">
+                    <p-button icon="pi pi-minus" severity="secondary" (click)="decrementarCantidad(item)" />
+
+                    <input pInputText type="number" [value]="item.cantidad" style="width: 60px" class="text-center"
+                      (change)="actualizarCantidad(item, $event)" />
+
+                    <p-button icon="pi pi-plus" severity="secondary" (click)="incrementarCantidad(item)" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+
+        <ng-template pTemplate="empty">
+          <div class="text-center p-4">
+            <p>Seleccione platos para agregar a la venta</p>
+          </div>
+        </ng-template>
+      </p-dataView>
+    </div>
+
+    <!-- Resumen de la venta -->
+    <div class="flex justify-between p-4 mt-4 bg-gray-300/30 rounded-md">
+      <div class="text-lg font-bold">Subtotal:</div>
+      <div class="text-lg font-bold">{{subtotal | currency:'S/ '}}</div>
+    </div>
+  </div>
+
+  <div class="flex justify-end gap-2 mt-4">
+    <p-button label="Cancelar" severity="secondary" (click)="visible = false" />
+    <p-button label="Guardar venta" icon="pi pi-check" severity="success"
+      [disabled]="selectedPlatos.length === 0 || !selectedMP.code" (click)="guardarVenta()"
+      [loading]="loadingVentas()" />
+  </div>
+
+</p-dialog>
 <p-toast />

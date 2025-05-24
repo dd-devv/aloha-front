@@ -8,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { CurrencyPipe } from '@angular/common';
 import { CloudinaryImagePipe } from '../../../../pipes/cloudinary-image.pipe';
 import { PlatosService } from '../../../../services/platos.service';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-menu',
@@ -27,12 +28,14 @@ import { PlatosService } from '../../../../services/platos.service';
 export default class MenuComponent implements OnInit {
 
   private platoService = inject(PlatosService);
+  private title = inject(Title);
   platos = this.platoService.platos;
   loading = this.platoService.loading;
 
 
   ngOnInit(): void {
     this.obtenerPlatos();
+    this.title.setTitle('Aloha | Menú');
   }
 
   obtenerPlatos() {

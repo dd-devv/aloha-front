@@ -30,7 +30,6 @@ import { io, Socket } from 'socket.io-client';
     CurrencyPipe,
     InputGroupAddonModule,
     InputTextModule,
-    ButtonModule,
     ToastModule
   ],
   providers: [MessageService],

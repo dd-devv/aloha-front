@@ -88,7 +88,11 @@
           <td>
             @for (mesa of getMesasKeys(detalle.ingresosPorMesa); track $index) {
             <div>
+              @if (mesa.includes('0')) {
+              Barra: {{ detalle.ingresosPorMesa[mesa] | currency:'S/ ' }}
+              } @else {
               Mesa {{ mesa }}: {{ detalle.ingresosPorMesa[mesa] | currency:'S/ ' }}
+              }
             </div>
             }
           </td>

@@ -8,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { PlatosService } from '../../../../services/platos.service';
 import { CloudinaryImagePipe } from '../../../../pipes/cloudinary-image.pipe';
 import { HeaderComponent } from '../../common/header/header.component';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-home',
@@ -36,6 +37,7 @@ export default class HomeComponent implements OnInit, OnDestroy {
   private intervalId: any;
   private isBrowser: boolean;
   private platoService = inject(PlatosService);
+  private title = inject(Title);
   platos = this.platoService.platos;
   loading = this.platoService.loading;
 
@@ -49,6 +51,7 @@ export default class HomeComponent implements OnInit, OnDestroy {
   ngOnInit() {
     // Solo ejecutar en el navegador
     if (this.isBrowser) {
+      this.title.setTitle('Aloha | Inicio');
       this.startImageRotation();
       this.obtenerPlatos();
     }
