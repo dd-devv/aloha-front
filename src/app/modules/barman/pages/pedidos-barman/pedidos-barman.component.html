@@ -8,6 +8,7 @@
     }
 
     @if (!loading()) {
+    }
     <!-- Cards -->
     @for (mesa of comandasAll(); track $index) {
     <p-card styleClass="mb-4">
@@ -43,7 +44,6 @@
         </p-table>
       </div>
     </p-card>
-    }
     }
   </div>
 </div>
