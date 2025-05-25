@@ -9,6 +9,7 @@ import { PlatosService } from '../../../../services/platos.service';
 import { CloudinaryImagePipe } from '../../../../pipes/cloudinary-image.pipe';
 import { HeaderComponent } from '../../common/header/header.component';
 import { Title } from '@angular/platform-browser';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -20,7 +21,8 @@ import { Title } from '@angular/platform-browser';
     FormsModule,
     CurrencyPipe,
     CloudinaryImagePipe,
-    HeaderComponent
+    HeaderComponent,
+    RouterLink
   ],
   templateUrl: './home.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
