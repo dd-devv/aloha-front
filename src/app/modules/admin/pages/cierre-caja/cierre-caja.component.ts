@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
-import { environment } from '../../../../../environments/environment';
-import { CurrencyPipe, DatePipe, TitleCasePipe, UpperCasePipe } from '@angular/common';
+import { CurrencyPipe, DatePipe } from '@angular/common';
 import { FieldsetModule } from 'primeng/fieldset';
 import { TableModule } from 'primeng/table';
 import { Button } from 'primeng/button';
@@ -10,15 +9,12 @@ import { FormsModule } from '@angular/forms';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
 import { NotaVentaService } from '../../../../services/nota-venta.service';
-import { NotaVenta } from '../../../../interfaces/notaVenta.interface';
 import { Tag } from 'primeng/tag';
 import { AlmacenService } from '../../../../services/almacen.service';
 import { PanelModule } from 'primeng/panel';
-import { CloudinaryImagePipe } from '../../../../pipes/cloudinary-image.pipe';
 import { CierreCajaService } from '../../../../services/cierre-caja.service';
 import { Dialog } from 'primeng/dialog';
 import { Message } from 'primeng/message';
-import { finalize } from 'rxjs';
 import { RouterLink } from '@angular/router';
 @Component({
   selector: 'app-notas-venta',
@@ -34,9 +30,9 @@ import { RouterLink } from '@angular/router';
     DatePipe,
     Tag,
     PanelModule,
-    CloudinaryImagePipe,
-    UpperCasePipe,
-    TitleCasePipe,
+    // CloudinaryImagePipe,
+    // UpperCasePipe,
+    // TitleCasePipe,
     Dialog,
     Message,
     RouterLink

@@ -53,7 +53,7 @@ export const roleGuard = (allowedRoles: String): CanActivateFn => {
 
     if (!isAuthenticated) {
       const redirectUrl = state.url;
-      router.navigate(['/login'], { queryParams: { returnUrl: redirectUrl } });
+      router.navigate(['/login']);
       return false;
     }
 

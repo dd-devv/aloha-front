@@ -1,15 +1,15 @@
 <div class="card">
   <p-fieldset>
     <ng-template #header>
-      <div class="flex items-center gap-4 px-2 text-primary">
-        <i class="pi pi-lock text-2xl"></i>
-        <span class="font-bold">Cierre de caja</span>
+      <div class="flex items-center gap-4 px-2">
+        <i class="pi pi-lock text-2xl text-primary"></i>
+        <span class="font-bold text-primary">Cierre de caja</span>
 
         <p-button label="Confirmar" [raised]="true" icon="pi pi-check" severity="success" size="small"
           (onClick)="showDialog()" />
 
-        <i class="pi pi-calendar-clock text-xl text-gray-500 cursor-pointer"
-        [routerLink]="['/admin/historial-cierre-caja']"></i>
+        <i class="pi pi-calendar-clock text-xl cursor-pointer"
+          [routerLink]="['/admin/historial-cierre-caja']"></i>
       </div>
 
     </ng-template>
@@ -76,7 +76,7 @@
       </div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-2">
+    <!-- <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-2">
       @for (movimiento of movimientosinventario(); track movimiento._id) {
       <div class="card">
         <p-panel>
@@ -106,7 +106,7 @@
         </p-panel>
       </div>
       }
-    </div>
+    </div> -->
   </p-fieldset>
 </div>
 
