@@ -76,51 +76,105 @@
       <ng-template pTemplate="header">
         <tr>
           <th>Fecha</th>
-          <th class="whitespace-nowrap">Ingresos por mesa</th>
-          <th class="whitespace-nowrap">Total ingresos</th>
-          <th class="whitespace-nowrap">Total egresos</th>
-          <th class="whitespace-nowrap">Balance I-E</th>
+          <th class="whitespace-nowrap text-center">Platos vendidos</th>
+          <th class="whitespace-nowrap text-center">Movimientos inventario</th>
+          <th class="whitespace-nowrap text-end">Balance I-E</th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-detalle>
         <tr>
           <td>{{ detalle.fecha | date:'dd/MM/yyyy' }}</td>
           <td>
-            @for (mesa of getMesasKeys(detalle.ingresosPorMesa); track $index) {
-            <div>
-              @if (mesa.includes('0')) {
-              Barra: {{ detalle.ingresosPorMesa[mesa] | currency:'S/ ' }}
-              } @else {
-              Mesa {{ mesa }}: {{ detalle.ingresosPorMesa[mesa] | currency:'S/ ' }}
-              }
-            </div>
-            }
-          </td>
-          <td class="font-medium text-purple-500">{{ detalle.totalIngresosDia | currency:'S/ ' }}</td>
-          <td class="font-medium text-orange-500">{{ detalle.egresosDia | currency:'S/ ' }}</td>
-          <td class="font-medium">
-            {{ detalle.totalIngresosDia - detalle.egresosDia | currency:'S/ ' }}
-          </td>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="footer">
+            <p-table [value]="detalle.platos">
+
+              <ng-template pTemplate="header">
         <tr>
-          <td colspan="2" class="text-right font-bold">Totales:</td>
-          <td class="text-green-500 font-bold">{{ flujoCaja().totalIngresos | currency:'S/ ' }}
-          </td>
-          <td class="text-red-400 font-bold">{{ flujoCaja().totalEgresos | currency:'S/ ' }}</td>
-          <td
-            [class]="{'text-green-500': flujoCaja().totalIngresos - flujoCaja().totalEgresos > 0, 'text-red-400': flujoCaja().totalIngresos - flujoCaja().totalEgresos < 0}"
-            class="font-bold">
-            {{ flujoCaja().totalIngresos - flujoCaja().totalEgresos | currency:'S/ ' }}
-          </td>
+          <th>Plato</th>
+          <th>P/U</th>
+          <th>Cant</th>
+          <th class="text-end">Subtotal</th>
         </tr>
       </ng-template>
-      <ng-template pTemplate="emptymessage">
+      <ng-template pTemplate="body" let-plato>
         <tr>
-          <td colspan="5" class="text-center p-4">No hay datos disponibles para el periodo seleccionado.</td>
+          <td>
+            {{plato.nombre}}
+          </td>
+          <td>
+            {{plato.precio}}
+          </td>
+          <td>
+            {{plato.cantidad}}
+          </td>
+          <td class="text-end">
+            {{plato.subtotal | currency: 'S/'}}
+          </td>
         </tr>
       </ng-template>
+    </p-table>
+    </td>
+    <td>
+      <p-table [value]="detalle.egresos">
+
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Producto</th>
+            <th>P/Und.</th>
+            <th>Cant</th>
+            <th class="text-end">Subtotal</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-egreso>
+          <tr>
+            <td>
+              {{egreso.producto}}
+            </td>
+            <td>
+              {{egreso.subtotal / egreso.cantidad | currency: 'S/'}}
+            </td>
+            <td>
+              {{egreso.cantidad}}<small>{{egreso.unidades | slice:0:3}}</small>
+            </td>
+            <td class="text-end">
+              {{egreso.subtotal | currency: 'S/'}}
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </td>
+
+    <td class="font-medium text-end">
+      {{ detalle.totalIngresosDia - detalle.totalEgresosDia | currency:'S/ ' }}
+    </td>
+    </tr>
+    <tr>
+      <td class="font-semibold">Subtotales</td>
+      <td class="text-end font-semibold"> Subtotal ventas: {{ detalle.totalIngresosDia | currency:'S/ ' }}</td>
+      <td class="text-end font-semibold">Subtotal egresos: {{ detalle.totalEgresosDia | currency:'S/ ' }}</td>
+      <td class="font-semibold text-end"
+        [class]="{'text-green-500': detalle.totalIngresosDia - detalle.totalEgresosDia > 0, 'text-red-400': detalle.totalIngresosDia - detalle.totalEgresosDia < 0}">
+        {{ detalle.totalIngresosDia - detalle.totalEgresosDia | currency:'S/ ' }}
+      </td>
+    </tr>
+    </ng-template>
+    <ng-template pTemplate="footer">
+      <tr>
+        <td class="text-right font-bold">Totales:</td>
+        <td class="text-green-500 font-bold text-end">{{ flujoCaja().totalIngresos | currency:'S/ ' }}
+        </td>
+        <td class="text-red-400 font-bold text-end">{{ flujoCaja().totalEgresos | currency:'S/ ' }}</td>
+        <td
+          [class]="{'text-green-500': flujoCaja().totalIngresos - flujoCaja().totalEgresos > 0, 'text-red-400': flujoCaja().totalIngresos - flujoCaja().totalEgresos < 0}"
+          class="font-bold text-end">
+          {{ flujoCaja().totalIngresos - flujoCaja().totalEgresos | currency:'S/ ' }}
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="5" class="text-center p-4">No hay datos disponibles para el periodo seleccionado.</td>
+      </tr>
+    </ng-template>
     </p-table>
   </div>
   }

@@ -77,12 +77,31 @@ export interface FlujoCajaRes {
 export interface DataFlujo {
   totalIngresos: number;
   totalEgresos:  number;
+  balance:       number;
   detalle:       DetalleFlujo[];
 }
 
 export interface DetalleFlujo {
   fecha:            Date;
-  ingresosPorMesa:  { [key: string]: number };
+  platos:           PlatoFlujo[];
+  egresos:          Egreso[];
   totalIngresosDia: number;
-  egresosDia:       number;
+  totalEgresosDia:  number;
+}
+
+export interface Egreso {
+  _id:       string;
+  producto:  string;
+  unidades:  string;
+  cantidad:  number;
+  subtotal:  number;
+  createdAt: Date;
+}
+
+export interface PlatoFlujo {
+  nombre:   string;
+  precio:   number;
+  cantidad: number;
+  subtotal: number;
+  imagen:   string;
 }
