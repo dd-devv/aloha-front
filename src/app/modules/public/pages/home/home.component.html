@@ -12,7 +12,7 @@
 
     <div class="relative z-10 h-full flex flex-col justify-center items-center px-2">
 
-      <div class="w-full">
+      <div class="w-full ml-4 md:ml-16 lg:ml-36">
         <div class="max-w-fit backdrop-blur-sm px-2 rounded-lg">
           <div class="">
             <img src="../../../../../assets/svg/isotipo.svg" alt="Logo aloha restobar" width="320">
@@ -20,11 +20,11 @@
         </div>
       </div>
 
-      <div class="w-full mb-8">
+      <div class="w-full ml-4 md:ml-16 lg:ml-36 mb-8">
         <div class="grid grid-cols-1 md:grid-cols-2 space-x-8 mt-6 max-w-fit backdrop-blur-sm p-2 rounded-lg">
           <div class="flex items-center mt-1">
             <i class="pi pi-clock text-amber-400 mr-2 text-lg"></i>
-            <span>6 PM - 12 AM</span>
+            <span>6PM - 12AM</span>
           </div>
           <div class="flex items-center mt-1">
             <i class="pi pi-map-marker text-amber-400 mr-2 text-lg"></i>
@@ -33,7 +33,7 @@
         </div>
       </div>
 
-      <div class="w-full">
+      <div class="w-full ml-4 md:ml-16 lg:ml-36">
         <a class="mt-12 border border-gray-200 hover:border-amber-500 hover:bg-amber-500 p-4
         transition-colors cursor-pointer rounded-lg"
           href="https://wa.me/51955051526?text=¡Hola%20Aloha%20Restobar!%20%20Me%20encantaría%20reservar%20una%20mesa%20para%20disfrutar%20de%20su%20deliciosa%20comida.%20¿Tienen%20disponibilidad%20para%20este%20día?"
@@ -43,7 +43,7 @@
         </a>
       </div>
 
-      <div class="w-full mt-12 inline md:hidden">
+      <div class="w-full ml-4 md:ml-16 lg:ml-36 mt-12 inline md:hidden">
         <div class="flex space-x-4 max-w-fit backdrop-blur-sm px-2 py-1 rounded-lg">
           <a href="https://www.tiktok.com/@aloha.restobar" target="_blank"
             class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white hover:text-pink-400">
@@ -110,8 +110,12 @@
             <div class="flex justify-between items-center">
               <div class="mt-0 font-medium text-lg">{{ product.precio | currency: 'S/ ' }}</div>
               <span>
-                <p-button label="Consultar" icon="pi pi-whatsapp" styleClass="ml-2" outlined="true" severity="success"
-                  iconPos="right" />
+
+                <a href="https://wa.me/51955051526?text=¡Hola%20Aloha%20Restobar!%20%20Me%20encantaría%20saber%20si%20tienen%20disponible%20el%20plato%20'{{product.nombre}}'"
+                  target="_blank">
+                  <p-button label="Consultar" icon="pi pi-whatsapp" styleClass="ml-2" outlined="true" severity="success"
+                    iconPos="right" />
+                </a>
               </span>
             </div>
           </div>
