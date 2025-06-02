@@ -1,0 +1,98 @@
+<div class="card">
+  <p-fieldset>
+    <ng-template #header>
+      <div class="flex items-center gap-4 px-2 text-primary">
+        <i class="pi pi-list-check text-2xl"></i>
+        <span class="font-bold">Categorías</span>
+
+        <p-button label="Agregar" [raised]="true" icon="pi pi-plus" severity="secondary" size="small"
+          (click)="showDialog()" />
+      </div>
+    </ng-template>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 py-2">
+      @for (categoria of categoriasFiltrados() | paginate:currentPage:pageSize; track categoria._id) {
+      <div class="card">
+        <p-panel>
+          <ng-template #header class="p-1">
+            <span class="font-bold">{{categoria.descripcion}}</span>
+          </ng-template>
+          <ng-template #icons>
+
+            <p-button icon="pi pi-pencil" severity="success" outlined="true" variant="text" size="small" class="me-2"
+              rounded (click)="showDialogUpdate(categoria)" />
+
+            <p-confirmpopup />
+            <p-button icon="pi pi-trash" severity="danger" outlined="true" variant="text" size="small" rounded
+              (click)="confirmDelete($event, categoria.nombre, categoria._id)" />
+          </ng-template>
+
+          <div class="flex flex-wrap items-center justify-between gap-4 mt-1">
+            <span class="text-sm text-surface-500 dark:text-surface-400">
+              <span>
+                Creado {{categoria.createdAt | date: 'dd/MM/YY hh:mm aa'}}
+              </span>
+            </span>
+          </div>
+        </p-panel>
+      </div>
+      }
+    </div>
+    <app-pagination [currentPage]="currentPage" [totalPages]="totalPages" (pageChange)="onPageChange($event)" />
+  </p-fieldset>
+
+</div>
+
+<!-- Modal de registro de categoría -->
+<p-dialog header="Registrar categoría" [modal]="true" [(visible)]="visible" [style]="{ width: '25rem' }"
+  maskStyleClass="backdrop-blur-sm">
+  <form [formGroup]="registroForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+    <div class="flex flex-col mt-2">
+      <p-floatlabel variant="on">
+        <input id="descripcion" pInputText formControlName="descripcion" autocomplete="off" fluid="true" />
+        <label for="descripcion" class="rounded">
+          <i class="pi pi-comment me-1"></i>
+          Descripción
+        </label>
+      </p-floatlabel>
+
+      @if (isInvalid('descripcion', registroForm)) {
+      <small class="text-red-400 mt-1">{{ getErrorMessage('descripcion', registroForm) }}</small>
+      }
+    </div>
+
+    <div class="flex justify-center">
+      <p-button type="submit" [disabled]="registroForm.invalid || isLoading" label="Registrar categoría"
+        icon="pi pi-plus" [loading]="isLoading" />
+    </div>
+  </form>
+</p-dialog>
+
+<!-- Modal de actualizacion de categoría -->
+<p-dialog header="Actualizar categoría" [modal]="true" [(visible)]="visibleUpdate" [style]="{ width: '25rem' }"
+  maskStyleClass="backdrop-blur-sm">
+
+  <form [formGroup]="updateForm" (ngSubmit)="onUpdateSubmit()" class="flex flex-col gap-4">
+
+    <div class="flex flex-col mt-2">
+      <p-floatlabel variant="on">
+        <input id="descripcion" pInputText formControlName="descripcion" autocomplete="off" fluid="true" />
+        <label for="descripcion" class="rounded">
+          <i class="pi pi-comment me-1"></i>
+          Descripción
+        </label>
+      </p-floatlabel>
+
+      @if (isInvalid('descripcion', registroForm)) {
+      <small class="text-red-400 mt-1">{{ getErrorMessage('descripcion', registroForm) }}</small>
+      }
+    </div>
+
+    <div class="flex justify-center">
+      <p-button type="submit" [disabled]="updateForm.invalid || isLoading" label="Actualizar" icon="pi pi-check"
+        [loading]="isLoading" />
+    </div>
+  </form>
+</p-dialog>
+
+<p-toast />

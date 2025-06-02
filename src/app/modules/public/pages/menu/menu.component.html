@@ -3,14 +3,21 @@
 
   <!-- menu -->
   <section class="py-16 px-6 bg-surface-900">
-    <h2 class="text-4xl md:text-5xl font-bold text-center my-8">Ofrecemos</h2>
+    <h2 class="text-4xl md:text-5xl font-bold text-center my-8">Nuestro menú</h2>
 
     <!-- Menu Categories -->
-    <div class="flex flex-wrap justify-center gap-8 mb-12">
-      <button class="text-gray-400">Alitas</button>
-      <button class="text-gray-400">Bebidas</button>
-      <button class="text-gray-400">Cócteles</button>
-      <button class="text-gray-400">Tropicales</button>
+    <div class="flex flex-wrap justify-center py-4">
+      <!-- Tag "Todas" -->
+      <p-tag icon="pi pi-objects-column me-1" class="m-2 cursor-pointer"
+        [severity]="categorias_select().length === 0 ? 'success' : 'secondary'" value="Todas"
+        (click)="seleccionarTodas()" />
+
+      <!-- Tags de categorías -->
+      @for (categoria of categorias(); track categoria._id) {
+      <p-tag [icon]="esCategoriaSeleccionada(categoria._id) ? 'pi pi-circle-on me-1' : 'pi pi-circle-off me-1'"
+        class="m-2 cursor-pointer" [severity]="esCategoriaSeleccionada(categoria._id) ? 'success' : 'secondary'"
+        [value]="categoria.descripcion" (click)="seleccionarCategoria(categoria._id)" />
+      }
     </div>
 
     <div class="card">
@@ -36,10 +43,11 @@
             <div class="mb-4 font-medium">{{ product.nombre }}</div>
             <div class="flex justify-between items-center">
               <div class="mt-0 font-medium text-lg">{{ product.precio | currency: 'S/ ' }}</div>
-              <span>
+              <a href="https://wa.me/51955051526?text=¡Hola%20Aloha%20Restobar!%20%20Me%20encantaría%20saber%20si%20tienen%20disponible%20el%20plato%20'{{product.nombre}}'"
+                target="_blank">
                 <p-button label="Consultar" icon="pi pi-whatsapp" styleClass="ml-2" outlined="true" severity="success"
                   iconPos="right" />
-              </span>
+              </a>
             </div>
           </div>
         </ng-template>

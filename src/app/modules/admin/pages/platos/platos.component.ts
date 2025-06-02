@@ -25,6 +25,7 @@ import { IconField } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
 import { PlatosService } from '../../../../services/platos.service';
 import { Select } from 'primeng/select';
+import { CategoriaService } from '../../../../services/categoria.service';
 
 @Component({
   selector: 'app-platos',
@@ -64,6 +65,7 @@ export default class PlatosComponent implements OnInit {
   @ViewChild('fileUploaderUpdate') fileUploaderUpdate!: FileUpload;
   private fb = inject(FormBuilder);
   private platoService = inject(PlatosService);
+  private categoriaService = inject(CategoriaService);
   private confirmationService = inject(ConfirmationService);
   private messageService = inject(MessageService);
   private cloudinaryService = inject(CloudinaryService);
@@ -79,6 +81,7 @@ export default class PlatosComponent implements OnInit {
 
   // Utilizando los signals del servicio directamente
   readonly platos = this.platoService.platos;
+  readonly categorias = this.categoriaService.categorias;
   platosFiltrados = signal<Plato[]>([]);
   readonly loading = this.platoService.loading;
   readonly error = this.platoService.error;
@@ -108,6 +111,7 @@ export default class PlatosComponent implements OnInit {
       nombre: ['', [
         Validators.required
       ]],
+      categoria: [null, Validators.required],
       precio: ['', [
         Validators.required,
         Validators.pattern('^[0-9.]+$')
@@ -123,6 +127,7 @@ export default class PlatosComponent implements OnInit {
       nombre: ['', [
         Validators.required
       ]],
+      categoria: [null, Validators.required],
       precio: ['', [
         Validators.required,
         Validators.pattern('^[0-9.]+$')
@@ -139,6 +144,7 @@ export default class PlatosComponent implements OnInit {
   ngOnInit(): void {
     // Obtener los platos al inicializar el componente
     this.cargarPlatos();
+    this.cargarCategorias();
   }
 
   get totalPages(): number {
@@ -162,6 +168,19 @@ export default class PlatosComponent implements OnInit {
         console.error('Error al cargar platos:', err);
       }
     });
+  }
+
+  cargarCategorias(): void {
+    this.categoriaService.obtenerCategorias().subscribe({
+      error: (err) => {
+        console.error('Error al cargar categorías:', err);
+      }
+    });
+  }
+
+  getCategoryName(id_categoria: string): string {
+    const categoria = this.categorias().find(c => c._id === id_categoria);
+    return categoria ? categoria.descripcion : '';
   }
 
   buscarPlato(): void {
@@ -222,8 +241,10 @@ export default class PlatosComponent implements OnInit {
   }
 
   showDialogUpdate(plato: Plato) {
+    const categoriaCompleta = this.categorias().find(c => c._id === plato.categoria);
     this.updateForm.patchValue({
       nombre: plato.nombre,
+      categoria: categoriaCompleta || null,
       precio: plato.precio,
       codigo: plato.codigo,
       tipo: { name: plato.tipo, code: plato.tipo },
@@ -365,6 +386,7 @@ export default class PlatosComponent implements OnInit {
       // Registrar un nuevo plato
       this.platoService.registrarPlato({
         nombre: this.registroForm.value.nombre,
+        categoria: this.registroForm.value.categoria._id,
         precio: this.registroForm.value.precio,
         codigo: this.registroForm.value.codigo,
         tipo: this.registroForm.value.tipo.code,
@@ -419,6 +441,7 @@ export default class PlatosComponent implements OnInit {
         // 4. Actualizar el plato
         this.platoService.actualizarPlato({
           nombre: this.updateForm.value.nombre,
+          categoria: this.updateForm.value.categoria._id,
           precio: this.updateForm.value.precio,
           codigo: this.updateForm.value.codigo,
           tipo: this.updateForm.value.tipo.code,

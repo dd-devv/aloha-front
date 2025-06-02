@@ -77,6 +77,10 @@ export const routes: Routes = [
         loadComponent: () => import('./modules/admin/pages/almacen/almacen.component')
       },
       {
+        path: 'categorias',
+        loadComponent: () => import('./modules/admin/pages/categorias/categorias.component')
+      },
+      {
         path: 'platos',
         loadComponent: () => import('./modules/admin/pages/platos/platos.component')
       },

@@ -32,6 +32,7 @@ export interface Venta {
 export interface PlatoVenta {
   plato:    string;
   nombre:   string;
+  categoria:   string;
   precio:   number;
   imagen:   string;
   cantidad: number;

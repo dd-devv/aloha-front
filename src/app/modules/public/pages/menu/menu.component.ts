@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { HeaderComponent } from '../../common/header/header.component';
 import { ButtonModule } from 'primeng/button';
 import { Carousel } from 'primeng/carousel';
@@ -9,6 +9,9 @@ import { CurrencyPipe } from '@angular/common';
 import { CloudinaryImagePipe } from '../../../../pipes/cloudinary-image.pipe';
 import { PlatosService } from '../../../../services/platos.service';
 import { Title } from '@angular/platform-browser';
+import { Tag } from 'primeng/tag';
+import { CategoriaService } from '../../../../services/categoria.service';
+import { CategoriaFilterService } from '../../../../services/categoria-filter.service';
 
 @Component({
   selector: 'app-menu',
@@ -21,6 +24,7 @@ import { Title } from '@angular/platform-browser';
     FormsModule,
     CurrencyPipe,
     CloudinaryImagePipe,
+    Tag
   ],
   templateUrl: './menu.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -28,22 +32,85 @@ import { Title } from '@angular/platform-browser';
 export default class MenuComponent implements OnInit {
 
   private platoService = inject(PlatosService);
+  private categoriaService = inject(CategoriaService);
+  private categoriaFilterService = inject(CategoriaFilterService);
   private title = inject(Title);
-  platos = this.platoService.platos;
+  categorias = this.categoriaService.categoriasPublic;
+  platos = signal<any[]>([]);
+  platosAll = signal<any[]>([]);
   loading = this.platoService.loading;
+
+  categorias_select = signal<string[]>([]);
 
 
   ngOnInit(): void {
+    this.obtenerCategorias();
     this.obtenerPlatos();
     this.title.setTitle('Aloha | Menú');
   }
 
-  obtenerPlatos() {
-    this.platoService.obtenerPlatos().subscribe({
+  obtenerCategorias() {
+    this.categoriaService.obtenerCategoriasPublic().subscribe({
       error: (err) => {
         console.log(err);
       }
     });
+  }
+
+  obtenerPlatos() {
+    this.platoService.obtenerPlatosPublic().subscribe({
+      next: (res) => {
+        const todosLosPlatos = [...this.platoService.platosPublic()];
+        this.platosAll.set(todosLosPlatos);
+        this.platos.set(todosLosPlatos);
+      },
+      error: (err) => {
+        console.log(err);
+      }
+    });
+  }
+
+  esCategoriaSeleccionada(id_categoria: string): boolean {
+    return this.categorias_select().includes(id_categoria);
+  }
+
+  seleccionarCategoria(id_categoria: string): void {
+    const categoriasActuales = [...this.categorias_select()];
+    const todosLosPlatos = [...this.platosAll()];
+
+    const indice = categoriasActuales.indexOf(id_categoria);
+
+    if (indice >= 0) {
+      categoriasActuales.splice(indice, 1);
+    } else {
+      categoriasActuales.push(id_categoria);
+    }
+
+    this.categorias_select.set(categoriasActuales);
+    this.categoriaFilterService.setCategorias(categoriasActuales);
+
+    if (categoriasActuales.length === 0) {
+      this.platos.set(todosLosPlatos);
+    } else {
+      // Filtrar por las categorías seleccionadas
+      const platosFiltrados = todosLosPlatos.filter(plato => {
+        return plato.categoria && categoriasActuales.includes(plato.categoria);
+      });
+
+      this.platos.set(platosFiltrados);
+    }
+  }
+
+  seleccionarTodas(): void {
+    const todosLosPlatos = [...this.platosAll()];
+    this.categorias_select.set([]);
+    this.categoriaFilterService.clearCategorias();
+
+    if (todosLosPlatos.length > 0) {
+      this.platos.set(todosLosPlatos);
+    } else {
+      this.obtenerPlatos();
+    }
   }
 
   responsiveOptions = [

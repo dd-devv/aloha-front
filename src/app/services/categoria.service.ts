@@ -2,22 +2,22 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
 import { TokenStorageService } from './token-storage.service';
 import { environment } from '../../environments/environment';
-import { GetPlatosResp, Plato, PlatoRequest, PlatoResp } from '../interfaces/plato.interface';
+import { Categoria, CategoriaRegisterReq, CategoriaResponse, GetCategoriasResp } from '../interfaces/categoria.interfaces';
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { catchError, Observable, of, tap, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-export class PlatosService {
+export class CategoriaService  {
   private http = inject(HttpClient);
   private tokenStorage = inject(TokenStorageService);
   private platformId = inject(PLATFORM_ID);
   private apiUrl = environment.apiUrl;
 
-  // Signal para los platos
-  readonly platos = signal<Plato[]>([]);
-  readonly platosPublic = signal<Plato[]>([]);
+  // Signal para los usuarios
+  readonly categorias = signal<Categoria[]>([]);
+  readonly categoriasPublic = signal<Categoria[]>([]);
 
   // Controlar si está cargando datos
   readonly loading = signal<boolean>(false);
@@ -37,25 +37,20 @@ export class PlatosService {
     }
   }
 
-  registrarPlato(req: PlatoRequest): Observable<PlatoResp> {
+  registrarCategoria(req: CategoriaRegisterReq): Observable<CategoriaResponse> {
 
     if (isPlatformServer(this.platformId)) {
-      return of({ success: false, message: 'Operación no disponible en SSR', data: {} as Plato } as PlatoResp);
+      return of({ success: false, message: 'Operación no disponible en SSR', data: {} as Categoria } as CategoriaResponse);
     }
 
     this.loading.set(true);
     this.error.set(null);
 
-    const registerData: PlatoRequest = {
-      nombre: req.nombre,
-      categoria: req.categoria,
-      precio: req.precio,
-      codigo: req.codigo,
-      galeria: req.galeria,
-      tipo: req.tipo
+    const registerData: CategoriaRegisterReq = {
+      descripcion: req.descripcion
     };
 
-    return this.http.post<PlatoResp>(`${this.apiUrl}platos`, registerData, {
+    return this.http.post<CategoriaResponse>(`${this.apiUrl}categorias`, registerData, {
       headers: {
         Authorization: `Bearer ${this.authToken}`
       }
@@ -63,14 +58,14 @@ export class PlatosService {
       .pipe(
         tap(response => {
           if (response.data) {
-            // Agregar el nuevo usuario al arreglo existente
-            this.platos.update(platos => [...platos, response.data]);
+            // Agregar la categoria al arreglo existente
+            this.categorias.update(categorias => [...categorias, response.data]);
           }
           this.loading.set(false);
         }),
         catchError(error => {
           this.loading.set(false);
-          this.error.set(error.error || 'Error al registrar plato');
+          this.error.set(error.error || 'Error al registrar categoría');
           return throwError(() => ({
             error: error.error
           }));
@@ -78,26 +73,20 @@ export class PlatosService {
       );
   }
 
-  actualizarPlato(req: PlatoRequest, id_plato: string): Observable<PlatoResp> {
+  actualizarCategoria(req: CategoriaRegisterReq, id_categoria: string): Observable<CategoriaResponse> {
 
     if (isPlatformServer(this.platformId)) {
-      return of({ success: false, message: 'Operación no disponible en SSR', data: {} as Plato } as PlatoResp);
+      return of({ success: false, message: 'Operación no disponible en SSR', data: {} as Categoria } as CategoriaResponse);
     }
 
     this.loading.set(true);
     this.error.set(null);
 
-    const updateData: PlatoRequest = {
-      nombre: req.nombre,
-      categoria: req.categoria,
-      precio: req.precio,
-      codigo: req.codigo,
-      galeria: req.galeria,
-      tipo: req.tipo,
-      estado: req.estado
+    const updateData: CategoriaRegisterReq = {
+      descripcion: req.descripcion
     };
 
-    return this.http.put<PlatoResp>(`${this.apiUrl}platos/${id_plato}`, updateData, {
+    return this.http.put<CategoriaResponse>(`${this.apiUrl}categorias/${id_categoria}`, updateData, {
       headers: {
         Authorization: `Bearer ${this.authToken}`
       }
@@ -105,14 +94,14 @@ export class PlatosService {
       .pipe(
         tap(response => {
           if (response.data) {
-            // Agregar el nuevo plato al arreglo existente
-            this.platos.update(plato => plato.map(plato => plato._id === id_plato ? { ...plato, ...updateData } : plato));
+            // Agregar la nueva categoria al arreglo existente
+            this.categorias.update(product => product.map(product => product._id === id_categoria ? { ...product, ...updateData } : product));
           }
           this.loading.set(false);
         }),
         catchError(error => {
           this.loading.set(false);
-          this.error.set(error.error || 'Error al actualizar plato');
+          this.error.set(error.error || 'Error al actualizar categoría');
           return throwError(() => ({
             error: error.error
           }));
@@ -120,15 +109,15 @@ export class PlatosService {
       );
   }
 
-  eliminarPlato(id_plato: string): Observable<PlatoResp> {
+  eliminarCategoria(id_categoria: string): Observable<CategoriaResponse> {
 
     if (isPlatformServer(this.platformId)) {
-      return of({ success: false, message: 'Operación no disponible en SSR', data: {} as Plato } as PlatoResp);
+      return of({ success: false, message: 'Operación no disponible en SSR', data: {} as Categoria } as CategoriaResponse);
     }
 
     this.loading.set(true);
     this.error.set(null);
-    return this.http.delete<PlatoResp>(`${this.apiUrl}platos/${id_plato}`, {
+    return this.http.delete<CategoriaResponse>(`${this.apiUrl}categorias/${id_categoria}`, {
       headers: {
         Authorization: `Bearer ${this.authToken}`
       }
@@ -136,14 +125,14 @@ export class PlatosService {
       .pipe(
         tap(response => {
           if (response.data) {
-            // Quitar el plato del arreglo existente
-            this.platos.update(platos => platos.filter(plato => plato._id !== id_plato));
+            // Quitar la categoria del arreglo existente
+            this.categorias.update(categorias => categorias.filter(categoria => categoria._id !== id_categoria));
           }
           this.loading.set(false);
         }),
         catchError(error => {
           this.loading.set(false);
-          this.error.set(error.error || 'Error al eliminar plato');
+          this.error.set(error.error || 'Error al eliminar categoría');
           return throwError(() => ({
             error: error.error
           }));
@@ -151,47 +140,16 @@ export class PlatosService {
       );
   }
 
-  obtenerPlatos(): Observable<GetPlatosResp> {
+  obtenerCategorias(): Observable<GetCategoriasResp> {
 
     if (isPlatformServer(this.platformId)) {
-      return of({ success: true, message: '', data: [] } as GetPlatosResp);
-    }
-
-    this.loading.set(true);
-    this.error.set(null);
-
-    return this.http.get<GetPlatosResp>(`${this.apiUrl}platos`, {
-      headers: {
-        Authorization: `Bearer ${this.authToken}`
-      }
-    })
-      .pipe(
-        tap(response => {
-          if (response.data) {
-            this.platos.set(response.data);
-          }
-          this.loading.set(false);
-        }),
-        catchError(error => {
-          this.loading.set(false);
-          this.error.set(error.error || 'Error al obtener platos');
-          return throwError(() => ({
-            error: error.error
-          }));
-        })
-      );
-  }
-
-  obtenerPlatosPublic(): Observable<GetPlatosResp> {
-
-    if (isPlatformServer(this.platformId)) {
-      return of({ success: true, message: '', data: [] } as GetPlatosResp);
+      return of({ success: true, message: '', data: [] } as GetCategoriasResp);
     }
 
     this.loading.set(true);
     this.error.set(null);
 
-    return this.http.get<GetPlatosResp>(`${this.apiUrl}platos/public`, {
+    return this.http.get<GetCategoriasResp>(`${this.apiUrl}categorias`, {
       headers: {
         Authorization: `Bearer ${this.authToken}`
       }
@@ -199,13 +157,13 @@ export class PlatosService {
       .pipe(
         tap(response => {
           if (response.data) {
-            this.platosPublic.set(response.data);
+            this.categorias.set(response.data);
           }
           this.loading.set(false);
         }),
         catchError(error => {
           this.loading.set(false);
-          this.error.set(error.error || 'Error al obtener platos');
+          this.error.set(error.error || 'Error al obtener categorías');
           return throwError(() => ({
             error: error.error
           }));
@@ -213,8 +171,34 @@ export class PlatosService {
       );
   }
 
-  // Método para agregar un plato manualmente al array de platos
-  agregarPlato(plato: Plato): void {
-    this.platos.update(platos => [...platos, plato]);
+  obtenerCategoriasPublic(): Observable<GetCategoriasResp> {
+
+    if (isPlatformServer(this.platformId)) {
+      return of({ success: true, message: '', data: [] } as GetCategoriasResp);
+    }
+
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.http.get<GetCategoriasResp>(`${this.apiUrl}categorias/first`, {
+      headers: {
+        Authorization: `Bearer ${this.authToken}`
+      }
+    })
+      .pipe(
+        tap(response => {
+          if (response.data) {
+            this.categoriasPublic.set(response.data);
+          }
+          this.loading.set(false);
+        }),
+        catchError(error => {
+          this.loading.set(false);
+          this.error.set(error.error || 'Error al obtener categorías');
+          return throwError(() => ({
+            error: error.error
+          }));
+        })
+      );
   }
 }

@@ -4,7 +4,7 @@
 
     <a class="inline-flex items-center gap-1 px-2 py-2 cursor-pointer hover:text-primary hover:font-bold"
       [routerLink]="['/admin']" routerLinkActive="text-primary font-semibold" [routerLinkActiveOptions]="{exact: true}">
-      <i class="pi pi-slack !text-xl"></i>
+      <i class="pi pi-home !text-xl"></i>
       @if (hovered()) {
       <span class="font-semibold ms-2">Aloha</span>
       }
@@ -38,6 +38,16 @@
         <i class="pi pi-shopping-bag py-1"></i>
         @if (hovered()) {
         <span class="ms-2">Productos</span>
+        }
+      </a>
+    </div>
+
+    <div class="my-4">
+      <a class="px-2 flex items-center hover:text-primary hover:font-bold" [routerLink]="['/admin/categorias']"
+        routerLinkActive="text-primary font-semibold">
+        <i class="pi pi-list-check py-1"></i>
+        @if (hovered()) {
+        <span class="ms-2">Categorías</span>
         }
       </a>
     </div>

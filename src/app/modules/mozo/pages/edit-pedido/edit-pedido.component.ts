@@ -103,6 +103,7 @@ export default class EditPedidoComponent implements OnInit {
     return {
       _id: platoVenta.plato,
       nombre: platoVenta.nombre,
+      categoria: platoVenta.categoria,
       precio: platoVenta.precio,
       galeria: [platoVenta.imagen],
       cantidad: platoVenta.cantidad,
@@ -119,6 +120,7 @@ export default class EditPedidoComponent implements OnInit {
     return {
       plato: plato._id,
       nombre: plato.nombre,
+      categoria: plato.categoria,
       precio: plato.precio,
       imagen: plato.galeria[0],
       cantidad: plato.cantidad || 1,

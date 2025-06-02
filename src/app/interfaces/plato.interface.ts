@@ -6,6 +6,7 @@ export interface PlatoResp {
 
 export interface Plato {
   nombre:    string;
+  categoria:    string;
   tipo:      string;
   precio:    number;
   codigo:    string;
@@ -19,6 +20,7 @@ export interface Plato {
 
 export interface PlatoRequest {
   nombre: string;
+  categoria: string;
   precio: number;
   codigo: string;
   galeria:   string[];
