@@ -16,6 +16,7 @@ import { CierreCajaService } from '../../../../services/cierre-caja.service';
 import { Dialog } from 'primeng/dialog';
 import { Message } from 'primeng/message';
 import { RouterLink } from '@angular/router';
+import { DatePicker } from 'primeng/datepicker';
 @Component({
   selector: 'app-notas-venta',
   imports: [
@@ -30,12 +31,10 @@ import { RouterLink } from '@angular/router';
     DatePipe,
     Tag,
     PanelModule,
-    // CloudinaryImagePipe,
-    // UpperCasePipe,
-    // TitleCasePipe,
     Dialog,
     Message,
-    RouterLink
+    RouterLink,
+    DatePicker
   ],
   providers: [MessageService],
   templateUrl: './cierre-caja.component.html',
@@ -53,6 +52,8 @@ export default class CierreCajaComponent implements OnInit {
   loading = this.notaVentaService.loading;
   loadingMovimientos = this.almacenService.loading;
   loadingCierres = this.cierreCajaService.loading;
+
+  fechaCierre = new Date();
 
   visible: boolean = false;
 
@@ -102,7 +103,7 @@ export default class CierreCajaComponent implements OnInit {
   }
 
   registrarCierre(): void {
-    this.cierreCajaService.registrarCierreCaja()
+    this.cierreCajaService.registrarCierreCaja(this.formatearFecha())
       .subscribe({
         next: (response) => {
           this.obtenerNotaVentas();
@@ -116,6 +117,13 @@ export default class CierreCajaComponent implements OnInit {
           this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al cerrar caja', life: 3000 });
         }
       });
+  }
+
+  private formatearFecha(): string {
+    const año = this.fechaCierre.getFullYear();
+    const mes = String(this.fechaCierre.getMonth() + 1).padStart(2, '0');
+    const dia = String(this.fechaCierre.getDate()).padStart(2, '0');
+    return `${año}-${mes}-${dia}`;
   }
 
 }

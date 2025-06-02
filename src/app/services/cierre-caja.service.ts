@@ -35,7 +35,7 @@ export class CierreCajaService {
     }
   }
 
-  registrarCierreCaja(): Observable<DataCierre> {
+  registrarCierreCaja(fechaCierre: string): Observable<DataCierre> {
 
     if (isPlatformServer(this.platformId)) {
       return of({} as DataCierre);
@@ -44,7 +44,7 @@ export class CierreCajaService {
     this.loading.set(true);
     this.error.set(null);
 
-    return this.http.post<DataCierre>(`${this.apiUrl}cierre-caja`, { data: true }, {
+    return this.http.post<DataCierre>(`${this.apiUrl}cierre-caja`, { data: fechaCierre }, {
       headers: {
         Authorization: `Bearer ${this.authToken}`
       }

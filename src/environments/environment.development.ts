@@ -1,6 +1,6 @@
 export const environment = {
-  // apiUrl: 'https://api.aloharestobar.com/api/',
-  // url_socket: 'https://api.aloharestobar.com'
-  apiUrl: 'http://localhost:3000/api/',
-  url_socket: 'http://localhost:3000'
+  apiUrl: 'https://api.aloharestobar.com/api/',
+  url_socket: 'https://api.aloharestobar.com'
+  // apiUrl: 'http://localhost:3000/api/',
+  // url_socket: 'http://localhost:3000'
 };

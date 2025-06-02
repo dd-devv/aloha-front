@@ -8,8 +8,7 @@
         <p-button label="Confirmar" [raised]="true" icon="pi pi-check" severity="success" size="small"
           (onClick)="showDialog()" />
 
-        <i class="pi pi-calendar-clock text-xl cursor-pointer"
-          [routerLink]="['/admin/historial-cierre-caja']"></i>
+        <i class="pi pi-calendar-clock text-xl cursor-pointer" [routerLink]="['/admin/historial-cierre-caja']"></i>
       </div>
 
     </ng-template>
@@ -114,15 +113,26 @@
 <p-dialog header="Confirmar cierre" [modal]="true" [(visible)]="visible" [style]="{ width: '25rem' }"
   maskStyleClass="backdrop-blur-sm">
 
-  <p>
-    ¿Cerrar caja con los movimientos y ventas mostradas?
-  </p>
-
-  <div class="card mt-4">
-    <p-message closable severity="warn">Recuerda, el cierre de caja se hace solo una vez por día.</p-message>
+  <p class="small mt-4 mb-1">Seleccione fecha de cierre</p>
+  <div class="card flex justify-center mb-6">
+    <p-datepicker [(ngModel)]="fechaCierre" [maxDate]="fechaCierre" [showIcon]="true" inputId="inicio"
+      placeholder="Inicio" readonlyInput="true" size="small" class="w-full" fluid="true" />
   </div>
 
-  <div class="card flex justify-center mt-6">
+  <div class="card mt-8">
+    <p-message severity="secondary">
+      <p>
+        Seleccione la fecha para el cual se registrará el cierre de caja.
+        <small class="font-semibold">Como máximo se puede seleccionar el día actual.</small>
+      </p>
+    </p-message>
+  </div>
+
+  <div class="card mt-8">
+    <p-message severity="warn">Recuerda, el cierre de caja se hace solo una vez por día.</p-message>
+  </div>
+
+  <div class="card flex justify-center my-8">
     <p-button label="Confirmar cierre" severity="success" icon="pi pi-check" (onClick)="registrarCierre()" />
   </div>
 
