@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
 import { TokenStorageService } from './token-storage.service';
 import { environment } from '../../environments/environment';
-import { DataFlujo, DataPlatoChart, DataVentaChart, FlujoCajaRes, GetVentasRes, PlatosChart, Venta, VentaReq, VentaRes, VentasChart } from '../interfaces/venta.interface';
+import { DataFlujo, DataPlatoChart, DataVentaChart, EstadoComandaRes, FlujoCajaRes, GetVentasRes, PlatosChart, Venta, VentaReq, VentaRes, VentasChart } from '../interfaces/venta.interface';
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { catchError, Observable, of, tap, throwError } from 'rxjs';
 
@@ -261,6 +261,30 @@ export class VentaService {
         catchError(error => {
           this.loading.set(false);
           this.error.set(error.error || 'Error al obtener ventas');
+          return throwError(() => ({
+            error: error.error
+          }));
+        })
+      );
+  }
+
+  obtenerEstadoComandas(id_venta: string): Observable<EstadoComandaRes> {
+
+    if (isPlatformServer(this.platformId)) {
+      return of({ success: true, message: '', data: {data: false} } as EstadoComandaRes);
+    }
+
+    return this.http.get<EstadoComandaRes>(`${this.apiUrl}ventas/comandas/pendientes/${id_venta}`, {
+      headers: {
+        Authorization: `Bearer ${this.authToken}`
+      }
+    })
+      .pipe(
+        tap(response => {
+          return response;
+        }),
+        catchError(error => {
+          this.error.set(error.error || 'Error al obtener estado de comandas');
           return throwError(() => ({
             error: error.error
           }));

@@ -12,6 +12,7 @@ import { Title } from '@angular/platform-browser';
 import { Tag } from 'primeng/tag';
 import { CategoriaService } from '../../../../services/categoria.service';
 import { CategoriaFilterService } from '../../../../services/categoria-filter.service';
+import { GalleriaModule } from 'primeng/galleria';
 
 @Component({
   selector: 'app-home',
@@ -24,7 +25,9 @@ import { CategoriaFilterService } from '../../../../services/categoria-filter.se
     CurrencyPipe,
     CloudinaryImagePipe,
     HeaderComponent,
-    Tag
+    Tag,
+    GalleriaModule,
+    CloudinaryImagePipe
   ],
   templateUrl: './home.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -32,11 +35,31 @@ import { CategoriaFilterService } from '../../../../services/categoria-filter.se
 export default class HomeComponent implements OnInit, OnDestroy {
 
   bgImages = [
-    'https://res.cloudinary.com/dtttoiss7/image/upload/v1748120789/alitas_rxmqln.png',
-    'https://res.cloudinary.com/dtttoiss7/image/upload/v1748120781/mojito_mrmbhu.png',
-    'https://res.cloudinary.com/dtttoiss7/image/upload/v1748120770/tiki_ras1vi.png',
-    'https://res.cloudinary.com/dtttoiss7/image/upload/v1748120786/piscosour_luogcb.png',
-    'https://res.cloudinary.com/dtttoiss7/image/upload/v1748120757/tiki2_d4vdc3.png'
+    'https://res.cloudinary.com/dtttoiss7/image/upload/f_avif/v1748120789/alitas_rxmqln.png',
+    'https://res.cloudinary.com/dtttoiss7/image/upload/f_avif/v1748120781/mojito_mrmbhu.png',
+    'https://res.cloudinary.com/dtttoiss7/image/upload/f_avif/v1748120770/tiki_ras1vi.png',
+    'https://res.cloudinary.com/dtttoiss7/image/upload/f_avif/v1748120786/piscosour_luogcb.png',
+    'https://res.cloudinary.com/dtttoiss7/image/upload/f_avif/v1748120757/tiki2_d4vdc3.png'
+  ];
+
+  images = [
+    'https://res.cloudinary.com/dtttoiss7/image/upload/v1749164298/galeria0_nk6cql.jpg',
+    'https://res.cloudinary.com/dtttoiss7/image/upload/v1749164296/galeria1_ld4eb7.jpg',
+    'https://res.cloudinary.com/dtttoiss7/image/upload/v1749167098/galeria2_wzszd2.jpg',
+    'https://res.cloudinary.com/dtttoiss7/image/upload/v1749167102/galeria3_pe3c4z.jpg',
+    'https://res.cloudinary.com/dtttoiss7/image/upload/v1749164297/galeria4_von25y.jpg',
+    'https://res.cloudinary.com/dtttoiss7/image/upload/v1749167101/galeria5_e4cfr3.jpg',
+    'https://res.cloudinary.com/dtttoiss7/image/upload/v1749164298/galeria6_prqoyp.jpg',
+    'https://res.cloudinary.com/dtttoiss7/image/upload/v1749164290/galeria7_l2vi3a.jpg',
+    'https://res.cloudinary.com/dtttoiss7/image/upload/v1749164289/galeria8_nkby6a.jpg',
+    'https://res.cloudinary.com/dtttoiss7/image/upload/v1749164293/galeria9_fsrpap.jpg',
+    'https://res.cloudinary.com/dtttoiss7/image/upload/v1749164292/galeria10_gqhk0i.jpg',
+    'https://res.cloudinary.com/dtttoiss7/image/upload/v1749164293/galeria11_gxrpxm.jpg',
+    'https://res.cloudinary.com/dtttoiss7/image/upload/v1749164293/galeria12_mhbabl.jpg',
+    'https://res.cloudinary.com/dtttoiss7/image/upload/v1749164293/galeria13_onlxmt.jpg',
+    'https://res.cloudinary.com/dtttoiss7/image/upload/v1749164293/galeria14_mgudvy.jpg',
+    'https://res.cloudinary.com/dtttoiss7/image/upload/v1749164295/galeria15_b9clhs.jpg',
+    'https://res.cloudinary.com/dtttoiss7/image/upload/v1749164295/galeria15_b9clhs.jpg',
   ];
 
   currentImageIndex = 0;
@@ -166,6 +189,21 @@ export default class HomeComponent implements OnInit, OnDestroy {
       breakpoint: '560px',
       numVisible: 1,
       numScroll: 1
+    }
+  ];
+
+  responsiveOptionsGalleria: any[] = [
+    {
+      breakpoint: '1026px',
+      numVisible: 8
+    },
+    {
+      breakpoint: '768px',
+      numVisible: 6
+    },
+    {
+      breakpoint: '560px',
+      numVisible: 3
     }
   ];
 }

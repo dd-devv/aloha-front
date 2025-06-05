@@ -64,7 +64,7 @@
     </div>
     <div class="p-3 rounded-lg bg-red-500/10">
       <div class="text-center">
-        <h3 class="text-lg font-bold text-red-500">Egresos</h3>
+        <h3 class="text-lg font-bold text-red-500">Gastos</h3>
         <p class="text-xl font-medium">{{ flujoCaja().totalEgresos | currency:'S/ ' }}</p>
       </div>
     </div>
@@ -76,15 +76,15 @@
       <ng-template pTemplate="header">
         <tr>
           <th>Fecha</th>
-          <th class="whitespace-nowrap text-center">Platos vendidos</th>
-          <th class="whitespace-nowrap text-center">Movimientos inventario</th>
-          <th class="whitespace-nowrap text-end">Balance I-E</th>
+          <th class="whitespace-nowrap text-center bg-green-500/10">Ingresos</th>
+          <th class="whitespace-nowrap text-center bg-red-500/10">Gastos</th>
+          <th class="whitespace-nowrap text-end">Balance I-G</th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-detalle>
         <tr>
           <td>{{ detalle.fecha | date:'dd/MM/yyyy' }}</td>
-          <td>
+          <td class="bg-green-500/10">
             <p-table [value]="detalle.platos">
 
               <ng-template pTemplate="header">
@@ -113,30 +113,22 @@
       </ng-template>
     </p-table>
     </td>
-    <td>
+    <td class="bg-red-500/10">
       <p-table [value]="detalle.egresos">
 
         <ng-template pTemplate="header">
           <tr>
-            <th>Producto</th>
-            <th>P/Und.</th>
-            <th>Cant</th>
-            <th class="text-end">Subtotal</th>
+            <th>Concepto</th>
+            <th class="text-end">Monto</th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-egreso>
           <tr>
             <td>
-              {{egreso.producto}}
-            </td>
-            <td>
-              {{egreso.subtotal / egreso.cantidad | currency: 'S/'}}
-            </td>
-            <td>
-              {{egreso.cantidad}}<small>{{egreso.unidades | slice:0:3}}</small>
+              {{egreso.concepto}}
             </td>
             <td class="text-end">
-              {{egreso.subtotal | currency: 'S/'}}
+              {{egreso.monto | currency: 'S/'}}
             </td>
           </tr>
         </ng-template>
@@ -149,8 +141,8 @@
     </tr>
     <tr>
       <td class="font-semibold">Subtotales</td>
-      <td class="text-end font-semibold"> Subtotal ventas: {{ detalle.totalIngresosDia | currency:'S/ ' }}</td>
-      <td class="text-end font-semibold">Subtotal egresos: {{ detalle.totalEgresosDia | currency:'S/ ' }}</td>
+      <td class="text-end font-semibold bg-green-500/10"> Subtotal ventas: {{ detalle.totalIngresosDia | currency:'S/ ' }}</td>
+      <td class="text-end font-semibold bg-red-500/10">Subtotal gastos: {{ detalle.totalEgresosDia | currency:'S/ ' }}</td>
       <td class="font-semibold text-end"
         [class]="{'text-green-500': detalle.totalIngresosDia - detalle.totalEgresosDia > 0, 'text-red-400': detalle.totalIngresosDia - detalle.totalEgresosDia < 0}">
         {{ detalle.totalIngresosDia - detalle.totalEgresosDia | currency:'S/ ' }}

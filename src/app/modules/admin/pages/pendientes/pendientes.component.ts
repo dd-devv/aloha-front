@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
 import { VentaService } from '../../../../services/venta.service';
 import { TiendaService } from '../../../../services/tienda.service';
 import { environment } from '../../../../../environments/environment';
@@ -24,6 +24,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { CloudinaryImagePipe } from '../../../../pipes/cloudinary-image.pipe';
 import { DataView } from 'primeng/dataview';
 import { Message } from 'primeng/message';
+import { Tooltip } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-pendientes',
@@ -48,7 +49,8 @@ import { Message } from 'primeng/message';
     InputTextModule,
     InputGroup,
     Select,
-    Message
+    Message,
+    Tooltip
   ],
   providers: [MessageService],
   templateUrl: './pendientes.component.html',
@@ -98,6 +100,8 @@ export default class PendientesComponent implements OnInit {
     code: ''
   };
 
+  estadosVentas = signal<{ [key: string]: boolean }>({});
+
   constructor() {
     if (isPlatformBrowser(this.platformId)) {
       this.socket = io(environment.url_socket, {
@@ -120,7 +124,6 @@ export default class PendientesComponent implements OnInit {
     }
   }
 
-
   obtenerTienda() {
     this.tiendaService.obtenerTienda().subscribe({
       error: (err) => {
@@ -131,10 +134,40 @@ export default class PendientesComponent implements OnInit {
 
   obtenerVentas() {
     this.ventaService.obtenerVentasAdmin().subscribe({
+      next: (res) => {
+        this.ventas().forEach(venta => {
+          this.cargarEstadoComandas(venta._id);
+        });
+      },
       error: (err) => {
         console.error('Error al cargar ventas:', err);
       }
     });
+  }
+
+  cargarEstadoComandas(id_venta: string): void {
+    this.ventaService.obtenerEstadoComandas(id_venta).subscribe({
+      next: (res) => {
+        // Actualizar la señal con el nuevo estado
+        this.estadosVentas.update(estados => ({
+          ...estados,
+          [id_venta]: res.data.data
+        }));
+      },
+      error: (err) => {
+        console.error('Error al obtener estado de comandas:', err);
+        // En caso de error, marcar como false
+        this.estadosVentas.update(estados => ({
+          ...estados,
+          [id_venta]: false
+        }));
+      }
+    });
+  }
+
+  // Método para obtener el estado (usa la señal)
+  obtenerEstadoComandas(id_venta: string): boolean {
+    return this.estadosVentas()[id_venta] || false;
   }
 
   showDialogVenta() {

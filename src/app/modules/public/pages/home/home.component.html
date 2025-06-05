@@ -132,15 +132,20 @@
   <!-- Ingredients Section -->
   <section class="py-20 px-6 bg-surface-800 relative">
     <div class="max-w-3xl mx-auto text-center">
-      <h2 class="text-4xl font-bold mb-8">Lo mejor para nuestros clientes</h2>
-      <p class="text-gray-300 mb-8 text-lg">
-        Nos enorgullece enormemente seleccionar cuidadosamente nuestros ingredientes para garantizar que los sabores de
-        nuestra comida sean lo más deliciosos y auténticos posible.
-      </p>
-
-      <div class="flex flex-wrap justify-center items-center gap-8">
-        <img src="../../../../../assets/images/fresh-ingredients.png" width="320" alt="Fresh herb"
-          class="object-contain" />
+      <h2 class="text-4xl font-bold mb-8">Nuestros clientes</h2>
+      <div class="flex justify-center">
+        <div class="card">
+          <p-galleria [value]="images" [autoPlay]="true" [circular]="true"
+            [responsiveOptions]="responsiveOptionsGalleria" [numVisible]="5"
+            [containerStyle]="{ 'max-width': '480px' }" transitionInterval="5000">
+            <ng-template #item let-item>
+              <img [src]="item  | cloudinaryImage:800:'avif'" style="width: 100%; display: block" />
+            </ng-template>
+            <ng-template #thumbnail let-item>
+              <img [src]="item  | cloudinaryImage:100:'avif'" style="height: 48px; display: block" class="rounded" />
+            </ng-template>
+          </p-galleria>
+        </div>
       </div>
     </div>
   </section>

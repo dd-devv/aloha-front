@@ -138,8 +138,7 @@
     </div>
 
     <div class="card">
-      <p-fileupload #fileUploader name="demo[]" (onSelect)="onSelect($event)" [multiple]="true" accept="image/*"
-        maxFileSize="1000000" mode="advanced">
+      <p-fileupload #fileUploader name="demo[]" (onSelect)="onSelect($event)" [multiple]="true" accept="image/*" mode="advanced">
         <ng-template #empty>
           <div>Añadir imágenes del plato.</div>
         </ng-template>

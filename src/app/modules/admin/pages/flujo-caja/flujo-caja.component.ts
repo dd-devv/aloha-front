@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@ang
 import { VentaService } from '../../../../services/venta.service';
 import { FieldsetModule } from 'primeng/fieldset';
 import { TableModule } from 'primeng/table';
-import { CurrencyPipe, DatePipe, SlicePipe } from '@angular/common';
+import { CurrencyPipe, DatePipe } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { FormsModule } from '@angular/forms';
 import { DatePicker } from 'primeng/datepicker';
@@ -18,8 +18,7 @@ import { NotaVentaService } from '../../../../services/nota-venta.service';
     ButtonModule,
     FormsModule,
     DatePicker,
-    DatePipe,
-    SlicePipe
+    DatePipe
   ],
   templateUrl: './flujo-caja.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

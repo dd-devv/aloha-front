@@ -92,10 +92,8 @@ export interface DetalleFlujo {
 
 export interface Egreso {
   _id:       string;
-  producto:  string;
-  unidades:  string;
-  cantidad:  number;
-  subtotal:  number;
+  concepto:  string;
+  monto:  number;
   createdAt: Date;
 }
 
@@ -105,4 +103,14 @@ export interface PlatoFlujo {
   cantidad: number;
   subtotal: number;
   imagen:   string;
+}
+
+export interface EstadoComandaRes {
+  success: boolean;
+  message: string;
+  data:    Data;
+}
+
+export interface Data {
+  data: boolean;
 }

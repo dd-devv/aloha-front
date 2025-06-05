@@ -1,40 +1,34 @@
-import { ChangeDetectionStrategy, Component, OnInit, PLATFORM_ID, inject, signal } from '@angular/core';
-import { CommonModule, isPlatformBrowser, TitleCasePipe } from '@angular/common';
-import { FieldsetModule } from 'primeng/fieldset';
-import { Button } from 'primeng/button';
-import { PanelModule } from 'primeng/panel';
-import { Tag } from 'primeng/tag';
-import { InputTextModule } from 'primeng/inputtext';
-import { FloatLabelModule } from 'primeng/floatlabel';
-import { PasswordModule } from 'primeng/password';
-import { finalize } from 'rxjs';
-import { ConfirmationService, MessageService } from 'primeng/api';
-import { ConfirmPopupModule } from 'primeng/confirmpopup';
-import { ToastModule } from 'primeng/toast';
-import { Dialog } from 'primeng/dialog';
-import { ProductService } from '../../../../services/product.service';
-import { AlmacenService } from '../../../../services/almacen.service';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Button } from 'primeng/button';
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { Dialog } from 'primeng/dialog';
+import { FieldsetModule } from 'primeng/fieldset';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { InputTextModule } from 'primeng/inputtext';
+import { PanelModule } from 'primeng/panel';
+import { PasswordModule } from 'primeng/password';
+import { ToastModule } from 'primeng/toast';
 import { PaginatePipe } from '../../../../pipes/paginate.pipe';
 import { InputIcon } from 'primeng/inputicon';
 import { IconField } from 'primeng/iconfield';
-import { Movimiento } from '../../../../interfaces';
-import { CloudinaryImagePipe } from '../../../../pipes/cloudinary-image.pipe';
 import { PaginationComponent } from '../../components/pagination/pagination.component';
-import { Select } from 'primeng/select';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { GastoService } from '../../../../services/gasto.service';
+import { Gasto } from '../../../../interfaces';
+import { finalize } from 'rxjs';
 
 @Component({
-  selector: 'app-almacen',
+  selector: 'app-gastos',
   imports: [
     CommonModule,
     FieldsetModule,
     Button,
     PanelModule,
-    Tag,
     FloatLabelModule,
     InputTextModule,
     PasswordModule,
-    TitleCasePipe,
     ConfirmPopupModule,
     ToastModule,
     Dialog,
@@ -43,17 +37,14 @@ import { Select } from 'primeng/select';
     PaginatePipe,
     InputIcon,
     IconField,
-    CloudinaryImagePipe,
-    PaginationComponent,
-    Select
+    PaginationComponent
   ],
   providers: [ConfirmationService, MessageService],
-  templateUrl: './almacen.component.html',
+  templateUrl: './gastos.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export default class AlmacenComponent implements OnInit {
-  private productService = inject(ProductService);
-  private almacenService = inject(AlmacenService);
+export default class GastosComponent implements OnInit {
+  private gastoService = inject(GastoService);
   private confirmationService = inject(ConfirmationService);
   private messageService = inject(MessageService);
   private fb = inject(FormBuilder);
@@ -63,46 +54,36 @@ export default class AlmacenComponent implements OnInit {
   isLoading: boolean = false;
   showModal: boolean = false;
   value: string = '';
-  selectedProduct: string | undefined;
+  selectedGasto: string | undefined;
 
   currentPage = 1;
   pageSize = 12;
 
   // Utilizando los signals del servicio directamente
-  readonly products = this.productService.products;
-  readonly movimientos = this.almacenService.movimientos;
-  movimientosFiltrados = signal<Movimiento[]>([]);
-  readonly loading = this.productService.loading;
-  readonly loadingMov = this.almacenService.loading;
-
-  tiposMov = [
-    { name: 'ENTRADA', code: 'ENTRADA' },
-    { name: 'SALIDA', code: 'SALIDA' }
-  ];
+  readonly gastos = this.gastoService.gastos;
+  gastosFiltrados = signal<Gasto[]>([]);
+  readonly loading = this.gastoService.loading;
 
   constructor() {
     this.registroForm = this.fb.group({
-      producto: ['', [
+      concepto: ['', [
         Validators.required
       ]],
-      cantidad: ['', [
+      monto: ['', [
         Validators.required,
+        Validators.min(0),
         Validators.pattern('^[0-9.]+$')
-      ]],
-      tipo: [null, [
-        Validators.required
       ]]
     });
   }
 
   ngOnInit(): void {
-    // Obtener movimientos y productos
-    this.cargarProductos();
-    this.cargarMovimientos();
+    // Obtener gastos
+    this.cargarGastos();
   }
 
   get totalPages(): number {
-    return Math.ceil(this.movimientosFiltrados().length / this.pageSize);
+    return Math.ceil(this.gastosFiltrados().length / this.pageSize);
   }
 
   onPageChange(page: number): void {
@@ -151,44 +132,34 @@ export default class AlmacenComponent implements OnInit {
     return !!control && control.invalid && control.touched;
   }
 
-  cargarMovimientos(): void {
-    this.almacenService.obtenerMovimientos().subscribe({
+  cargarGastos(): void {
+    this.gastoService.obtenerGastos().subscribe({
       next: (res) => {
-        this.movimientosFiltrados.set(res.data);
+        this.gastosFiltrados.set(res.data);
       },
       error: (err) => {
-        console.error('Error al cargar movimientos:', err);
+        console.error('Error al cargar gastos:', err);
       }
     });
   }
 
-  cargarProductos(): void {
-    const fecha = new Date();
-    this.productService.obtenerProductos().subscribe({
-      error: (err) => {
-        console.error('Error al cargar productos:', err);
-      }
-    });
-  }
-
-  buscarMovimiento(): void {
+  buscarGasto(): void {
     if (!this.value || this.value.trim() === '') {
       // Si no hay texto de búsqueda, aplicar solo el filtro de categorías
-      this.cargarMovimientos();
+      this.cargarGastos();
       return;
     }
 
     const busqueda = this.value.toLowerCase().trim();
-    const movimientosBase = this.movimientos();
-    let baseParaBusqueda = movimientosBase;
+    const gastosBase = this.gastos();
+    let baseParaBusqueda = gastosBase;
 
     // Luego filtramos por término de búsqueda
-    const filtrados = baseParaBusqueda.filter(movimiento =>
-      movimiento.producto.codigo.toLowerCase().includes(busqueda) ||
-      movimiento.producto.nombre.toLowerCase().includes(busqueda)
+    const filtrados = baseParaBusqueda.filter(gasto =>
+      gasto.concepto.toLowerCase().includes(busqueda)
     );
 
-    this.movimientosFiltrados.set(filtrados);
+    this.gastosFiltrados.set(filtrados);
     this.currentPage = 1; // Reiniciar a la primera página en búsquedas
 
     // Mostrar mensaje si no hay resultados
@@ -196,13 +167,13 @@ export default class AlmacenComponent implements OnInit {
       this.messageService.add({
         severity: 'info',
         summary: 'Búsqueda',
-        detail: 'No se encontraron movimientos para tu búsqueda'
+        detail: 'No se encontraron gastos para tu búsqueda'
       });
     }
   }
 
   onInputChange(): void {
-    this.buscarMovimiento();
+    this.buscarGasto();
   }
 
   showDialog() {
@@ -213,11 +184,10 @@ export default class AlmacenComponent implements OnInit {
     if (this.registroForm.valid) {
       this.isLoading = true;
 
-      // Registrar un nuevo movimiento
-      this.almacenService.registrarMovimiento({
-        producto: this.registroForm.value.producto,
-        cantidad: this.registroForm.value.cantidad,
-        tipo: this.registroForm.value.tipo.code
+      // Registrar un nuevo gasto
+      this.gastoService.registrarGasto({
+        concepto: this.registroForm.value.concepto,
+        monto: this.registroForm.value.monto
       })
         .pipe(
           finalize(() => {
@@ -232,11 +202,11 @@ export default class AlmacenComponent implements OnInit {
               this.registroForm.reset();
             }
 
-            this.cargarMovimientos();
+            this.cargarGastos();
             this.messageService.add({ severity: 'success', summary: 'Registrado', detail: response.message, life: 3000 });
           },
           error: (err) => {
-            console.error('Error al registrar movimiento:', err);
+            console.error('Error al registrar gasto:', err);
             this.messageService.add({ severity: 'error', summary: 'Error', detail: err.message, life: 3000 });
           }
         });
@@ -248,10 +218,10 @@ export default class AlmacenComponent implements OnInit {
     }
   }
 
-  eliminarMovimiento(event: Event, id_movimiento: string) {
+  eliminarGasto(event: Event, id_gasto: string) {
     this.confirmationService.confirm({
       target: event.target as EventTarget,
-      message: `¿Eliminar movimiento?`,
+      message: `¿Eliminar gasto?`,
       icon: 'pi pi-exclamation-triangle',
       rejectButtonProps: {
         label: 'Cancelar',
@@ -264,8 +234,8 @@ export default class AlmacenComponent implements OnInit {
         icon: 'pi pi-trash'
       },
       accept: () => {
-        // Eliminar el usuario
-        this.almacenService.eliminarMovimiento(id_movimiento)
+        // Eliminar el gasto
+        this.gastoService.eliminargasto(id_gasto)
           .pipe(
             finalize(() => {
               this.isLoading = false;
@@ -273,12 +243,12 @@ export default class AlmacenComponent implements OnInit {
           )
           .subscribe({
             next: (response) => {
-              this.movimientosFiltrados = this.almacenService.movimientos;
+              this.gastosFiltrados = this.gastoService.gastos;
               this.messageService.add({ severity: 'success', summary: 'Confirmado', detail: response.message, life: 3000 });
             },
             error: (err) => {
-              console.error('Error al actualizar usuario:', err);
-              // Aquí puedes manejar el error, por ejemplo mostrando un mensaje al usuario
+              console.error('Error al actualizar gasto:', err);
+              // Aquí puedes manejar el error, por ejemplo mostrando un mensaje al gasto
             }
           });
       },

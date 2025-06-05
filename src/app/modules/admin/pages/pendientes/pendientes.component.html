@@ -60,8 +60,13 @@
           </div>
 
           <div class="card flex justify-center mt-4">
+            @if (obtenerEstadoComandas(venta._id)) {
             <p-button label="Confirmar venta" size="small" icon="pi pi-check" severity="success"
               (onClick)="showDialog(venta)" />
+            } @else {
+            <p-button label="Confirmar venta" size="small" icon="pi pi-check" severity="success" disabled
+              pTooltip="Falta entregar pedidos por BARMAN o CHEF" tooltipPosition="bottom" />
+            }
           </div>
         </p-fieldset>
 

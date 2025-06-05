@@ -73,6 +73,10 @@ export const routes: Routes = [
         loadComponent: () => import('./modules/admin/pages/productos/productos.component')
       },
       {
+        path: 'gastos',
+        loadComponent: () => import('./modules/admin/pages/gastos/gastos.component')
+      },
+      {
         path: 'almacen',
         loadComponent: () => import('./modules/admin/pages/almacen/almacen.component')
       },

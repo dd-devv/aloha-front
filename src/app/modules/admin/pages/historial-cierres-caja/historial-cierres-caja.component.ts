@@ -50,8 +50,6 @@ export default class HistorialCierresCajaComponent implements OnInit {
     this.cierreCajaService.obtenerCierrescaja().subscribe({
       next: (res) => {
         this.cierresCajaFiltradas.set(res.data);
-        console.log(this.cierresCajaFiltradas());
-
       },
       error: (err) => {
         console.error('Error al cargar cierres:', err);
