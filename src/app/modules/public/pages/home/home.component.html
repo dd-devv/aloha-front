@@ -137,7 +137,7 @@
         <div class="card">
           <p-galleria [value]="images" [autoPlay]="true" [circular]="true"
             [responsiveOptions]="responsiveOptionsGalleria" [numVisible]="5"
-            [containerStyle]="{ 'max-width': '480px' }" transitionInterval="5000">
+            [containerStyle]="{ 'max-width': '500px' }" transitionInterval="5000">
             <ng-template #item let-item>
               <img [src]="item  | cloudinaryImage:800:'avif'" style="width: 100%; display: block" />
             </ng-template>
