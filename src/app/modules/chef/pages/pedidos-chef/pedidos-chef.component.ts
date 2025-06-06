@@ -86,6 +86,10 @@ export default class PedidosChefComponent implements OnInit {
     this.comandaService.actualizarComanda('listo', id_comanda).subscribe({
       next: (res) => {
         this.obtenerComandas();
+        //Emitir el socket
+        if (isPlatformBrowser(this.platformId)) {
+          this.socket.emit('crear-venta', { data: true });
+        }
         this.messageService.add({ severity: 'success', summary: 'Registrado', detail: res.message, life: 3000 });
       },
       error: (err) => {

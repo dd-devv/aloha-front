@@ -17,6 +17,13 @@ import { MessageService } from 'primeng/api';
 import { environment } from '../../../../../environments/environment';
 import { io, Socket } from 'socket.io-client';
 import { Message } from 'primeng/message';
+import { Select } from 'primeng/select';
+
+// Interface para las opciones del select de mesas
+interface MesaOption {
+  label: string;
+  value: number;
+}
 
 @Component({
   selector: 'app-modificar-pedidos',
@@ -33,7 +40,7 @@ import { Message } from 'primeng/message';
     InputTextModule,
     ButtonModule,
     ToastModule,
-    Message
+    Select
   ],
   providers: [MessageService],
   templateUrl: './edit-pedido.component.html',
@@ -58,8 +65,14 @@ export default class EditPedidoComponent implements OnInit {
   loadingVentas = this.ventaService.loading;
   loadingTienda = this.tiendaService.loading;
   mesasOcupadas: number[] = [];
+  mesasPaint: number[] = [];
+  mesaLibreSeleccionada: number = 0;
   mesaSeleccionada: number = 0;
   ventaActual: Venta | null = null;
+
+  // Nuevas propiedades para el select de mesas
+  mesasDisponibles: MesaOption[] = [];
+  mesaSeleccionadaParaCambio: number = 0;
 
   visible: boolean = false;
   subtotal: number = 0;
@@ -82,6 +95,7 @@ export default class EditPedidoComponent implements OnInit {
 
   showDialog(mesa: number) {
     this.mesaSeleccionada = mesa;
+    this.mesaSeleccionadaParaCambio = mesa; // Inicializar con la mesa actual
     this.ventaActual = this.ventas()?.find(v => v.mesa === mesa && v.estado === 'pendiente') || null;
 
     // Cargar los platos ya pedidos (vienen como PlatoVenta)
@@ -94,8 +108,38 @@ export default class EditPedidoComponent implements OnInit {
     // Cargar platos disponibles (convertir Plato a formato compatible con el select)
     this.platosDisponibles = [...(this.platos() || [])];
 
+    // Generar opciones de mesas disponibles
+    this.generarMesasDisponibles();
+
     this.calcularSubtotal();
     this.visible = true;
+  }
+
+  // Nuevo método para generar las opciones de mesas disponibles
+  generarMesasDisponibles() {
+    const mesasLibres = this.getMesasLibres();
+    const mesaActual = this.mesaSeleccionada;
+
+    this.mesasDisponibles = [];
+
+    // Agregar la mesa actual (siempre disponible para mantener)
+    this.mesasDisponibles.push({
+      label: `Mesa ${mesaActual} (Actual)`,
+      value: mesaActual
+    });
+
+    // Agregar las mesas libres
+    mesasLibres.forEach(mesa => {
+      if (mesa !== mesaActual) { // Evitar duplicar la mesa actual
+        this.mesasDisponibles.push({
+          label: `Mesa ${mesa}`,
+          value: mesa
+        });
+      }
+    });
+
+    // Ordenar por número de mesa
+    this.mesasDisponibles.sort((a, b) => a.value - b.value);
   }
 
   // Convertir PlatoVenta a formato compatible con el select (para mostrar en el multiselect)
@@ -162,6 +206,22 @@ export default class EditPedidoComponent implements OnInit {
     return this.mesasOcupadas;
   }
 
+  getMesasLibres(): number[] {
+    this.mesasPaint = [];
+    const ventasPendientes = this.ventas()?.filter(venta => venta.estado === 'pendiente') || [];
+
+    // Extraer los números de mesa ocupados
+    const mesasOcupadas = ventasPendientes.map(venta => venta.mesa);
+
+    for (let i = 1; i <= (this.tienda()?.numeroMesas || 0); i++) {
+      if (!mesasOcupadas.includes(i)) {
+        this.mesasPaint.push(i);
+      }
+    }
+
+    return this.mesasPaint;
+  }
+
   onPlatoSelect(event: any) {
     this.selectedPlatos.forEach(plato => {
       plato.cantidad = plato.cantidad || 1;
@@ -169,6 +229,11 @@ export default class EditPedidoComponent implements OnInit {
     });
 
     this.calcularSubtotal();
+  }
+
+  // Método para manejar el cambio de mesa
+  onMesaChange(event: any) {
+    this.mesaSeleccionadaParaCambio = event.value;
   }
 
   incrementarCantidad(plato: PlatoVenta) {
@@ -185,8 +250,8 @@ export default class EditPedidoComponent implements OnInit {
     }
   }
 
-  eliminarPlato(plato: PlatoVenta) {
-    this.selectedPlatos = this.selectedPlatos.filter(p => p.plato !== plato.plato);
+  eliminarPlato(indice: number) {
+    this.selectedPlatos.splice(indice, 1);
     this.calcularSubtotal();
   }
 
@@ -209,7 +274,13 @@ export default class EditPedidoComponent implements OnInit {
   }
 
   guardarCambios() {
-    if (this.selectedPlatos.length === 0 || this.mesaSeleccionada === 0 || !this.ventaActual) {
+    if (this.selectedPlatos.length === 0 || this.mesaSeleccionadaParaCambio === 0 || !this.ventaActual) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Advertencia',
+        detail: 'Debe seleccionar al menos un plato y una mesa válida',
+        life: 3000
+      });
       return;
     }
 
@@ -221,21 +292,32 @@ export default class EditPedidoComponent implements OnInit {
       };
     });
 
-    // Enviar la solicitud al servicio para actualizar
-    this.ventaService.actualizarVenta({
+    // Datos a enviar al backend
+    const datosActualizacion = {
       platos: platosVenta,
-      mesa: this.mesaSeleccionada
-    }, this.ventaActual._id).subscribe({
+      mesa: this.mesaSeleccionadaParaCambio // Mesa seleccionada en el select
+    };
+
+    // Enviar la solicitud al servicio para actualizar
+    this.ventaService.actualizarVenta(datosActualizacion, this.ventaActual._id).subscribe({
       next: (response) => {
         if (response.success) {
+          // Mensaje de éxito diferente si se cambió de mesa
+          const mensaje = this.mesaSeleccionadaParaCambio !== this.mesaSeleccionada
+            ? `Pedido movido a Mesa ${this.mesaSeleccionadaParaCambio} correctamente`
+            : 'Pedido modificado correctamente';
+
           this.messageService.add({
             severity: 'success',
             summary: 'Actualizado',
-            detail: 'Pedido modificado correctamente',
+            detail: mensaje,
             life: 3000
           });
 
           this.visible = false;
+
+          // Actualizar datos locales si es necesario
+          this.obtenerVentasMozo();
 
           //Emitir el socket
           if (isPlatformBrowser(this.platformId)) {
@@ -244,14 +326,20 @@ export default class EditPedidoComponent implements OnInit {
 
         } else {
           console.error('Error al actualizar venta:', response.message);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: response.message || 'Error al actualizar el pedido',
+            life: 3000
+          });
         }
       },
       error: (err) => {
         console.error('Error al actualizar venta:', err);
         this.messageService.add({
-          severity: 'danger',
+          severity: 'error',
           summary: 'Error',
-          detail: err.message,
+          detail: err.error?.message || err.message || 'Error al actualizar el pedido',
           life: 3000
         });
       }

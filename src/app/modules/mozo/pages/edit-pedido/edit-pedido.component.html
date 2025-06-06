@@ -31,12 +31,20 @@
 <p-dialog header="Modificar pedido: Mesa {{mesaSeleccionada}}" [modal]="true" [(visible)]="visible"
   [style]="{ width: '30rem' }" maskStyleClass="backdrop-blur-sm">
 
-  <div class="card mb-4">
-    <p-message closable severity="warn">
-      <small>
-        Puedes agergar platos desde el siguiente cuadro
-      </small>
-    </p-message>
+  <!-- Select de Mesa Corregido -->
+  <div class="card flex justify-center w-full">
+    <p-select [options]="mesasDisponibles" [(ngModel)]="mesaSeleccionadaParaCambio" optionLabel="label"
+      optionValue="value" placeholder="Seleccionar Mesa" fluid="true" class="w-full"
+      (onChange)="onMesaChange($event)" />
+  </div>
+
+  <!-- Mostrar mesa seleccionada -->
+  <div class="card mb-3" *ngIf="mesaSeleccionadaParaCambio">
+    <small class="text-600">
+      Mesa seleccionada: <strong>{{mesaSeleccionadaParaCambio}}</strong>
+      <span *ngIf="mesaSeleccionadaParaCambio === mesaSeleccionada" class="text-primary"> (Actual)</span>
+      <span *ngIf="mesaSeleccionadaParaCambio !== mesaSeleccionada" class="text-orange-500"> (Será cambiada)</span>
+    </small>
   </div>
 
   <div class="min-h-96">
@@ -61,8 +69,9 @@
       <p-dataView #dv [value]="selectedPlatos">
         <ng-template #list let-items>
           <div class="">
-            <div class="col-12" *ngFor="let item of items; let first = first">
-              <div class="flex p-4 gap-4" [ngClass]="{ 'border-t border-surface-200 dark:border-surface-700': !first }">
+            @for (item of items; track $index) {
+            <div class="col-12">
+              <div class="flex p-4 gap-4">
                 <!-- Imagen a la izquierda -->
                 <div class="flex-none w-30">
                   @if (item.galeria && item.galeria[0]) {
@@ -105,11 +114,13 @@
                     }
 
 
-                    <p-button icon="pi pi-trash" severity="danger" class="ms-2" (click)="eliminarPlato(item)" />
+                    <p-button icon="pi pi-trash" severity="danger" class="ms-2" (click)="eliminarPlato($index)"
+                      [disabled]="item.estadoComanda === 'listo'" />
                   </div>
                 </div>
               </div>
             </div>
+            }
           </div>
         </ng-template>
 
