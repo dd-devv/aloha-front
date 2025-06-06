@@ -109,13 +109,13 @@ export class ButtonDialComponent implements OnInit {
           this.router.navigate(['/admin/platos']);
         },
       },
-      {
-        label: 'Almacén',
-        icon: 'text-lg pi pi-objects-column',
-        command: () => {
-          this.router.navigate(['/admin/almacen']);
-        },
-      },
+      // {
+      //   label: 'Almacén',
+      //   icon: 'text-lg pi pi-objects-column',
+      //   command: () => {
+      //     this.router.navigate(['/admin/almacen']);
+      //   },
+      // },
       {
         label: 'Categorías',
         icon: 'text-lg pi pi-list-check',
@@ -124,12 +124,19 @@ export class ButtonDialComponent implements OnInit {
         },
       },
       {
-        label: 'Productos',
-        icon: 'text-lg pi pi-shopping-bag',
+        label: 'Gastos',
+        icon: 'text-lg pi pi-arrow-down',
         command: () => {
-          this.router.navigate(['/admin/productos']);
+          this.router.navigate(['/admin/gastos']);
         },
       },
+      // {
+      //   label: 'Productos',
+      //   icon: 'text-lg pi pi-shopping-bag',
+      //   command: () => {
+      //     this.router.navigate(['/admin/productos']);
+      //   },
+      // },
       {
         label: 'Asistencias',
         icon: 'text-lg pi pi-check-square',
