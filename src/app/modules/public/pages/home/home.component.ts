@@ -203,7 +203,7 @@ export default class HomeComponent implements OnInit, OnDestroy {
     },
     {
       breakpoint: '560px',
-      numVisible: 3
+      numVisible: 5
     }
   ];
 }
