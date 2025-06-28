@@ -33,7 +33,7 @@ export class ButtonDialComponent implements OnInit {
   ngOnInit(): void {
     this.items = [
       {
-        label: 'Cerrar sesión',
+        label: 'Cambiar tema',
         icon: 'text-lg pi pi-moon',
         command: () => {
           this.toggleTheme();
@@ -44,6 +44,13 @@ export class ButtonDialComponent implements OnInit {
         icon: 'text-lg pi pi-sign-out',
         command: (event) => {
           this.confirm1(event.originalEvent!);
+        },
+      },
+      {
+        label: 'Galería',
+        icon: 'text-lg pi pi-image',
+        command: (event) => {
+          this.router.navigate(['/admin/galeria']);
         },
       },
       {
@@ -137,6 +144,13 @@ export class ButtonDialComponent implements OnInit {
       //     this.router.navigate(['/admin/productos']);
       //   },
       // },
+      {
+        label: 'Gastos personal',
+        icon: 'text-lg pi pi-asterisk',
+        command: () => {
+          this.router.navigate(['/admin/gastos-personal']);
+        },
+      },
       {
         label: 'Asistencias',
         icon: 'text-lg pi pi-check-square',
