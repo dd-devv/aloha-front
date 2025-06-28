@@ -77,6 +77,18 @@ export const routes: Routes = [
         loadComponent: () => import('./modules/admin/pages/gastos/gastos.component')
       },
       {
+        path: 'galeria',
+        loadComponent: () => import('./modules/admin/pages/galeria/galeria.component')
+      },
+      {
+        path: 'gastos-personal',
+        loadComponent: () => import('./modules/admin/pages/gastos-personal/gastos-personal.component')
+      },
+      {
+        path: 'usuarios/sueldo/:id_usuario',
+        loadComponent: () => import('./modules/admin/pages/detalles-sueldo/detalles-sueldo.component')
+      },
+      {
         path: 'almacen',
         loadComponent: () => import('./modules/admin/pages/almacen/almacen.component')
       },

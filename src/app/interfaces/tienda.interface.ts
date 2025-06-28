@@ -25,6 +25,7 @@ export interface Tienda {
   tolerancia: number;
   numeroMesas: number;
   logo:      string;
+  galeria:      string[];
   deleted:   boolean;
   createdAt: Date;
 }

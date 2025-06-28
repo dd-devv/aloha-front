@@ -1,4 +1,4 @@
-<div class="fixed left-0 top-30 h-screen mx-2 z-50" (mouseenter)="hovered.set(true)" (mouseleave)="hovered.set(false)">
+<div class="fixed left-0 top-10 h-screen mx-2 z-50" (mouseenter)="hovered.set(true)" (mouseleave)="hovered.set(false)">
   <div class="border border-gray-500 rounded-sm p-1 bg-gray-100/20 backdrop-blur-xl"
     [class]="hovered() ? 'w-48' : 'w-12'">
 
@@ -28,6 +28,16 @@
         <i class="pi pi-check-square py-1"></i>
         @if (hovered()) {
         <span class="ms-2">Asistencias</span>
+        }
+      </a>
+    </div>
+
+    <div class="my-4">
+      <a class="px-2 flex items-center hover:text-primary hover:font-bold" [routerLink]="['/admin/gastos-personal']"
+        routerLinkActive="text-primary font-semibold">
+        <i class="pi pi-asterisk py-1"></i>
+        @if (hovered()) {
+        <span class="ms-2">Gastos personal</span>
         }
       </a>
     </div>
@@ -169,6 +179,16 @@
         <i class="pi pi-building !text-xl py-1"></i>
         @if (hovered()) {
         <span class="ms-2">Datos de tienda</span>
+        }
+      </a>
+    </div>
+
+    <div class="my-3">
+      <a class="px-2 flex items-center hover:text-primary hover:font-bold" [routerLink]="['/admin/galeria']"
+        routerLinkActive="text-primary font-semibold">
+        <i class="pi pi-image !text-xl py-1"></i>
+        @if (hovered()) {
+        <span class="ms-2">Galería</span>
         }
       </a>
     </div>

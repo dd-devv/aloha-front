@@ -1,0 +1,129 @@
+<div class="card">
+  <p-fieldset>
+    <ng-template #header>
+      <div class="flex items-center gap-4 px-2 text-primary">
+        <i class="pi pi-user text-2xl"></i>
+        <span class="font-bold"> {{user.nombres}} {{user.apellidos}} </span>
+
+        <p-button label="Regresar" [raised]="true" icon="pi pi-arrow-left" severity="secondary" size="small"
+          [routerLink]="['/admin/usuarios']" />
+      </div>
+    </ng-template>
+
+    <div class="grid grid-cols-2 gap-4 my-4">
+      <div class="p-3 rounded-lg bg-green-500/10">
+        <div class="text-center">
+          <h3 class="text-lg font-bold text-green-500">Sueldo</h3>
+          <p class="text-lg font-medium">{{ user.sueldo | currency:'S/ ' }}</p>
+        </div>
+      </div>
+      <div class="p-3 rounded-lg bg-red-500/10">
+        <div class="text-center">
+          <h3 class="text-lg font-bold text-red-500">Gastos</h3>
+          <p class="text-lg font-medium">{{ totalGastos | currency:'S/ ' }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <div class="text-center">
+        <h3 class="text-lg font-bold">Sueldo neto (Mes actual)</h3>
+        <p class="text-2xl font-medium text-green-500">{{ user.sueldo - totalGastos | currency:'S/ ' }}</p>
+      </div>
+    </div>
+
+    <div class="card flex justify-center mb-4">
+      <p-button label="Registrar pago de sueldo" severity="success" icon="pi pi-check" (onClick)="confirmarPago()"
+        [loading]="loading()" />
+    </div>
+
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-2">
+      @for (gasto of gastosUnidos(); track gasto._id) {
+      @if (gasto.monto) {
+      <div class="card">
+        <p-panel>
+          <ng-template #header class="p-1">
+            <div class="flex items-center gap-2">
+              <span class="font-bold">{{gasto.concepto}}</span>
+            </div>
+          </ng-template>
+
+          <p class="m-0">
+            {{gasto.monto | currency: 'S/. '}} <i class="pi pi-arrow-right text-sm mx-2 text-primary"></i>
+            {{gasto.empleado.nombres}}
+            {{gasto.empleado.apellidos}}
+          </p>
+
+          <div class="flex flex-wrap items-center justify-between gap-4 mt-1">
+            <span class="text-sm">
+
+              <p>
+                Creado {{gasto.createdAt | date: 'dd/MM/YY'}}
+              </p>
+
+              <p class="font-semibold">
+
+              </p>
+            </span>
+          </div>
+
+          <div class="flex justify-between py-1 px-2 mt-4 bg-gray-300/20 rounded text-sm">
+            <span>Registrado por:</span>
+            <span class="font-semibold"> {{gasto.admin.nombres}}
+              {{gasto.admin.apellidos}}</span>
+          </div>
+        </p-panel>
+      </div>
+      }
+
+      @if (gasto.subtotal) {
+      <div class="card">
+        <p-panel>
+          <ng-template #header>
+            <div class="flex items-center gap-2">
+              <span>Platos <i class="pi pi-arrow-right text-sm mx-2 text-primary"></i>
+                {{gasto.empleado.nombres}}
+                {{gasto.empleado.apellidos}} </span>
+            </div>
+          </ng-template>
+          <ng-template #icons>
+
+            <p-confirmpopup />
+          </ng-template>
+
+          <div class="card">
+            <p-table>
+              <ng-template #header>
+                @for (plato of gasto.platos; track $index) {
+                <tr>
+                  <td> {{plato.nombre}} </td>
+                  <td class="text-center text-sm">S/ {{plato.precio}} </td>
+                  <td class="text-center"> <i class="pi pi-times text-xs"></i> {{plato.cantidad}} </td>
+                  <td class="text-end text-sm">S/ {{plato.subtotal}}</td>
+                </tr>
+                }
+              </ng-template>
+            </p-table>
+          </div>
+
+          <div class="flex justify-between py-1 px-2 mt-4 bg-gray-300/20 rounded text-sm">
+            <span>Reg. ({{gasto.createdAt | date: 'dd/MM/YY'}}) por:</span>
+            <span class="font-semibold"> {{gasto.admin.nombres}}
+              {{gasto.admin.apellidos}}</span>
+          </div>
+
+          <div class="flex justify-between py-1 px-2 mt-4 bg-green-400/20 rounded">
+            <div class="font-medium">Total:</div>
+            <div class="font-medium"> {{gasto.total | currency: 'S/ '}}</div>
+          </div>
+        </p-panel>
+      </div>
+      }
+      }
+    </div>
+  </p-fieldset>
+
+</div>
+
+<p-toast />

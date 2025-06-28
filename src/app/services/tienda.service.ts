@@ -122,6 +122,38 @@ export class TiendaService {
       );
   }
 
+  actualizarGaleriaTienda(gallery: string[]): Observable<TiendaResp> {
+
+    if (isPlatformServer(this.platformId)) {
+      return of({ success: false, message: 'Operación no disponible en SSR', data: {} as Tienda } as TiendaResp);
+    }
+
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.http.put<TiendaResp>(`${this.apiUrl}tienda/gallery`, { gallery }, {
+      headers: {
+        Authorization: `Bearer ${this.authToken}`
+      }
+    })
+      .pipe(
+        tap(response => {
+          if (response.data) {
+            // Agregar los nuevos datos de tienda
+            this.tienda.update(() => response.data);
+          }
+          this.loading.set(false);
+        }),
+        catchError(error => {
+          this.loading.set(false);
+          this.error.set(error.error || 'Error al actualizar galería');
+          return throwError(() => ({
+            error: error.error
+          }));
+        })
+      );
+  }
+
   obtenerTienda(): Observable<TiendaResp> {
 
     if (isPlatformServer(this.platformId)) {

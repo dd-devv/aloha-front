@@ -48,6 +48,7 @@ export class UserService {
     const registerData: RegisterUserRequest = {
       nombres: req.nombres,
       apellidos: req.apellidos,
+      sueldo: req.sueldo,
       username: req.username,
       password: req.password,
       role: req.role
@@ -88,6 +89,7 @@ export class UserService {
     const updateData: UpdateUserRequest = {
       nombres: req.nombres,
       apellidos: req.apellidos,
+      sueldo: req.sueldo,
       role: req.role
     };
 

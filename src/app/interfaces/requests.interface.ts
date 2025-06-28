@@ -8,6 +8,7 @@ export interface LoginRequest {
 export interface RegisterUserRequest {
   nombres:   string;
   apellidos: string;
+  sueldo:    number;
   username:  string;
   password:  string;
   role:      string;
@@ -22,6 +23,7 @@ export interface RegisterResponse {
 export interface UpdateUserRequest {
   nombres:   string;
   apellidos: string;
+  sueldo:    number;
   role:      string;
 }
 

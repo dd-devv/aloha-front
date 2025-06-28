@@ -2,6 +2,7 @@ export * from './asistencia.interfaces';
 export * from './categoria.interfaces';
 export * from './cierreCaja.interface';
 export * from './comanda.interface';
+export * from './consumo.interfaces';
 export * from './gasto.interface';
 export * from './movimiento.interface';
 export * from './notaVenta.interface';

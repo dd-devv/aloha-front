@@ -3,7 +3,7 @@ import { VentaService } from '../../../../services/venta.service';
 import { TiendaService } from '../../../../services/tienda.service';
 import { environment } from '../../../../../environments/environment';
 import { io, Socket } from 'socket.io-client';
-import { CommonModule, CurrencyPipe, DatePipe, isPlatformBrowser, NgClass, NgFor } from '@angular/common';
+import { CurrencyPipe, DatePipe, isPlatformBrowser, NgClass, NgFor } from '@angular/common';
 import { FieldsetModule } from 'primeng/fieldset';
 import { TableModule } from 'primeng/table';
 import { Button } from 'primeng/button';

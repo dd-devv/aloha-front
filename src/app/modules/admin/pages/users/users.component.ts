@@ -10,13 +10,13 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { PasswordModule } from 'primeng/password';
 import { Select } from 'primeng/select';
-import { Message } from 'primeng/message';
 import { User } from '../../../../interfaces';
 import { UserService } from '../../../../services/user.service';
 import { finalize } from 'rxjs';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { ToastModule } from 'primeng/toast';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-users',
@@ -35,9 +35,9 @@ import { ToastModule } from 'primeng/toast';
     Select,
     TitleCasePipe,
     DatePipe,
-    Message,
     ConfirmPopupModule,
-    ToastModule
+    ToastModule,
+    RouterLink
   ],
   providers: [ConfirmationService, MessageService],
   templateUrl: './users.component.html',
@@ -80,6 +80,10 @@ export default class UsersComponent implements OnInit {
         Validators.required,
         Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$')
       ]],
+      sueldo: [0, [
+        Validators.required,
+        Validators.min(0)
+      ]],
       username: ['', [
         Validators.required,
         Validators.pattern('^[a-zA-Z0-9_]+$')
@@ -99,6 +103,10 @@ export default class UsersComponent implements OnInit {
       apellidos: ['', [
         Validators.required,
         Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$')
+      ]],
+      sueldo: [0, [
+        Validators.required,
+        Validators.min(0)
       ]],
       role: ['', Validators.required]
     });
@@ -136,6 +144,7 @@ export default class UsersComponent implements OnInit {
     this.updateForm.patchValue({
       nombres: user.nombres,
       apellidos: user.apellidos,
+      sueldo: user.sueldo,
       role: { name: user.role, code: user.role }
     });
 
@@ -212,6 +221,7 @@ export default class UsersComponent implements OnInit {
       this.userService.registrarUsuario({
         nombres: this.registroForm.value.nombres,
         apellidos: this.registroForm.value.apellidos,
+        sueldo: this.registroForm.value.sueldo,
         username: this.registroForm.value.username,
         password: this.registroForm.value.password,
         role: this.registroForm.value.role.code
@@ -251,6 +261,7 @@ export default class UsersComponent implements OnInit {
       this.userService.actualizarUsuario({
         nombres: this.updateForm.value.nombres,
         apellidos: this.updateForm.value.apellidos,
+        sueldo: this.updateForm.value.sueldo,
         role: this.updateForm.value.role.code
       }, this.id_user_update)
         .pipe(

@@ -167,7 +167,7 @@ export class VentaService {
         }),
         catchError(error => {
           this.loading.set(false);
-          this.error.set(error.error || 'Error al eliminar plato');
+          this.error.set(error.error || 'Error al eliminar venta');
           return throwError(() => ({
             error: error.error
           }));

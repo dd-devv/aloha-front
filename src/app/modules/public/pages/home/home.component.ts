@@ -13,6 +13,7 @@ import { Tag } from 'primeng/tag';
 import { CategoriaService } from '../../../../services/categoria.service';
 import { CategoriaFilterService } from '../../../../services/categoria-filter.service';
 import { GalleriaModule } from 'primeng/galleria';
+import { TiendaService } from '../../../../services/tienda.service';
 
 @Component({
   selector: 'app-home',
@@ -51,7 +52,9 @@ export default class HomeComponent implements OnInit, OnDestroy {
   private categoriaService = inject(CategoriaService);
   private categoriaFilterService = inject(CategoriaFilterService);
   private title = inject(Title);
+  private tiendaService = inject(TiendaService);
 
+  tienda = this.tiendaService.tienda;
   platos = signal<any[]>([]);
   platosAll = signal<any[]>([]);
   categorias = this.categoriaService.categoriasPublic;
@@ -69,30 +72,23 @@ export default class HomeComponent implements OnInit, OnDestroy {
     // Solo ejecutar en el navegador
     if (this.isBrowser) {
       this.title.setTitle('Aloha | Inicio');
+      this.cargarDatosTienda();
       this.startImageRotation();
       this.obtenerCategorias();
       this.obtenerPlatos();
-
-      this.images = [
-        'https://res.cloudinary.com/dtttoiss7/image/upload/v1749164298/galeria0_nk6cql.jpg',
-        'https://res.cloudinary.com/dtttoiss7/image/upload/v1749164296/galeria1_ld4eb7.jpg',
-        'https://res.cloudinary.com/dtttoiss7/image/upload/v1749167098/galeria2_wzszd2.jpg',
-        'https://res.cloudinary.com/dtttoiss7/image/upload/v1749167102/galeria3_pe3c4z.jpg',
-        'https://res.cloudinary.com/dtttoiss7/image/upload/v1749164297/galeria4_von25y.jpg',
-        'https://res.cloudinary.com/dtttoiss7/image/upload/v1749167101/galeria5_e4cfr3.jpg',
-        'https://res.cloudinary.com/dtttoiss7/image/upload/v1749164298/galeria6_prqoyp.jpg',
-        'https://res.cloudinary.com/dtttoiss7/image/upload/v1749164290/galeria7_l2vi3a.jpg',
-        'https://res.cloudinary.com/dtttoiss7/image/upload/v1749164289/galeria8_nkby6a.jpg',
-        'https://res.cloudinary.com/dtttoiss7/image/upload/v1749164293/galeria9_fsrpap.jpg',
-        'https://res.cloudinary.com/dtttoiss7/image/upload/v1749164292/galeria10_gqhk0i.jpg',
-        'https://res.cloudinary.com/dtttoiss7/image/upload/v1749164293/galeria11_gxrpxm.jpg',
-        'https://res.cloudinary.com/dtttoiss7/image/upload/v1749164293/galeria12_mhbabl.jpg',
-        'https://res.cloudinary.com/dtttoiss7/image/upload/v1749164293/galeria13_onlxmt.jpg',
-        'https://res.cloudinary.com/dtttoiss7/image/upload/v1749164293/galeria14_mgudvy.jpg',
-        'https://res.cloudinary.com/dtttoiss7/image/upload/v1749164295/galeria15_b9clhs.jpg',
-        'https://res.cloudinary.com/dtttoiss7/image/upload/v1749164295/galeria15_b9clhs.jpg',
-      ]
     }
+  }
+
+  cargarDatosTienda(): void {
+    this.tiendaService.obtenerTienda().subscribe({
+      next: (res) => {
+        this.tienda.set(res.data);
+        this.images = this.tienda()!.galeria || [];
+      },
+      error: (err) => {
+        console.error('Error al obtener la tienda:', err);
+      }
+    });
   }
 
   obtenerCategorias() {
