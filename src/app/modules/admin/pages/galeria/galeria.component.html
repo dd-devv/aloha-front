@@ -82,7 +82,7 @@
   </p-fieldset>
 </div>
 
-<p-toast position="top-right" />
+<p-toast [breakpoints]="{ '780px': { width: '80%', right: '8' } }" />
 
 <!-- Loading overlay para operaciones críticas -->
 @if (loading()) {
