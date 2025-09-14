@@ -25,17 +25,31 @@
       </div>
     </div>
 
-    <div class="mb-4">
-      <div class="text-center">
-        <h3 class="text-lg font-bold">Sueldo neto (Mes actual)</h3>
-        <p class="text-2xl font-medium text-green-500">{{ user.sueldo - totalGastos | currency:'S/ ' }}</p>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
+      <div class="">
+        <div class="text-center">
+          <h3 class="text-lg font-bold">Sueldo neto (Mes actual)</h3>
+          <p class="text-2xl font-medium text-green-500">{{ user.sueldo - totalGastos | currency:'S/ ' }}</p>
+        </div>
+
+        <div class="card flex justify-center my-4">
+          <p-button label="Registrar pago de sueldo" severity="success" icon="pi pi-check" (onClick)="showDialog()" />
+        </div>
+      </div>
+
+      <div class="">
+        <h3 class="text-lg font-bold text-center">Reporte de asistencias</h3>
+
+        <div class="flex flex-wrap gap-2 mb-4">
+          @for (asistencia of asistenciasTrabajador(); track asistencia._id) {
+          <p-tag [severity]="asistencia.falta ? 'danger' : (asistencia.tardanza ? 'warn' : 'success')"
+            [pTooltip]="getTooltipText(asistencia)" tooltipPosition="bottom" class="h-8"
+            value="{{asistencia.fechaEntrada | date:'dd/MM/YY'}}" />
+          }
+        </div>
       </div>
     </div>
 
-    <div class="card flex justify-center mb-4">
-      <p-button label="Registrar pago de sueldo" severity="success" icon="pi pi-check" (onClick)="confirmarPago()"
-        [loading]="loading()" />
-    </div>
 
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-2">
@@ -125,5 +139,24 @@
   </p-fieldset>
 
 </div>
+<p-dialog header="Registrar pago de sueldo" [modal]="true" [(visible)]="visible" [style]="{ width: '25rem' }"
+  maskStyleClass="backdrop-blur-sm">
+  <p class="mb-4">¿Estás seguro de registrar el pago del sueldo a
+    <span class="font-bold">{{user.nombres}} {{user.apellidos}}</span> por un monto de
+    <span class="font-bold text-green-500">{{ user.sueldo - totalGastos | currency:'S/ ' }}</span>?
+  </p>
+
+  <div class="mb-8">
+    <p-message severity="warn">
+      También se eliminarán los registros de asistencia del mes actual para el trabajador.
+    </p-message>
+  </div>
+
+  <div class="flex justify-center">
+    <p-button label="Registrar pago de sueldo" severity="success" icon="pi pi-check" (onClick)="confirmarPago()"
+      [loading]="loading()" />
+  </div>
+
+</p-dialog>
 
 <p-toast [breakpoints]="{ '780px': { width: '80%', right: '8' } }" />

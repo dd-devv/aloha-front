@@ -108,9 +108,9 @@ export default class AsistenciasComponent {
       message: `¿Confirmar asistencia?`,
       icon: 'pi pi-exclamation-triangle',
       rejectButtonProps: {
-        label: 'Cancelar',
-        severity: 'secondary',
-        outlined: true
+        label: 'Falta',
+        severity: 'danger',
+        icon: 'pi pi-times'
       },
       acceptButtonProps: {
         label: 'Confirmar',
@@ -118,10 +118,11 @@ export default class AsistenciasComponent {
         icon: 'pi pi-check'
       },
       accept: () => {
-        // Eliminar el usuario
+        // Confirmar la asistencia
         this.asistenciaService.registrarAsistencia({
           trabajador: id_user,
-          fechaEntrada: new Date()
+          fechaEntrada: new Date(),
+          falta: false
         })
           .pipe(
             finalize(() => {
@@ -136,11 +137,31 @@ export default class AsistenciasComponent {
             },
             error: (err) => {
               console.error('Error al actualizar usuario:', err);
-              // Aquí puedes manejar el error, por ejemplo mostrando un mensaje al usuario
             }
           });
       },
       reject: () => {
+        // Registrar falta
+        this.asistenciaService.registrarAsistencia({
+          trabajador: id_user,
+          fechaEntrada: new Date(),
+          falta: true
+        })
+          .pipe(
+            finalize(() => {
+              this.isLoading = false;
+            })
+          )
+          .subscribe({
+            next: (response) => {
+              this.cargarAsistencias();
+              this.cargarUsuarios();
+              this.messageService.add({ severity: 'success', summary: 'Falta', detail: 'Falta registrada correctamente', life: 3000 });
+            },
+            error: (err) => {
+              console.error('Error al actualizar usuario:', err);
+            }
+          });
       }
     });
   }

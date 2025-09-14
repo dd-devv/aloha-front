@@ -308,6 +308,8 @@ export default class DatosTiendaComponent implements OnInit {
     if (this.registroForm.valid) {
       this.isLoading = true;
 
+      console.log(this.imageUrl);
+
       this.tiendaService.actualizarTienda({
         nombre: this.registroForm.value.nombre,
         direccion: this.registroForm.value.direccion,

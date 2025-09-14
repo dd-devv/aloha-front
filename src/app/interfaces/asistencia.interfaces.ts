@@ -1,6 +1,7 @@
 export interface AsistenciaReq {
   trabajador:   string;
   fechaEntrada: Date;
+  falta:     boolean;
 }
 
 export interface AsistenciaResp {
@@ -13,6 +14,7 @@ export interface Asistencia {
   trabajador:   any;
   fechaEntrada: Date;
   tardanza:     boolean;
+  falta:     boolean;
   deleted:      boolean;
   _id:          string;
   createdAt:    Date;

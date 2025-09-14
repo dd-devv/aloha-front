@@ -49,7 +49,8 @@ export class AsistenciaService {
 
     const registerData: AsistenciaReq = {
       trabajador: req.trabajador,
-      fechaEntrada: req.fechaEntrada
+      fechaEntrada: req.fechaEntrada,
+      falta: req.falta
     };
 
     return this.http.post<AsistenciaResp>(`${this.apiUrl}asistencias`, registerData, {
@@ -124,6 +125,37 @@ export class AsistenciaService {
         tap(response => {
           if (response.data) {
             this.asistenciasTrabajador.set(response.data);
+          }
+          this.loadingTrabajador.set(false);
+        }),
+        catchError(error => {
+          this.loadingTrabajador.set(false);
+          this.error.set(error.error || 'Error al obtener asistencias');
+          return throwError(() => ({
+            error: error.error
+          }));
+        })
+      );
+  }
+
+  eliminarAsistenciasTrabajador(id_trabajador: String): Observable<GetAsistenciasResp> {
+
+    if (isPlatformServer(this.platformId)) {
+      return of({ success: true, message: '', data: [] } as GetAsistenciasResp);
+    }
+
+    this.loadingTrabajador.set(true);
+    this.error.set(null);
+
+    return this.http.delete<GetAsistenciasResp>(`${this.apiUrl}asistencias/trabajador/${id_trabajador}`, {
+      headers: {
+        Authorization: `Bearer ${this.authToken}`
+      }
+    })
+      .pipe(
+        tap(response => {
+          if (response.data) {
+            this.asistenciasTrabajador.set([]);
           }
           this.loadingTrabajador.set(false);
         }),

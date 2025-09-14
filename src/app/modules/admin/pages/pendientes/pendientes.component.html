@@ -36,7 +36,12 @@
           </ng-template>
 
           <p class="text-center">
+            @if (venta.mesa == 0) {
+            <span class="text-xl font-semibold text-primary">Barra</span>
+            }
+            @if (venta.mesa !== 0) {
             <span class="text-xl font-semibold text-primary">Mesa {{venta.mesa}} </span>
+            }
           </p>
 
           <div class="card">

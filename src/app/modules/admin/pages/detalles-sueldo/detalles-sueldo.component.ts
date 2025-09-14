@@ -23,6 +23,10 @@ import { CloudinaryImagePipe } from '../../../../pipes/cloudinary-image.pipe';
 import { DataView } from 'primeng/dataview';
 import { TableModule } from 'primeng/table';
 import { ConsumoService } from '../../../../services/consumo.service';
+import { AsistenciaService } from '../../../../services/asistencia.service';
+import { Tag } from 'primeng/tag';
+import { Tooltip } from 'primeng/tooltip';
+import { Message } from 'primeng/message';
 
 @Component({
   selector: 'app-detalles-sueldo',
@@ -39,7 +43,11 @@ import { ConsumoService } from '../../../../services/consumo.service';
     ReactiveFormsModule,
     FormsModule,
     TableModule,
-    RouterLink
+    RouterLink,
+    Tag,
+    Tooltip,
+    Dialog,
+    Message
   ],
   providers: [ConfirmationService, MessageService],
   templateUrl: './detalles-sueldo.component.html',
@@ -52,6 +60,12 @@ export default class DetallesSueldoComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private consumoService = inject(ConsumoService);
 
+  private asistenciaService = inject(AsistenciaService);
+
+  readonly asistencias = this.asistenciaService.asistencias;
+  readonly asistenciasTrabajador = this.asistenciaService.asistenciasTrabajador;
+  readonly loadingAsistencia = this.asistenciaService.loading;
+
   readonly gastos = this.consumoService.gastosPersonalUser;
   readonly consumos = this.consumoService.consumosPersonalUser;
   readonly users = this.userService.users;
@@ -62,11 +76,14 @@ export default class DetallesSueldoComponent implements OnInit {
   idUsuario = signal<string | null>(null);
   totalGastos = 0;
 
+  visible: boolean = false;
+
   ngOnInit(): void {
     this.route.paramMap.pipe(
       tap(params => {
         const id = params.get('id_usuario');
         this.idUsuario.set(id);
+        this.cargarAsistenciasTrabajador(id!);
       })).subscribe();
 
     this.cargarUsuarios();
@@ -81,6 +98,14 @@ export default class DetallesSueldoComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error al cargar usuarios:', err);
+      }
+    });
+  }
+
+  cargarAsistenciasTrabajador(id_trabajador: string): void {
+    this.asistenciaService.obtenerAsistenciasTrabajador(id_trabajador).subscribe({
+      error: (err) => {
+        console.error('Error al cargar asistencias:', err);
       }
     });
   }
@@ -130,11 +155,46 @@ export default class DetallesSueldoComponent implements OnInit {
       next: () => {
         this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Gastos actualizados correctamente' });
         this.cargarGastosYConsumos();
+        this.visible = false;
       },
       error: (err) => {
         console.error('Error al actualizar gastos:', err);
+        this.visible = false;
+      }
+    });
+
+    this.asistenciaService.eliminarAsistenciasTrabajador(this.idUsuario()!).subscribe({
+      next: () => {
+        this.cargarAsistenciasTrabajador(this.idUsuario()!);
+        this.visible = false;
+      },
+      error: (err) => {
+        console.error('Error al eliminar asistencias:', err);
+        this.visible = false;
       }
     });
   }
 
+  getTooltipText(asistencia: any): string {
+    const fechaHora = new Date(asistencia.fechaEntrada).toLocaleString('es-ES', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
+
+    if (asistencia.falta) {
+      return `Falta - ${fechaHora}`;
+    } else if (asistencia.tardanza) {
+      return `Tardanza - ${fechaHora}`;
+    } else {
+      return `A tiempo - ${fechaHora}`;
+    }
+  }
+
+  showDialog() {
+    this.visible = true;
+  }
 }

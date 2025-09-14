@@ -60,10 +60,11 @@
   }
 
   @if(!loadingTrabajador() && asistenciasTrabajador().length > 0) {
-  @for (asistencia of asistenciasTrabajador(); track asistencia._id) {
-  <p-tag [severity]="asistencia.tardanza ? 'warn' : 'success'" [pTooltip]="asistencia.tardanza ? 'Tarde' : 'A tiempo'"
-    tooltipPosition="bottom" value="{{asistencia.fechaEntrada | date:'dd/MM/YYYY HH:mm aa'}}" class="mx-2" />
-  }
+    @for (asistencia of asistenciasTrabajador(); track asistencia._id) {
+    <p-tag [severity]="asistencia.falta ? 'danger' : (asistencia.tardanza ? 'warn' : 'success')"
+      [pTooltip]="asistencia.falta ? 'Falta' : (asistencia.tardanza ? 'Tarde' : 'A tiempo')" tooltipPosition="bottom"
+      value="{{asistencia.fechaEntrada | date:'dd/MM/YYYY HH:mm aa'}}" class="mx-2" />
+    }
   }
 
   @if (!loadingTrabajador() && asistenciasTrabajador().length == 0) {
