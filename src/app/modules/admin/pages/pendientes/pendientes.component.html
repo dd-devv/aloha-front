@@ -139,7 +139,7 @@
       <ng-template pTemplate="item" let-plato>
         <div class="flex items-center gap-2">
           <img [src]="plato.galeria[0] | cloudinaryImage:100:'avif'" style="width: 24px" class="rounded" />
-          <div>{{ plato.nombre }}</div>
+          <div class="w-30">{{ plato.nombre }}</div>
         </div>
       </ng-template>
       <ng-template pTemplate="header">
