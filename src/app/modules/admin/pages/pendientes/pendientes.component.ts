@@ -297,7 +297,7 @@ export default class PendientesComponent implements OnInit {
           this.id_venta = response.data._id;
           this.num_venta = response.data.numeroVenta;
 
-          // this.confirmarVenta();
+          this.confirmarVenta();
 
           //Emitir el socket
           if (isPlatformBrowser(this.platformId)) {
