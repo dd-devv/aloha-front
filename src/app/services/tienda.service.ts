@@ -16,7 +16,7 @@ export class TiendaService {
   private apiUrl = environment.apiUrl;
 
   // Signal para los usuarios
-  readonly tienda = signal<Tienda | undefined>(undefined);
+  readonly tienda = signal<Tienda>({} as Tienda);
 
   // Controlar si está cargando datos
   readonly loading = signal<boolean>(false);

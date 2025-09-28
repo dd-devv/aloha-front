@@ -87,8 +87,14 @@
   maskStyleClass="backdrop-blur-sm">
 
   <p class="text-center">
-    ¿Confirmar venta <span class="font-semibold">{{num_venta}} </span> de la mesa <span
-      class="font-semibold">{{mesa_venta}}</span>?
+    ¿Confirmar venta <span class="font-semibold">{{num_venta}} </span> de la mesa
+    @if (mesa_venta == 0) {
+    <span class="font-semibold">Barra</span>
+    }
+    @if (mesa_venta !== 0) {
+    <span class="font-semibold">{{mesa_venta}}</span>
+    }
+    ?
   </p>
 
   <div class="flex justify-between py-1 px-2 mt-6 bg-gray-300/20 rounded">
@@ -113,6 +119,74 @@
       </p-inputgroup-addon>
     </p-inputgroup>
   </div>
+
+  <div class="card flex justify-center my-6">
+    <p-selectbutton [options]="facturaOptions" [(ngModel)]="valueFactura" aria-labelledby="basic"
+      (onChange)="obtenerUltimoCorrelativo(valueFactura)" />
+  </div>
+
+  @if (valueFactura === 'Boleta') {
+  <p-inputgroup>
+    <input pInputText placeholder="DNI o RUC para boleta" [(ngModel)]="valueDoc" maxlength="11" />
+    <p-inputgroup-addon>
+      <p-button icon="pi pi-search" severity="contrast" variant="text" (click)="obtenerCliente()"
+        [disabled]="valueDoc.length < 8" />
+    </p-inputgroup-addon>
+  </p-inputgroup>
+
+  @if (clienteDni().full_name) {
+  <div class="my-4">
+    <p-message severity="secondary">
+      <p>
+        Se emitirá Boleta
+        <b>{{latestSerieCorrelative().ultimo_serie}}-{{latestSerieCorrelative().ultimo_correlativo}}</b>
+        a
+        {{clienteDni().full_name}} por valor de <b>{{total_venta | currency: 'S/ '}}</b>.
+      </p>
+    </p-message>
+  </div>
+  }
+  @if (clienteRuc().razon_social) {
+  <div class="my-4">
+    <p-message severity="secondary">
+      <p>
+        Se emitirá Boleta
+        <b>{{latestSerieCorrelative().ultimo_serie}}-{{latestSerieCorrelative().ultimo_correlativo}}</b>
+        a
+        {{clienteRuc().razon_social}} por valor de <b>{{total_venta | currency: 'S/ '}}</b>.
+      </p>
+    </p-message>
+  </div>
+  }
+  }
+
+  @if (valueFactura === 'Factura') {
+  <p-inputgroup>
+    <input pInputText placeholder="RUC para factura" [(ngModel)]="valueDoc" maxlength="11" />
+    <p-inputgroup-addon>
+      <p-button icon="pi pi-search" severity="contrast" variant="text" (click)="obtenerCliente()"
+        [disabled]="valueDoc.length !== 11" />
+    </p-inputgroup-addon>
+  </p-inputgroup>
+
+  @if (clienteRuc().razon_social) {
+  <div class="my-4">
+    <p-message severity="secondary">
+      <p>
+        Se emitirá Factura
+        <b>{{latestSerieCorrelative().ultimo_serie}}-{{latestSerieCorrelative().ultimo_correlativo}}</b> a
+        {{clienteRuc().razon_social}} por valor de <b>{{total_venta | currency: 'S/ '}}</b>.
+      </p>
+    </p-message>
+  </div>
+  }
+  }
+
+  @if (valueFactura === 'Ticket') {
+  <div class="card flex justify-center gap-4">
+    <p-toggleswitch [(ngModel)]="downloadTicket" /> Descargar ticket
+  </div>
+  }
 
   <div class="card flex justify-center mt-8">
     <p-button label="Confirmar venta" size="small" icon="pi pi-check" severity="success" (onClick)="confirmarVenta()"
@@ -204,7 +278,75 @@
       <div class="text-lg font-bold">Subtotal:</div>
       <div class="text-lg font-bold">{{subtotal | currency:'S/ '}}</div>
     </div>
+
+    <div class="card flex justify-center my-6">
+      <p-selectbutton [options]="facturaOptions" [(ngModel)]="valueFactura" aria-labelledby="basic"
+        (onChange)="obtenerUltimoCorrelativo(valueFactura)" />
+    </div>
+
+    @if (valueFactura === 'Boleta') {
+    <p-inputgroup>
+      <input pInputText placeholder="DNI o RUC para boleta" [(ngModel)]="valueDoc" maxlength="11" />
+      <p-inputgroup-addon>
+        <p-button icon="pi pi-search" severity="contrast" variant="text" (click)="obtenerCliente()"
+          [disabled]="valueDoc.length < 8" />
+      </p-inputgroup-addon>
+    </p-inputgroup>
+
+    @if (clienteDni().full_name) {
+    <div class="my-4">
+      <p-message severity="secondary">
+        <p>
+          Se emitirá Boleta
+          <b>{{latestSerieCorrelative().ultimo_serie}}-{{latestSerieCorrelative().ultimo_correlativo}}</b>
+          a
+          {{clienteDni().full_name}} por valor de <b>{{subtotal | currency: 'S/ '}}</b>.
+        </p>
+      </p-message>
+    </div>
+    }
+    @if (clienteRuc().razon_social) {
+    <div class="my-4">
+      <p-message severity="secondary">
+        <p>
+          Se emitirá Boleta
+          <b>{{latestSerieCorrelative().ultimo_serie}}-{{latestSerieCorrelative().ultimo_correlativo}}</b>
+          a
+          {{clienteRuc().razon_social}} por valor de <b>{{subtotal | currency: 'S/ '}}</b>.
+        </p>
+      </p-message>
+    </div>
+    }
+    }
+
+    @if (valueFactura === 'Factura') {
+    <p-inputgroup>
+      <input pInputText placeholder="RUC para factura" [(ngModel)]="valueDoc" maxlength="11" />
+      <p-inputgroup-addon>
+        <p-button icon="pi pi-search" severity="contrast" variant="text" (click)="obtenerCliente()"
+          [disabled]="valueDoc.length !== 11" />
+      </p-inputgroup-addon>
+    </p-inputgroup>
+
+    @if (clienteRuc().razon_social) {
+    <div class="my-4">
+      <p-message severity="secondary">
+        <p>
+          Se emitirá Factura
+          <b>{{latestSerieCorrelative().ultimo_serie}}-{{latestSerieCorrelative().ultimo_correlativo}}</b> a
+          {{clienteRuc().razon_social}} por valor de <b>{{subtotal | currency: 'S/ '}}</b>.
+        </p>
+      </p-message>
+    </div>
+    }
+    }
   </div>
+
+  @if (valueFactura === 'Ticket') {
+  <div class="card flex justify-center gap-4">
+    <p-toggleswitch [(ngModel)]="downloadTicket" /> Descargar ticket
+  </div>
+  }
 
   <div class="flex justify-end gap-2 mt-4">
     <p-button label="Cancelar" severity="secondary" (click)="visible = false" />

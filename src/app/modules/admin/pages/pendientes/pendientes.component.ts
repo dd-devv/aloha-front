@@ -11,7 +11,7 @@ import { TimeAgoPipe } from '../../../../pipes/time-ago.pipe';
 import { ToastModule } from 'primeng/toast';
 import { Dialog } from 'primeng/dialog';
 import { MessageService } from 'primeng/api';
-import { Plato, PlatoVentaReq, Venta } from '../../../../interfaces';
+import { DataSerieCorrelative, Plato, PlatoVentaReq, Venta } from '../../../../interfaces';
 import { FormsModule } from '@angular/forms';
 import { InputGroupAddon, InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
@@ -25,6 +25,12 @@ import { CloudinaryImagePipe } from '../../../../pipes/cloudinary-image.pipe';
 import { DataView } from 'primeng/dataview';
 import { Message } from 'primeng/message';
 import { Tooltip } from 'primeng/tooltip';
+import { SelectButton } from 'primeng/selectbutton';
+import { DniRucService } from '../../../../services/DniRuc.service';
+import { DNIResponse, RUCResponse } from '../../../../interfaces/DniRuc.interfaces';
+import { ComprobanteService } from '../../../../services/comprobante.service';
+import { NumeroLetrasService } from '../../../../services/numero-letras.service';
+import { ToggleSwitch } from 'primeng/toggleswitch';
 
 @Component({
   selector: 'app-pendientes',
@@ -50,7 +56,9 @@ import { Tooltip } from 'primeng/tooltip';
     InputGroup,
     Select,
     Message,
-    Tooltip
+    Tooltip,
+    SelectButton,
+    ToggleSwitch
   ],
   providers: [MessageService],
   templateUrl: './pendientes.component.html',
@@ -66,6 +74,21 @@ export default class PendientesComponent implements OnInit {
   public url_socket = environment.url_socket;
   private platformId = inject(PLATFORM_ID);
   private socket!: Socket;
+
+  private dniRucService = inject(DniRucService);
+  clienteRuc = this.dniRucService.clienteRUC;
+  clienteDni = this.dniRucService.clienteDNI;
+  loadingDniRuc = this.dniRucService.loading;
+  errorDniRuc = this.dniRucService.error;
+
+  private comprobanteService = inject(ComprobanteService);
+  comprobanteSunat = this.comprobanteService.comprobanteSunat;
+  comprobanteLocal = this.comprobanteService.comprobanteLocal;
+  loadingComprobante = this.comprobanteService.loading;
+  errorComprobante = this.comprobanteService.error;
+  latestSerieCorrelative = this.comprobanteService.latestSerieCorrelative;
+
+  private _numeroLetrasService = inject(NumeroLetrasService);
 
   tienda = this.tiendaService.tienda;
   ventas = this.ventaService.ventasPendientes;
@@ -101,6 +124,18 @@ export default class PendientesComponent implements OnInit {
   };
 
   estadosVentas = signal<{ [key: string]: boolean }>({});
+  facturaOptions: any[] = ['Ticket', 'Boleta', 'Factura'];
+  valueFactura: string = 'Ticket';
+  valueDoc: string = '';
+  tipo_documento: string = '03';
+
+  ventaToEmitComprobante: Venta = {} as Venta;
+
+  public data_facturacion: any = {};
+  public data_comprobante: any = {};
+  url_sunat = environment.url_doc_sunat;
+
+  downloadTicket = true;
 
   constructor() {
     if (isPlatformBrowser(this.platformId)) {
@@ -228,6 +263,7 @@ export default class PendientesComponent implements OnInit {
   }
 
   showDialog(venta: Venta) {
+    this.ventaToEmitComprobante = venta;
     this.total_venta = venta.total;
     this.mesa_venta = venta.mesa;
     this.num_venta = venta.numeroVenta;
@@ -291,13 +327,18 @@ export default class PendientesComponent implements OnInit {
     }).subscribe({
       next: (response) => {
         if (response.success) {
+          this.ventaToEmitComprobante = response.data;
           this.messageService.add({ severity: 'success', summary: 'Registrado', detail: response.message, life: 3000 });
           this.visible1 = false;
 
+          // Configurar variables necesarias para el comprobante
           this.id_venta = response.data._id;
           this.num_venta = response.data.numeroVenta;
+          this.total_venta = response.data.total;
+          this.mesa_venta = response.data.mesa;
 
-          this.confirmarVenta();
+          // Abrir el diálogo de confirmación con los datos de la nueva venta
+          this.visible = true;
 
           //Emitir el socket
           if (isPlatformBrowser(this.platformId)) {
@@ -316,6 +357,27 @@ export default class PendientesComponent implements OnInit {
   }
 
   confirmarVenta() {
+    // Validar que tenemos los datos necesarios
+    if (!this.id_venta) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'No se ha seleccionado una venta válida',
+        life: 3000
+      });
+      return;
+    }
+
+    if (!this.selectedMP.code) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Debe seleccionar un medio de pago',
+        life: 3000
+      });
+      return;
+    }
+
     this.ventaService.confirmarVenta(this.id_promocion, this.selectedMP.code, this.id_venta).subscribe({
       next: (res) => {
         this.messageService.add({
@@ -325,24 +387,36 @@ export default class PendientesComponent implements OnInit {
           life: 3000
         });
 
-        // const anchoPapel = 80;
-
-        this.notaVentaService.obtenerPdfNotaVenta(this.num_venta).subscribe({
-          next: (pdfBlob) => {
-
-            this.notaVentaService.descargarPdf(pdfBlob, `nota-venta-${this.num_venta}.pdf`);
-          },
-          error: (err) => {
-            console.error('Error al obtener el PDF:', err);
+        if (this.valueFactura == 'Ticket') {
+          if (this.downloadTicket) {
+            this.notaVentaService.obtenerPdfNotaVenta(this.num_venta).subscribe({
+              next: (pdfBlob) => {
+                this.notaVentaService.descargarPdf(pdfBlob, `nota-venta-${this.num_venta}.pdf`);
+              },
+              error: (err) => {
+                console.error('Error al obtener el PDF:', err);
+              }
+            });
           }
-        });
+        } else {
+          // Para comprobantes (Boleta/Factura), primero necesitamos obtener los datos del cliente
+          if (this.valueDoc && this.valueDoc.length >= 8) {
+            this.obtenerCliente();
+            // La generación del comprobante se ejecutará en el callback de obtenerCliente
+            setTimeout(() => {
+              this.generar_comprobante();
+            }, 500);
+          } else {
+            // Si no hay documento, obtener correlativo con el tipo seleccionado
+            this.obtenerUltimoCorrelativo(this.valueFactura);
+            setTimeout(() => {
+              this.generar_comprobante();
+            }, 500);
+          }
+        }
 
-        this.visible = false;
-        this.num_venta = '';
-        this.id_venta = '';
-        this.promo_code = '';
-        this.descontado = false;
-        this.id_promocion = null;
+        this.limpiarFormulario();
+        this.obtenerVentas();
 
         //Emitir el socket
         if (isPlatformBrowser(this.platformId)) {
@@ -357,10 +431,29 @@ export default class PendientesComponent implements OnInit {
           detail: err.message,
           life: 3000
         });
-
         this.visible = false;
       }
     });
+  }
+
+  limpiarFormulario() {
+    this.data_comprobante = {};
+    this.selectedPlatos = [];
+    this.subtotal = 0;
+    this.mesaSeleccionada = 0;
+    this.selectedMP = { name: '', code: '' };
+    this.tipo_documento = '03';
+    this.valueFactura = 'Ticket';
+    this.valueDoc = '';
+    this.clienteDni.set({} as DNIResponse);
+    this.clienteRuc.set({} as RUCResponse);
+
+    this.visible = false;
+    this.num_venta = '';
+    this.id_venta = '';
+    this.promo_code = '';
+    this.descontado = false;
+    this.id_promocion = null;
   }
 
   descargarPdfVenta(id_venta: string, numero_venta: string) {
@@ -370,6 +463,154 @@ export default class PendientesComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error al obtener el PDF:', err);
+      }
+    });
+  }
+
+  obtenerCliente() {
+    if (this.valueDoc.length === 8) {
+      // DNI - Solo para boletas
+      this.dniRucService.obtenerClienteDNI(this.valueDoc).subscribe({
+        next: () => {
+          this.obtenerUltimoCorrelativo(this.valueFactura); // Usar valueFactura en lugar de tipo_documento
+        }
+      });
+      this.clienteRuc.set({} as RUCResponse);
+    } else if (this.valueDoc.length === 11) {
+      // RUC - Para boletas y facturas
+      this.dniRucService.obtenerClienteRUC(this.valueDoc).subscribe({
+        next: () => {
+          this.obtenerUltimoCorrelativo(this.valueFactura); // Usar valueFactura en lugar de tipo_documento
+        }
+      });
+      this.clienteDni.set({} as DNIResponse);
+    }
+  }
+
+  transformPlatosVenta(venta: Venta): any {
+    if (venta.platos) {
+      return venta.platos.map(plato => ({
+        codigo: plato.nombre.substring(0, 6).toUpperCase(),
+        descripcion: plato.nombre,
+        cantidad: plato.cantidad,
+        precio_unitario: plato.precio,
+        precio_total: plato.subtotal,
+        unidad_medida: 'unidad'
+      }));
+    } else {
+      return this.selectedPlatos.map(plato => ({
+        codigo: plato.nombre.substring(0, 6).toUpperCase(),
+        descripcion: plato.nombre,
+        cantidad: plato.cantidad,
+        precio_unitario: plato.precio,
+        precio_total: plato.precio * plato.cantidad,
+        unidad_medida: 'unidad'
+      }));
+    }
+  }
+
+  obtenerUltimoCorrelativo(tipo_doc: string) {
+    const total = this.total_venta;
+    const fecha_actual = new Date();
+    const fecha_formateada = fecha_actual.toISOString().split('T')[0];
+    const hora_formateada = fecha_actual.toTimeString().split(' ')[0];
+
+    if (tipo_doc === 'Ticket') {
+      this.latestSerieCorrelative.set({} as DataSerieCorrelative);
+      this.tipo_documento = '03'; // Reset to default
+      return;
+    }
+
+    // Asignar el tipo de documento ANTES de hacer la consulta
+    if (tipo_doc === 'Boleta') {
+      this.tipo_documento = '03';
+    } else if (tipo_doc === 'Factura') {
+      this.tipo_documento = '01';
+    }
+
+    this.comprobanteService.obtenerUltimoCorrelativo(this.tipo_documento).subscribe({
+      next: (res) => {
+        this.data_facturacion = {
+          id_venta: this.id_venta || null,
+          razon_social_tienda: 'ALOHA RESTOBAR',
+          nombre_comercial_tienda: 'ALOHA',
+          ruc_tienda: '10712880754',
+          direccion_tienda: "Jr. Cusco N° 246, Ayacucho, Peru",
+          ciudad_tienda: 'AYACUCHO',
+
+          tipo_documento: this.tipo_documento,
+          serie: this.latestSerieCorrelative().ultimo_serie,
+          correlativo: this.latestSerieCorrelative().ultimo_correlativo,
+          forma_pago: 'Contado',
+
+          nombre_cliente: this.clienteDni().full_name || this.clienteRuc().razon_social || 'CLIENTE VARIOS',
+          numero_documento_cliente: this.clienteDni().document_number || this.clienteRuc().numero_documento || '00000000',
+          direccion_cliente: this.clienteRuc().direccion || 'SIN DIRECCIÓN',
+          fecha_emision: fecha_formateada,
+          hora_emision: hora_formateada,
+          productos: this.transformPlatosVenta(this.ventaToEmitComprobante),
+
+          total: total,
+          subtotal: Number((total / 1.18).toFixed(2)),
+          igv: Number((total - (total / 1.18)).toFixed(2)),
+          monto_letras: this._numeroLetrasService.numeroALetras(total),
+          comentarios: ''
+        }
+      },
+      error: (err) => {
+        console.error('Error al obtener correlativo:', err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al obtener el correlativo',
+          life: 3000
+        });
+      }
+    });
+  }
+
+  generar_comprobante() {
+
+    let data_api_sunat = {
+      fileName: `10712880754-${this.data_facturacion.tipo_documento}-${this.data_facturacion.serie}-${this.data_facturacion.correlativo}`,
+      documentBody: this.data_facturacion
+    }
+
+    this.comprobanteService.insertarComprobanteSunat(data_api_sunat).subscribe({
+      next: (res) => {
+        this.data_facturacion.documentId = res.data.documentId;
+
+        this.comprobanteService.insertarComprobanteLocal(this.data_facturacion).subscribe({
+          next: (resp) => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Éxito',
+              detail: 'Se generó correctamente el comprobante',
+              life: 3000
+            });
+
+            if (isPlatformBrowser(this.platformId)) {
+              const url = `${this.url_sunat}${this.data_facturacion.documentId}/getPDF/80mm/10712880754-${this.data_facturacion.tipo_documento}-${this.data_facturacion.serie}-${this.data_facturacion.correlativo}.pdf`;
+              window.open(url, '_blank');
+            }
+          },
+          error: (err) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Error al guardar el comprobante localmente',
+              life: 3000
+            });
+          }
+        });
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'danger',
+          summary: 'ERROR',
+          detail: err.error?.error?.error?.message || 'Error al generar comprobante en SUNAT',
+          life: 3000
+        });
       }
     });
   }

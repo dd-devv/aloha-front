@@ -1,3 +1,5 @@
+import { Pagination } from "./comprobante.interfaces";
+
 export interface NotaVentaRes {
   success: boolean;
   message: string;
@@ -32,5 +34,6 @@ export interface NotasVentaRes {
   success: boolean;
   message: string;
   data:    NotaVenta[];
+  pagination: Pagination;
 }
 

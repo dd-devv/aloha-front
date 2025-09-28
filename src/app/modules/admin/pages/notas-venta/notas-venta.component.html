@@ -4,6 +4,10 @@
       <div class="flex items-center gap-4 px-2 text-primary">
         <i class="pi pi-receipt text-2xl"></i>
         <span class="font-bold">Notas de venta</span>
+
+        <a routerLink="/admin/notas-venta/boletas" class="ml-auto">
+          <p-button label="B##/F##" severity="contrast" icon="pi pi-list" size="small" />
+        </a>
       </div>
     </ng-template>
 
@@ -35,7 +39,13 @@
           </ng-template>
 
           <p class="text-center mb-2">
-            <span class="text-xl font-semibold text-primary">Mesa {{nota.mesa}}
+            <span class="text-xl font-semibold text-primary">
+              @if (nota.mesa == 0) {
+              Barra
+              }
+              @if (nota.mesa != 0) {
+              Mesa {{nota.mesa}}
+              }
               @if (nota.PorcentajeDescuento > 0) {
               <p-tag [value]="'- ' + nota.PorcentajeDescuento.toString() + '%'" severity="secondary" class="ms-1" />
               }
@@ -67,6 +77,11 @@
         }
         }
       </div>
+    </div>
+
+    <div class="mt-4">
+      <app-pagination [currentPage]="pagination().currentPage" [totalPages]="pagination().totalPages"
+        (pageChange)="onPageChange($event)" />
     </div>
   </p-fieldset>
 </div>

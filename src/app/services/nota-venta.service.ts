@@ -5,7 +5,7 @@ import { environment } from '../../environments/environment';
 import { NotasVentaRes, NotaVenta } from '../interfaces/notaVenta.interface';
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { catchError, Observable, of, tap, throwError } from 'rxjs';
-import { DataFlujo } from '../interfaces';
+import { DataFlujo, Pagination } from '../interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +19,7 @@ export class NotaVentaService {
   // Signal para los usuarios
   readonly notasVenta = signal<NotaVenta[]>([]);
   readonly notasVentaNoInc = signal<NotaVenta[]>([]);
+  readonly pagination = signal<Pagination>({} as Pagination);
 
   // Controlar si está cargando datos
   readonly loading = signal<boolean>(false);
@@ -103,16 +104,16 @@ export class NotaVentaService {
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
-  obtenerNotasVenta(): Observable<NotasVentaRes> {
+  obtenerNotasVenta(page: number, items: number): Observable<NotasVentaRes> {
 
     if (isPlatformServer(this.platformId)) {
-      return of({ success: true, message: '', data: [] } as NotasVentaRes);
+      return of({} as NotasVentaRes);
     }
 
     this.loading.set(true);
     this.error.set(null);
 
-    return this.http.get<NotasVentaRes>(`${this.apiUrl}notas-venta`, {
+    return this.http.get<NotasVentaRes>(`${this.apiUrl}notas-venta/${page}/${items}`, {
       headers: {
         Authorization: `Bearer ${this.authToken}`
       }
@@ -121,6 +122,7 @@ export class NotaVentaService {
         tap(response => {
           if (response.data) {
             this.notasVenta.set(response.data);
+            this.pagination.set(response.pagination);
           }
           this.loading.set(false);
         }),
@@ -137,7 +139,7 @@ export class NotaVentaService {
   obtenerNotasVentaNoincluidas(): Observable<NotasVentaRes> {
 
     if (isPlatformServer(this.platformId)) {
-      return of({ success: true, message: '', data: [] } as NotasVentaRes);
+      return of({} as NotasVentaRes);
     }
 
     this.loading.set(true);

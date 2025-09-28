@@ -105,6 +105,14 @@ export const routes: Routes = [
         loadComponent: () => import('./modules/admin/pages/notas-venta/notas-venta.component')
       },
       {
+        path: 'notas-venta/boletas',
+        loadComponent: () => import('./modules/admin/pages/notas-venta/boletas/boletas.component')
+      },
+      {
+        path: 'notas-venta/facturas',
+        loadComponent: () => import('./modules/admin/pages/notas-venta/facturas/facturas.component')
+      },
+      {
         path: 'promociones',
         loadComponent: () => import('./modules/admin/pages/promociones/promociones.component')
       },

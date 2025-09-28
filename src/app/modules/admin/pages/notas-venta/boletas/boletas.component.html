@@ -1,0 +1,105 @@
+<div class="card">
+  <p-fieldset>
+    <ng-template #header>
+      <div class="flex items-center gap-4 px-2 text-primary">
+        <i class="pi pi-receipt text-2xl"></i>
+        <span class="font-bold">Boletas emitidas</span>
+
+        <p-button icon="pi pi-arrow-right" severity="secondary" label="Facturas" iconPos="right" size="small"
+          routerLink="/admin/notas-venta/facturas" />
+
+      </div>
+    </ng-template>
+
+    @if (loading()) {
+    <div class="col-span-full text-center">
+      <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+      <p>Cargando...</p>
+    </div>
+    }
+
+    @if (!loading()) {
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      @for (boleta of boletas(); track boleta._id) {
+      <p-fieldset>
+        <ng-template #header>
+          <div class="flex items-center gap-4 px-2">
+            <span class="font-bold">{{ boleta.serie }}-{{boleta.correlativo}}</span>
+
+            <p-button icon="pi pi-print" label="Imprimir" outlined="true" severity="contrast" size="small"
+              (onClick)="toggle($event)" />
+          </div>
+
+          <p-popover #op>
+            <div class="flex flex-col gap-4">
+              <div>
+                <span class="font-bold block mb-2">Seleccione formato</span>
+                <ul class="list-none p-0 m-0 flex flex-col">
+                  @for (format of formats; track $index) {
+                  <li class="flex items-center gap-2 px-1 py-2 hover:bg-emphasis cursor-pointer rounded-border"
+                    (click)="selectFormat(format, boleta.documentId, format.value, boleta.ruc_tienda, boleta.serie, boleta.correlativo)">
+                    <i class="pi pi-file-pdf"></i>
+                    {{ format.label }}
+                  </li>
+                  }
+                </ul>
+              </div>
+            </div>
+          </p-popover>
+        </ng-template>
+
+        <div class="flex gap-2">
+          <div class="w-16 font-medium">
+            Cliente
+          </div>
+          <div class="w-auto">
+            : {{ boleta.nombre_cliente }}
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <div class="w-16 font-medium">
+            N° Doc
+          </div>
+          <div class="w-auto">
+            : {{ boleta.numero_documento_cliente }}
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <div class="w-16 font-medium">
+            Subtotal
+          </div>
+          <div class="w-auto">
+            : {{ boleta.subtotal | currency:'S/ '}}
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <div class="w-16 font-medium">
+            IGV
+          </div>
+          <div class="w-auto">
+            : {{ boleta.igv | currency:'S/ '}}
+          </div>
+        </div>
+        <div class="flex gap-2 items-center">
+          <div class="w-16 font-medium">
+            Total
+          </div>
+          <div class="w-auto font-bold">
+            : {{ boleta.total | currency:'S/ '}}
+          </div>
+          <div class="w-auto text-sm">
+            <i class="pi pi-calendar"></i>
+            {{ boleta.createdAt | date:'dd/MM/yy HH:mm:ss'}}
+          </div>
+        </div>
+      </p-fieldset>
+      }
+    </div>
+    }
+
+    <div class="mt-4">
+      <app-pagination [currentPage]="pagination().currentPage" [totalPages]="pagination().totalPages"
+        (pageChange)="onPageChange($event)" />
+    </div>
+  </p-fieldset>
+</div>

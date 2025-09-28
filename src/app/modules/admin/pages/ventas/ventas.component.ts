@@ -87,7 +87,7 @@ export default class VentasComponent implements OnInit {
   value: string = '';
   //Para paginacion
   currentPage = 1;
-  pageSize = 9;
+  pageSize = 10;
 
   visible: boolean = false;
   total_venta = 0;
