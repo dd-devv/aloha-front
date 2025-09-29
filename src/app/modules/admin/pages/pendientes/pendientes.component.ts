@@ -510,7 +510,7 @@ export default class PendientesComponent implements OnInit {
   }
 
   obtenerUltimoCorrelativo(tipo_doc: string) {
-    const total = this.total_venta;
+    const total = this.total_venta || this.subtotal;
     const fecha_actual = new Date();
     const fecha_formateada = fecha_actual.toISOString().split('T')[0];
     const hora_formateada = fecha_actual.toTimeString().split(' ')[0];
