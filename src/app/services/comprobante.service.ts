@@ -51,7 +51,7 @@ export class ComprobanteService {
     this.loading.set(true);
     this.error.set(null);
 
-    return this.http.post<LatestSerieCorrelativeResp>(`${this.apiUrl}comprobante/obtener-ultimo-correlativo`, { tipo_documento }, {
+    return this.http.get<LatestSerieCorrelativeResp>(`${this.apiUrl}api-sunat/ultimo-documento?tipo=${tipo_documento}`, {
       headers: {
         Authorization: `Bearer ${this.authToken}`
       }

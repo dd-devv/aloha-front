@@ -136,6 +136,7 @@ export default class PendientesComponent implements OnInit {
   url_sunat = environment.url_doc_sunat;
 
   downloadTicket = true;
+  downloadDetails = true;
 
   constructor() {
     if (isPlatformBrowser(this.platformId)) {
@@ -392,20 +393,31 @@ export default class PendientesComponent implements OnInit {
             this.notaVentaService.obtenerPdfNotaVenta(this.num_venta).subscribe({
               next: (pdfBlob) => {
                 this.notaVentaService.descargarPdf(pdfBlob, `nota-venta-${this.num_venta}.pdf`);
+                // Limpiar formulario después de descargar el PDF
+                this.limpiarFormulario();
               },
               error: (err) => {
                 console.error('Error al obtener el PDF:', err);
+                // Limpiar formulario incluso si hay error
+                this.limpiarFormulario();
               }
             });
+          } else {
+            // Si no se descarga ticket, limpiar inmediatamente
+            this.limpiarFormulario();
           }
         } else {
-          // Para comprobantes (Boleta/Factura), primero necesitamos obtener los datos del cliente
+          // Para comprobantes (Boleta/Factura), primero obtener datos del cliente si es necesario
           if (this.valueDoc && this.valueDoc.length >= 8) {
+            // Primero obtener los datos del cliente
             this.obtenerCliente();
-            // La generación del comprobante se ejecutará en el callback de obtenerCliente
+            // Luego obtener el correlativo y generar el comprobante
             setTimeout(() => {
-              this.generar_comprobante();
-            }, 500);
+              this.obtenerUltimoCorrelativo(this.valueFactura);
+              setTimeout(() => {
+                this.generar_comprobante();
+              }, 300);
+            }, 300);
           } else {
             // Si no hay documento, obtener correlativo con el tipo seleccionado
             this.obtenerUltimoCorrelativo(this.valueFactura);
@@ -415,7 +427,6 @@ export default class PendientesComponent implements OnInit {
           }
         }
 
-        this.limpiarFormulario();
         this.obtenerVentas();
 
         //Emitir el socket
@@ -436,7 +447,7 @@ export default class PendientesComponent implements OnInit {
     });
   }
 
-  limpiarFormulario() {
+  limpiarFormularioSinDownloadDetails() {
     this.data_comprobante = {};
     this.selectedPlatos = [];
     this.subtotal = 0;
@@ -447,6 +458,7 @@ export default class PendientesComponent implements OnInit {
     this.valueDoc = '';
     this.clienteDni.set({} as DNIResponse);
     this.clienteRuc.set({} as RUCResponse);
+    // NO resetear downloadDetails aquí
 
     this.visible = false;
     this.num_venta = '';
@@ -454,6 +466,11 @@ export default class PendientesComponent implements OnInit {
     this.promo_code = '';
     this.descontado = false;
     this.id_promocion = null;
+  }
+
+  limpiarFormulario() {
+    this.limpiarFormularioSinDownloadDetails();
+    this.downloadDetails = true; // Solo resetear downloadDetails al final
   }
 
   descargarPdfVenta(id_venta: string, numero_venta: string) {
@@ -472,7 +489,7 @@ export default class PendientesComponent implements OnInit {
       // DNI - Solo para boletas
       this.dniRucService.obtenerClienteDNI(this.valueDoc).subscribe({
         next: () => {
-          this.obtenerUltimoCorrelativo(this.valueFactura); // Usar valueFactura en lugar de tipo_documento
+          // No llamar obtenerUltimoCorrelativo aquí porque ya se llamó antes
         }
       });
       this.clienteRuc.set({} as RUCResponse);
@@ -480,14 +497,28 @@ export default class PendientesComponent implements OnInit {
       // RUC - Para boletas y facturas
       this.dniRucService.obtenerClienteRUC(this.valueDoc).subscribe({
         next: () => {
-          this.obtenerUltimoCorrelativo(this.valueFactura); // Usar valueFactura en lugar de tipo_documento
+          // No llamar obtenerUltimoCorrelativo aquí porque ya se llamó antes
         }
       });
       this.clienteDni.set({} as DNIResponse);
     }
   }
 
-  transformPlatosVenta(venta: Venta): any {
+  transformPlatosVenta(venta: Venta, totalComprobante?: number): any {
+    // Si downloadDetails es false, devolver solo un producto genérico "Consumo"
+    if (!this.downloadDetails) {
+      const total = totalComprobante || this.total_venta || this.subtotal;
+      return [{
+        codigo: 'CONS',
+        descripcion: 'Consumo',
+        cantidad: 1,
+        precio_unitario: total,
+        precio_total: total,
+        unidad_medida: 'unidad'
+      }];
+    }
+
+    // Si downloadDetails es true, mantener el comportamiento original con todos los detalles
     if (venta.platos) {
       return venta.platos.map(plato => ({
         codigo: plato.nombre.substring(0, 6).toUpperCase(),
@@ -548,7 +579,7 @@ export default class PendientesComponent implements OnInit {
           direccion_cliente: this.clienteRuc().direccion || 'SIN DIRECCIÓN',
           fecha_emision: fecha_formateada,
           hora_emision: hora_formateada,
-          productos: this.transformPlatosVenta(this.ventaToEmitComprobante),
+          productos: [], // Se asignará en generar_comprobante
 
           total: total,
           subtotal: Number((total / 1.18).toFixed(2)),
@@ -570,6 +601,13 @@ export default class PendientesComponent implements OnInit {
   }
 
   generar_comprobante() {
+    // Construir productos aquí donde downloadDetails se respeta correctamente
+    this.data_facturacion.productos = this.transformPlatosVenta(this.ventaToEmitComprobante, this.data_facturacion.total);
+
+    // Actualizar datos del cliente aquí también por si cambiaron después de obtener el correlativo
+    this.data_facturacion.nombre_cliente = this.clienteDni().full_name || this.clienteRuc().razon_social || 'CLIENTE VARIOS';
+    this.data_facturacion.numero_documento_cliente = this.clienteDni().document_number || this.clienteRuc().numero_documento || '00000000';
+    this.data_facturacion.direccion_cliente = this.clienteRuc().direccion || 'SIN DIRECCIÓN';
 
     let data_api_sunat = {
       fileName: `10712880754-${this.data_facturacion.tipo_documento}-${this.data_facturacion.serie}-${this.data_facturacion.correlativo}`,
@@ -593,6 +631,8 @@ export default class PendientesComponent implements OnInit {
               const url = `${this.url_sunat}${this.data_facturacion.documentId}/getPDF/80mm/10712880754-${this.data_facturacion.tipo_documento}-${this.data_facturacion.serie}-${this.data_facturacion.correlativo}.pdf`;
               window.open(url, '_blank');
             }
+            // Limpiar formulario después de generar el comprobante (ahora con reset de downloadDetails)
+            this.limpiarFormulario();
           },
           error: (err) => {
             this.messageService.add({
@@ -601,6 +641,8 @@ export default class PendientesComponent implements OnInit {
               detail: 'Error al guardar el comprobante localmente',
               life: 3000
             });
+            // Limpiar formulario incluso si hay error (ahora con reset de downloadDetails)
+            this.limpiarFormulario();
           }
         });
       },
@@ -611,6 +653,8 @@ export default class PendientesComponent implements OnInit {
           detail: err.error?.error?.error?.message || 'Error al generar comprobante en SUNAT',
           life: 3000
         });
+        // Limpiar formulario incluso si hay error (ahora con reset de downloadDetails)
+        this.limpiarFormulario();
       }
     });
   }

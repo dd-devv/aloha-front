@@ -120,10 +120,16 @@
     </p-inputgroup>
   </div>
 
-  <div class="card flex justify-center my-6">
+  <div class="card flex justify-center mt-6">
     <p-selectbutton [options]="facturaOptions" [(ngModel)]="valueFactura" aria-labelledby="basic"
       (onChange)="obtenerUltimoCorrelativo(valueFactura)" />
   </div>
+
+  @if (valueFactura !== 'Ticket') {
+  <div class="card flex justify-center gap-4 my-4">
+    <p-toggleswitch [(ngModel)]="downloadDetails" /> Con detalles de productos
+  </div>
+  }
 
   @if (valueFactura === 'Boleta') {
   <p-inputgroup>
@@ -183,7 +189,7 @@
   }
 
   @if (valueFactura === 'Ticket') {
-  <div class="card flex justify-center gap-4">
+  <div class="card flex justify-center gap-4 mt-4">
     <p-toggleswitch [(ngModel)]="downloadTicket" /> Descargar ticket
   </div>
   }
@@ -279,17 +285,23 @@
       <div class="text-lg font-bold">{{subtotal | currency:'S/ '}}</div>
     </div>
 
-    <div class="card flex justify-center my-6">
+    <div class="card flex justify-center mt-6">
       <p-selectbutton [options]="facturaOptions" [(ngModel)]="valueFactura" aria-labelledby="basic"
         (onChange)="obtenerUltimoCorrelativo(valueFactura)" />
     </div>
+
+    @if (valueFactura !== 'Ticket') {
+    <div class="card flex justify-center gap-4 my-4">
+      <p-toggleswitch [(ngModel)]="downloadDetails" /> Con detalles de productos
+    </div>
+    }
 
     @if (valueFactura === 'Boleta') {
     <p-inputgroup>
       <input pInputText placeholder="DNI o RUC para boleta" [(ngModel)]="valueDoc" maxlength="11" />
       <p-inputgroup-addon>
         <p-button icon="pi pi-search" severity="contrast" variant="text" (click)="obtenerCliente()"
-          [disabled]="valueDoc.length < 8" />
+          [disabled]="valueDoc.length < 8" [loading]="loadingComprobante()" />
       </p-inputgroup-addon>
     </p-inputgroup>
 
@@ -324,7 +336,7 @@
       <input pInputText placeholder="RUC para factura" [(ngModel)]="valueDoc" maxlength="11" />
       <p-inputgroup-addon>
         <p-button icon="pi pi-search" severity="contrast" variant="text" (click)="obtenerCliente()"
-          [disabled]="valueDoc.length !== 11" />
+          [disabled]="valueDoc.length !== 11" [loading]="loadingComprobante()" />
       </p-inputgroup-addon>
     </p-inputgroup>
 
@@ -343,13 +355,13 @@
   </div>
 
   @if (valueFactura === 'Ticket') {
-  <div class="card flex justify-center gap-4">
+  <div class="card flex justify-center gap-4 mt-4">
     <p-toggleswitch [(ngModel)]="downloadTicket" /> Descargar ticket
   </div>
   }
 
   <div class="flex justify-end gap-2 mt-4">
-    <p-button label="Cancelar" severity="secondary" (click)="visible = false" />
+    <p-button label="Cancelar" severity="secondary" (onClick)="visible = false" />
     <p-button label="Guardar venta" icon="pi pi-check" severity="success"
       [disabled]="selectedPlatos.length === 0 || !selectedMP.code" (click)="guardarVenta()"
       [loading]="loadingVentas()" />
