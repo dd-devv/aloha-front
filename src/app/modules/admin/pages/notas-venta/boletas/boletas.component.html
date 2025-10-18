@@ -27,17 +27,17 @@
             <span class="font-bold">{{ boleta.serie }}-{{boleta.correlativo}}</span>
 
             <p-button icon="pi pi-print" label="Imprimir" outlined="true" severity="contrast" size="small"
-              (onClick)="toggle($event)" />
+              (onClick)="toggle($event, popover)" />
           </div>
 
-          <p-popover #op>
+          <p-popover #popover>
             <div class="flex flex-col gap-4">
               <div>
                 <span class="font-bold block mb-2">Seleccione formato</span>
                 <ul class="list-none p-0 m-0 flex flex-col">
                   @for (format of formats; track $index) {
                   <li class="flex items-center gap-2 px-1 py-2 hover:bg-emphasis cursor-pointer rounded-border"
-                    (click)="selectFormat(format, boleta.documentId, format.value, boleta.ruc_tienda, boleta.serie, boleta.correlativo)">
+                    (click)="selectFormat(format, boleta.documentId, format.value, boleta.ruc_tienda, boleta.serie, boleta.correlativo, popover)">
                     <i class="pi pi-file-pdf"></i>
                     {{ format.label }}
                   </li>
