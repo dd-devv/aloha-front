@@ -1,5 +1,5 @@
 import { CurrencyPipe, DatePipe, isPlatformBrowser } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Button } from 'primeng/button';
 import { Fieldset } from 'primeng/fieldset';
@@ -23,7 +23,6 @@ import { PaginationComponent } from "../../../components/pagination/pagination.c
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class FacturasComponent implements OnInit {
-  @ViewChild('op') op!: Popover;
   private comprobanteService = inject(ComprobanteService);
   facturas = this.comprobanteService.facturas;
   loading = this.comprobanteService.loading;
@@ -53,18 +52,17 @@ export default class FacturasComponent implements OnInit {
     this.comprobanteService.obtenerFacturasEmitidas(this.currentPage, this.pageSize).subscribe();
   }
 
-  toggle(event: any) {
-    this.op.toggle(event);
-
+  toggle(event: any, popover: Popover) {
+    popover.toggle(event);
   }
 
-  selectFormat(item: any, documentId: string, format: string, ruc_tienda: string, serie: string, correlativo: string) {
+  selectFormat(item: any, documentId: string, format: string, ruc_tienda: string, serie: string, correlativo: string, popover: Popover) {
     this.selectedFormat = item.value;
     if (isPlatformBrowser(this.platformId)) {
       const url = `${this.url_sunat}${documentId}/getPDF/${format}/${ruc_tienda}-01-${serie}-${correlativo}.pdf`;
       window.open(url, '_blank');
     }
-    this.op.hide();
+    popover.hide();
   }
 
   onPageChange(page: number): void {
