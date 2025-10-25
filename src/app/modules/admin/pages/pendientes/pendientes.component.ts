@@ -507,36 +507,45 @@ export default class PendientesComponent implements OnInit {
   transformPlatosVenta(venta: Venta, totalComprobante?: number): any {
     // Si downloadDetails es false, devolver solo un producto genérico "Consumo"
     if (!this.downloadDetails) {
-      const total = totalComprobante || this.total_venta || this.subtotal;
+      const totalConIgv = totalComprobante || this.total_venta || this.subtotal;
+      const precioSinIgv = Number((totalConIgv / 1.18).toFixed(2));
       return [{
         codigo: 'CONS',
         descripcion: 'Consumo',
         cantidad: 1,
-        precio_unitario: total,
-        precio_total: total,
-        unidad_medida: 'unidad'
+        precio_unitario: precioSinIgv,
+        precio_total: precioSinIgv,
+        unidad_medida: 'NIU'
       }];
     }
 
     // Si downloadDetails es true, mantener el comportamiento original con todos los detalles
     if (venta.platos) {
-      return venta.platos.map(plato => ({
-        codigo: plato.nombre.substring(0, 6).toUpperCase(),
-        descripcion: plato.nombre,
-        cantidad: plato.cantidad,
-        precio_unitario: plato.precio,
-        precio_total: plato.subtotal,
-        unidad_medida: 'unidad'
-      }));
+      return venta.platos.map(plato => {
+        const precioUnitarioSinIgv = Number((plato.precio / 1.18).toFixed(2));
+        const precioTotalSinIgv = Number((precioUnitarioSinIgv * plato.cantidad).toFixed(2));
+        return {
+          codigo: plato.nombre.substring(0, 10).toUpperCase().replace(/[^A-Z0-9]/g, ''),
+          descripcion: plato.nombre,
+          cantidad: plato.cantidad,
+          precio_unitario: precioUnitarioSinIgv,
+          precio_total: precioTotalSinIgv,
+          unidad_medida: 'NIU'
+        };
+      });
     } else {
-      return this.selectedPlatos.map(plato => ({
-        codigo: plato.nombre.substring(0, 6).toUpperCase(),
-        descripcion: plato.nombre,
-        cantidad: plato.cantidad,
-        precio_unitario: plato.precio,
-        precio_total: plato.precio * plato.cantidad,
-        unidad_medida: 'unidad'
-      }));
+      return this.selectedPlatos.map(plato => {
+        const precioUnitarioSinIgv = Number((plato.precio / 1.18).toFixed(2));
+        const precioTotalSinIgv = Number((precioUnitarioSinIgv * plato.cantidad).toFixed(2));
+        return {
+          codigo: plato.nombre.substring(0, 10).toUpperCase().replace(/[^A-Z0-9]/g, ''),
+          descripcion: plato.nombre,
+          cantidad: plato.cantidad,
+          precio_unitario: precioUnitarioSinIgv,
+          precio_total: precioTotalSinIgv,
+          unidad_medida: 'NIU'
+        };
+      });
     }
   }
 
@@ -561,6 +570,9 @@ export default class PendientesComponent implements OnInit {
 
     this.comprobanteService.obtenerUltimoCorrelativo(this.tipo_documento).subscribe({
       next: (res) => {
+        const subtotalCalculado = Number((total / 1.18).toFixed(2));
+        const igvCalculado = Number((total - subtotalCalculado).toFixed(2));
+
         this.data_facturacion = {
           id_venta: this.id_venta || null,
           razon_social_tienda: 'ALOHA RESTOBAR',
@@ -581,9 +593,9 @@ export default class PendientesComponent implements OnInit {
           hora_emision: hora_formateada,
           productos: [], // Se asignará en generar_comprobante
 
-          total: total,
-          subtotal: Number((total / 1.18).toFixed(2)),
-          igv: Number((total - (total / 1.18)).toFixed(2)),
+          total: Number(total.toFixed(2)),
+          subtotal: subtotalCalculado,
+          igv: igvCalculado,
           monto_letras: this._numeroLetrasService.numeroALetras(total),
           comentarios: ''
         }
@@ -603,6 +615,17 @@ export default class PendientesComponent implements OnInit {
   generar_comprobante() {
     // Construir productos aquí donde downloadDetails se respeta correctamente
     this.data_facturacion.productos = this.transformPlatosVenta(this.ventaToEmitComprobante, this.data_facturacion.total);
+
+    // Recalcular totales basándose en los productos para asegurar consistencia
+    const subtotalProductos = this.data_facturacion.productos.reduce((acc: number, prod: any) => acc + prod.precio_total, 0);
+    const igvProductos = Number((subtotalProductos * 0.18).toFixed(2));
+    const totalProductos = Number((subtotalProductos + igvProductos).toFixed(2));
+
+    // Actualizar los totales con los valores calculados de los productos
+    this.data_facturacion.subtotal = Number(subtotalProductos.toFixed(2));
+    this.data_facturacion.igv = igvProductos;
+    this.data_facturacion.total = totalProductos;
+    this.data_facturacion.monto_letras = this._numeroLetrasService.numeroALetras(totalProductos);
 
     // Actualizar datos del cliente aquí también por si cambiaron después de obtener el correlativo
     this.data_facturacion.nombre_cliente = this.clienteDni().full_name || this.clienteRuc().razon_social || 'CLIENTE VARIOS';
